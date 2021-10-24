@@ -1,0 +1,13 @@
+General Purpose
+Get_Nodes - request and send address details
+Verify - send and verify copy of blockchain
+Online - see if node is online
+HELLO - announce self to network
+
+Blockchain
+AI_opt_request - send request for a node to be an optimizers
+AI_Data_request - opt node sends out request to 10 nodes
+Transaction - transaction sent to all nodes (address1, address2, amount, time)
+GRAD - send gradients to opt nodes
+Validate - be told to be a validator
+Invalid_transaction - if invalid transaction found

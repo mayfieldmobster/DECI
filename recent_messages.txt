@@ -1,0 +1,4 @@
+
+127.0.0.1 OPT_REQ fuck you
+127.0.0.1 DATA_REQ shit on you
+127.0.0.1 GET_NODES hahahahaha lmao
