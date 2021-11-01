@@ -2,7 +2,7 @@ import node
 import Blockchain
 
 while True:
-    NODE_Lines = node.file_reader("NODE")
+    NODE_Lines = node.request_reader("NODE")
     for message in NODE_Lines:
         if message[1] == "GET_NODES":
             message = message.split(" ")

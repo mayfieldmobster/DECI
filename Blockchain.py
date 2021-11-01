@@ -4,9 +4,11 @@ import hashlib
 from ecdsa import SigningKey, VerifyingKey, SECP112r2
 from ecdsa.util import randrange_from_seed__trytryagain
 import node
+import time
 
 def hash_block(data):
     data = list(itertools.chain.from_iterable(data))
+    print(data)
     str_data = " ". join(data)
     hashed = hashlib.sha256(str_data.encode())
     hex_hashed = hashed.hexdigest()
@@ -117,20 +119,57 @@ def wallet_value(pub_adrress):
     amount_in_wallet = 0.0
 
     for block in blockchain:
-        for transaction in block:
-            if transaction[2] == pub_adrress:
-                amount_in_wallet += float(transaction[3])
-            if transaction[1] == pub_adrress:
-                amount_in_wallet -= float(transaction[3])
+        if block[52][0]:
+            for transaction in block:
+                if transaction[2] == pub_adrress:
+                    amount_in_wallet += float(transaction[3])
+                if transaction[1] == pub_adrress:
+                    amount_in_wallet -= float(transaction[3])
+                    amount_in_wallet -= float(transaction[3]) * 0.001
 
     return amount_in_wallet
 
 
+def trans_fee_calc(block_index):
+    with open("info/Blockchain.pickle", "rb") as file:
+        blockchain = pickle.load(file)
 
-        
+    trans_fee = 0.0
+    for transaction in blockchain[block_index]:
+        trans_fee += float(transaction[3])*0.001
+
+    return trans_fee
 
 
-#add_transaction(trans)
+def coin_val():
+    GOD_WAL = wallet_value("00000000000") #amount in god wallet
+    sold = 50000000 - GOD_WAL
+    val = sold*0.0037
+    return val
+
+def exchange_cost(amount):
+    og_val = coin_val()
+    new_val = og_val + amount
+    avg_val = sum(og_val,new_val)/2
+    cost = avg_val*0.0037
+
+
+def trans(sender, receiver, amount, priv_key):
+    trans = []
+    trans_time = time.time()
+    trans.append(str(trans_time))
+    trans.append(sender)
+    trans.append(receiver)
+    trans.append(str(amount))
+    str_trans = " ".join(trans)
+    priv_key = SigningKey.from_string(bytes.fromhex(priv_key), curve=SECP112r2)
+    signature = priv_key.sign(str_trans.encode())
+    trans.append(signature)
+    if amount < wallet_value(sender):
+        node.send_to_all("TRANS " + " ".join(trans))
+
+
+                 
 
 
 

@@ -5,6 +5,7 @@ import itertools
 with open("../info/Test_Trans.pickle", "rb") as file:
     Transactions = pickle.load(file)
 
+
     for transaction in Transactions:
         trans_no_sig = []
         trans_no_sig.append(transaction)
@@ -20,3 +21,4 @@ with open("../info/Test_Trans.pickle", "rb") as file:
             print("yh")
         except:
             print("WTF")
+

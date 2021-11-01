@@ -1,9 +1,10 @@
 import pickle
 
-with open("../info/Blockchain.pickle", "rb") as file:
-    Blockchain = pickle.load(file)
-    del Blockchain[-1]
-    del Blockchain[0][-1]
-    del Blockchain[0][-1]
-with open("../info/Blockchain.pickle", "wb") as file:
-    pickle.dump(Blockchain,file)
+with open("../info/Test_Trans.pickle", "rb") as file:
+    Block = pickle.load(file)
+
+    for transaction in Block:
+        transaction[3] = str(transaction[3])
+
+    with open("../info/Test_Trans.pickle", "wb") as file:
+        block = pickle.dump(Block, file)

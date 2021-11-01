@@ -68,7 +68,7 @@ def rand_act_node(num_nodes):
         return nodes
 
 
-def file_reader(type):
+def request_reader(type):
     with open("recent_messages.txt", "r") as file:
         lines = file.read().splitlines()
         AI_protocols = ["OPT_REQ","DATA_REQ","ONLINE?", "GRAD"]
@@ -182,6 +182,8 @@ class rec_protocols():
         self.node.append(new_node)
         with open("info/Nodes.pickle", "wb") as file:
             blockchain = pickle.load(file)
+
+
 
 
 

@@ -7,9 +7,9 @@ via people mining our cryptocurrency. Their CPUs are running a low demanding PoS
 
 The miners are rewarded via the crypto made through transaction fees thus the product is funded by the people.
 
-TO DO:
+# TO DO:
 
 * TRANSACTION WEBSITE!!!!!!
 * AI LIBRARY!!!!!
 * legal shid !!!!!!!!
-* ECT...
+* TIME LOCKS?
