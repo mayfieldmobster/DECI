@@ -151,7 +151,7 @@ def exchange_cost(amount):
     og_val = coin_val()
     new_val = og_val + amount
     avg_val = sum(og_val,new_val)/2
-    cost = avg_val*0.0037
+    cost = avg_val*0.0037*amount
 
 
 def trans(sender, receiver, amount, priv_key):
