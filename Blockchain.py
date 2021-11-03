@@ -45,8 +45,16 @@ def add_transaction(transaction):
                 pickle.dump(blockchain, file)
 
         elif len(blockchain[-1]) >= 51:#51 as that the amount in the array without hash and val
-            neg_block_hash = [hash_block(blockchain[-1])]
+            neg_block_hash = [hash_block(blockchain[-1])]#current block
+            trans_fees = []
+            for trans in blockchain[-1]:
+                try:
+                    trans_fee = [trans[1],trans[3]*0.001]
+                    trans_fees.append(trans_fee)
+                except:
+                    pass
             blockchain[-1].append(neg_block_hash)
+            blockchain[-1].append(trans_fees)
             blockchain[-1].append([False])#validation status
             new_block = [neg_block_hash,transaction]
             blockchain.append(new_block)
@@ -147,12 +155,21 @@ def coin_val():
     val = sold*0.0037
     return val
 
-def exchange_cost(amount):
-    og_val = coin_val()
-    new_val = og_val + amount
-    avg_val = sum(og_val,new_val)/2
-    cost = avg_val*0.0037*amount
+def buy_cost(amount):
+    start_val = coin_val()
+    new_val = start_val + amount*0.0037
+    total_val = start_val + new_val
+    avg_val = total_val/2.0
+    cost = avg_val*amount
+    return cost
 
+def sell_cost(amount):
+    start_val = coin_val()
+    new_val = start_val - amount * 0.0037
+    total_val = start_val + new_val
+    avg_val = total_val / 2.0
+    cost = avg_val * amount
+    return cost
 
 def trans(sender, receiver, amount, priv_key):
     trans = []

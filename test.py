@@ -1,16 +1,9 @@
-import random
-import pickle
-import Blockchain
+def exchange_cost(amount):
+    start_val = 0.0037*10000
+    new_val = start_val - amount*0.0037
+    total_val = start_val + new_val
+    avg_val = total_val/2.0
+    cost = avg_val*amount
+    return cost, start_val, new_val
 
-
-with open("./info/Test_Trans.pickle", "rb") as file:
-    Block = pickle.load(file)
-
-hash = int(Blockchain.hash_block(Block), 16)
-print(hash)
-
-random.seed(hash)
-
-print(random.randint(0,12345))
-
-
+print(exchange_cost(100.0))
