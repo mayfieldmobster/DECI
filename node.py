@@ -6,6 +6,8 @@ import socket
 import numpy
 import random
 import pickle
+import time
+import ast
 
 
 #recieve from nodes
@@ -47,9 +49,9 @@ def online(address):
     else:
         return False
 
-def rand_act_node(num_nodes):
+def rand_act_node(num_nodes = 1):
     nodes = []
-    i = 1
+    i = 0
     while i != num_nodes:
         with open("info/Nodes.pickle.pickle", "rb") as file:
             all_nodes = pickle.load(file)
@@ -89,22 +91,6 @@ def request_reader(type):
             return NODE_Lines
 
 
-def ONE_D_message_compress(message):
-    message = message.split(" ")
-    del message[0]
-    del message[0]
-    return message
-
-def TWO_D_message_compress(message):
-    message = message.split(" ")
-    for i in message:
-        try:
-            message.split(",")
-        except:
-            pass
-    del message[0]
-    del message[0]
-    return message
 
 def send_to_all(message):
     with open("info/Nodes.pickle.pickle", "rb") as file:
@@ -136,7 +122,14 @@ class send_protocols():
         return nodes
     
     def announce(self, pub_key):
-        send_to_all("HELLO "+ pub_key)
+        send_to_all("HELLO "+ str(time.time()) + " " + pub_key)
+
+
+
+
+
+
+
 
 
 #protocols that receive things
@@ -178,13 +171,32 @@ class rec_protocols():
         send(host, "GRAD " + " ".join(data))
 
 
-    def new_node(self,new_node):
+    def new_node(self,time, new_node, address):
         self.node.append(new_node)
-        with open("info/Nodes.pickle", "wb") as file:
-            blockchain = pickle.load(file)
+        with open("info/Nodes.pickle", "rb") as file:
+            Nodes = pickle.load(file)
+        new_node = [time , new_node, address]
+        Nodes.append(new_node)
+        with open("info/Nodes.pickle","wb") as file:
+            pickle.dump(Nodes, file)
+
+    def get_nodes(self):
+        node = rand_act_node()
+        send(node[1],"GET_NODES")
+
+    def get_blockchain(self):#send ask the website for blockchain as most up todate
+        pass #send get request to website
 
 
+def receiver():
+    while True:
+        message, address = receive()
 
+        print(address)
+        file = open("recent_messages.txt", "a")
+
+        file.write("\n" + address[0] + " " + " ".join(message))
+        file.close()
 
 
 """

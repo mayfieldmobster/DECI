@@ -4,7 +4,9 @@ import itertools
 
 with open("../info/Test_Trans.pickle", "rb") as file:
     Transactions = pickle.load(file)
-
+    print(str(Transactions).replace(" ",""))
+    print(type(Transactions))
+    print(type(str(Transactions)))
 
     for transaction in Transactions:
         trans_no_sig = []

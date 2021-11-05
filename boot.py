@@ -1,11 +1,19 @@
 import os
 import node
+import concurrent.futures
 """
 update tensorflow
 update blockchain and nodes
 """
 
-os.system("pip3 install --upgrade tensorflow")
+with concurrent.futures.ProcessPoolExecutor as executor:
+    executor.submit(node.receiver())
+    executor.submit(node.send_protocols.get_blockchain())
+    executor.submit()
+
+
+
+
 
 
 

@@ -40,21 +40,21 @@ def add_transaction(transaction):
         blockchain = pickle.load(file)
         if len(blockchain[-1])< 51: # 50 transactions, prev and block hash, validation status
             print(blockchain[-1])
-            blockchain[-1].append(transaction)
+            if transaction not in blockchain:
+                blockchain[-1].append(transaction)
             with open("info/Blockchain.pickle", "wb") as file:
                 pickle.dump(blockchain, file)
 
         elif len(blockchain[-1]) >= 51:#51 as that the amount in the array without hash and val
             neg_block_hash = [hash_block(blockchain[-1])]#current block
-            trans_fees = []
+            trans_fees = 0
             for trans in blockchain[-1]:
                 try:
-                    trans_fee = [trans[1],trans[3]*0.001]
-                    trans_fees.append(trans_fee)
+                    trans_fees += trans[3]*0.001
                 except:
                     pass
             blockchain[-1].append(neg_block_hash)
-            blockchain[-1].append(trans_fees)
+            blockchain[-1].append([trans_fees])
             blockchain[-1].append([False])#validation status
             new_block = [neg_block_hash,transaction]
             blockchain.append(new_block)
@@ -73,6 +73,7 @@ def validate(block_hash):
         current_index += 1
 
     transindex = 0
+    prev_time = 0
 
     for transaction in blockchain[block_index]:
         trans_no_sig = []
@@ -83,6 +84,10 @@ def validate(block_hash):
         public_key = VerifyingKey.from_string(bytes.formathex(transaction[1]), curve=SECP112r2)
         try:
             assert public_key.verify(bytes.fromhex(transaction[4]), trans_no_sig.encode())
+            if float(transaction[0]) >prev_time:
+                prev_time = transaction[0]
+            else:
+                raise ValueError('times out of order')
             transindex += 1
         except:
             print("WTF")
