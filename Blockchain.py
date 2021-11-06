@@ -38,14 +38,14 @@ def sign_trans(private_key, transaction):
 def add_transaction(transaction):
     with open("info/Blockchain.pickle", "rb") as file:
         blockchain = pickle.load(file)
-        if len(blockchain[-1])< 51: # 50 transactions, prev and block hash, validation status
+        if len(blockchain[-1])< 50: # 50 transactions, prev and block hash
             print(blockchain[-1])
             if transaction not in blockchain:
                 blockchain[-1].append(transaction)
             with open("info/Blockchain.pickle", "wb") as file:
                 pickle.dump(blockchain, file)
 
-        elif len(blockchain[-1]) >= 51:#51 as that the amount in the array without hash and val
+        elif len(blockchain[-1]) >= 50:#51 as that the amount in the array without hash
             neg_block_hash = [hash_block(blockchain[-1])]#current block
             trans_fees = 0
             for trans in blockchain[-1]:
@@ -176,6 +176,20 @@ def sell_cost(amount):
     cost = avg_val * amount
     return cost
 
+def Block_valid(index, address):
+    with open("info/Blockchain.pickle", "rb") as file:
+        blockchain = pickle.load(file)
+        blockchain[index][53]= [True, address]
+
+    with open("./info/Blockchain.pickle", "wb") as file:
+        pickle.dump(blockchain, file)
+
+
+def validator():
+    with open("info/Blockchain.pickle", "rb") as file:
+        blockchain = pickle.load(file)
+
+
 def trans(sender, receiver, amount, priv_key):
     trans = []
     trans_time = time.time()
@@ -188,7 +202,9 @@ def trans(sender, receiver, amount, priv_key):
     signature = priv_key.sign(str_trans.encode())
     trans.append(signature)
     if amount < wallet_value(sender):
-        node.send_to_all("TRANS " + " ".join(trans))
+        str_trans = str(trans)
+        str_trans = str_trans.replace(" ", "")
+        node.send_to_all("TRANS " + str_trans)
 
 
                  

@@ -1,6 +1,5 @@
 General Purpose
 Get_Nodes - request and send address details
-Verify - send and verify copy of blockchain
 Online - see if node is online
 HELLO - announce self to network
 

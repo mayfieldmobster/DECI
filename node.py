@@ -156,6 +156,9 @@ class send_protocols():
             line = request_reader("NREQ")
             line = line.split(" ")
             nodes = line[2]
+            nodes = ast.literal_eval(nodes)
+            with open("./info/Nodes.pickle", "wb") as file:
+                pickle.dump(nodes, file)
 
 
 
@@ -178,17 +181,18 @@ class rec_protocols():
 
     def get_node(self,host):
         str_node = str(self.nodes)
+        str_node = str_node.replace(" ", "")
         send(host, "NEW_NODES " + str_node)
 
     def verify(self, host):
         send(host, self.blockchain)
 
 
-    def new_node(self,time, new_node, address):
+    def new_node(self, time, new_node, address):
         self.node.append(new_node)
         with open("info/Nodes.pickle", "rb") as file:
             Nodes = pickle.load(file)
-        new_node = [time , new_node, address]
+        new_node = [time, new_node, address]
         Nodes.append(new_node)
         with open("info/Nodes.pickle","wb") as file:
             pickle.dump(Nodes, file)
