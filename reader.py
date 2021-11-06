@@ -1,13 +1,14 @@
 import node
 import Blockchain
-
+import ast
 
 def main():
     while True:
         NODE_Lines = node.request_reader("NODE")
         for message in NODE_Lines:
+            message = message.split(" ")
+
             if message[1] == "GET_NODES":
-                message = message.split(" ")
                 node.rec_protocols.get_node(message[0])
 
             if message[1] == "VERIFY":

@@ -8,6 +8,7 @@ import random
 import pickle
 import time
 import ast
+import concurrent.futures
 
 
 #recieve from nodes
@@ -32,8 +33,11 @@ def receive():
 #send to node
 def send(host, message):
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client.connect((host, 1379))
-    client.send(message.encode("utf-8"))
+    try:
+        client.connect((host, 1379))
+        client.send(message.encode("utf-8"))
+    except:
+        return "node offline"
 
 
 
@@ -73,33 +77,53 @@ def rand_act_node(num_nodes = 1):
 def request_reader(type):
     with open("recent_messages.txt", "r") as file:
         lines = file.read().splitlines()
-        AI_protocols = ["OPT_REQ","DATA_REQ","ONLINE?", "GRAD"]
+        del lines[0]#remove blank line to prevent error
+        AI_protocols = ["AI"]
+        NREQ_protocol = ["NEW_NODES"]#node request
         AI_Lines = []
         NODE_Lines = []
+        NREQ_Lines = []
         for line in lines:
             line = line.split(" ")
-            try:
-                if line[1] in AI_protocols:
-                    AI_Lines.append(" ".join(line))
-                else:
-                    NODE_Lines.append(" ".join(line))
-            except:
-                pass
+
+            if line[1] in AI_protocols:
+                AI_Lines.append(" ".join(line))
+
+            elif line[1] in NREQ_protocol:
+                NREQ_Lines.append(" ".join(line))
+
+            else:
+                NODE_Lines.append(" ".join(line))
         if type == "AI":
+            with open("recent_messages.txt", "w") as file:
+                for line in AI_Lines:
+                    if " ".join(line) != line:
+                        file.write("\n" + line)
             return AI_Lines
+
         if type == "NODE":
+            with open("recent_messages.txt", "w") as file:
+                for line in NODE_Lines:
+                    if " ".join(line) != line:
+                        file.write("\n" + line)
             return NODE_Lines
+
+        if type == "NREQ":
+            with open("recent_messages.txt", "w") as file:
+                for line in NODE_Lines:
+                    if " ".join(line) != line:
+                        file.write("\n" + line)
+            return NODE_Lines
+
+
 
 
 
 def send_to_all(message):
     with open("info/Nodes.pickle.pickle", "rb") as file:
         all_nodes = pickle.load(file)
-    for node in all_nodes:
-        try:
-            send(node[0], message)
-        except:
-            pass
+    with concurrent.futures.ThreadPoolExecutor as executor:
+        [executor.submit(send(), node[1], message) for node in all_nodes]
 
 
 
@@ -124,7 +148,19 @@ class send_protocols():
     def announce(self, pub_key):
         send_to_all("HELLO "+ str(time.time()) + " " + pub_key)
 
+    def get_nodes(self):
+        node = rand_act_node()
+        send(node[1],"GET_NODES")
+        while True:
+            time.sleep(1)
+            line = request_reader("NREQ")
+            line = line.split(" ")
+            nodes = line[2]
 
+
+
+    def get_blockchain(self):#send ask the website for blockchain as most up todate
+        pass #send get request to website
 
 
 
@@ -141,34 +177,11 @@ class rec_protocols():
             self.blockchain = pickle.load(file)
 
     def get_node(self,host):
-        send(host, self.nodes)
+        str_node = str(self.nodes)
+        send(host, "NEW_NODES " + str_node)
 
     def verify(self, host):
         send(host, self.blockchain)
-
-    def transaction(self):
-        pass
-
-    def opt_inv(self, data): #if you get a opt request then send data invites to d_nodes and listen for gradients
-        nodes = send_protocols.data_req(data)
-        loss = 10
-        while loss > 0.1:
-            message = [None]
-            while message[0] != "GRAD":
-                message,address = receive()
-                loss = message[1]
-            newdata = None #<----insert optimizers line here
-            for node in nodes:
-                send(node[0], "DATA_REQ " + newdata)
-
-
-
-    def dn_inv(self, data, host):#if data request run data then send
-        gradient, loss = None #<--- run the model
-        data = ["GRAD", str(loss)]
-        for val in gradient:
-            data.append(str(val))
-        send(host, "GRAD " + " ".join(data))
 
 
     def new_node(self,time, new_node, address):
@@ -180,12 +193,8 @@ class rec_protocols():
         with open("info/Nodes.pickle","wb") as file:
             pickle.dump(Nodes, file)
 
-    def get_nodes(self):
-        node = rand_act_node()
-        send(node[1],"GET_NODES")
 
-    def get_blockchain(self):#send ask the website for blockchain as most up todate
-        pass #send get request to website
+
 
 
 def receiver():
@@ -215,12 +224,6 @@ def main(data):
         elif message[0] == "TRANS":
             pass
 
-        elif message[0] == "OPT_REQ":
-            rec_protocols.opt_inv(message[1])
-
-
-        elif message[0] == "DATA_REQ":
-            rec_protocols.dn_inv(message)
 
 """
 
