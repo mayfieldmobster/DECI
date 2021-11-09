@@ -2,7 +2,6 @@ import pickle
 import itertools
 import hashlib
 from ecdsa import SigningKey, VerifyingKey, SECP112r2
-from ecdsa.util import randrange_from_seed__trytryagain
 import node
 import time
 
@@ -25,9 +24,9 @@ def priv_key_gen():
     return key, hex_key
 
 def pub_key_gen(private_key):
-    public_KEY = private_key.verify_key
+    public_KEY = private_key.verifying_key
     hex_key = public_KEY.to_string().hex()
-    return public_KEY
+    return public_KEY, hex_key
 
 def sign_trans(private_key, transaction):
     signature = private_key.sign(transaction.encode())
@@ -55,7 +54,7 @@ def add_transaction(transaction):
                     pass
             blockchain[-1].append(neg_block_hash)
             blockchain[-1].append([trans_fees])
-            blockchain[-1].append([False])#validation status
+            blockchain[-1].append([False, time.time()])#validation status
             new_block = [neg_block_hash,transaction]
             blockchain.append(new_block)
             with open("info/Blockchain.pickle", "wb") as file:
@@ -123,6 +122,9 @@ def invalid_trans(Block_index, trans_index):#for when theres a invalid transacti
     for i in range(len(blockchain) - Block_index):#update hashes
         blockchain[Block_index + i][51] = [block_hashes[i]]
 
+    with open("info/Blockchain.pickle", "w") as file:
+        pickle.dump(blockchain, file)
+
 
 
 def wallet_value(pub_adrress):
@@ -179,7 +181,8 @@ def sell_cost(amount):
 def Block_valid(index, address):
     with open("info/Blockchain.pickle", "rb") as file:
         blockchain = pickle.load(file)
-        blockchain[index][53]= [True, address]
+        if not blockchain[index][53][0]:
+            blockchain[index][53] = [True, address]
 
     with open("./info/Blockchain.pickle", "wb") as file:
         pickle.dump(blockchain, file)

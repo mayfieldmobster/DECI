@@ -182,7 +182,7 @@ class rec_protocols():
     def get_node(self,host):
         str_node = str(self.nodes)
         str_node = str_node.replace(" ", "")
-        send(host, "NEW_NODES " + str_node)
+        send(host, "NREQ " + str_node)
 
     def verify(self, host):
         send(host, self.blockchain)

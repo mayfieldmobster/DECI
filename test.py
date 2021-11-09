@@ -10,13 +10,3 @@ def exchange_cost(amount):
 #print(exchange_cost(270270))
 
 
-
-with open("recent_messages.txt", "r") as file:
-    lines = file.read().splitlines()
-    del lines[0]
-    print(lines)
-
-with open("recent_messages.txt", "w") as file:
-    for line in lines:
-        if '127.0.0.1 OPT_REQ fuck you' != line:
-            file.write("\n"+ line)
