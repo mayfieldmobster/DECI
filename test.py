@@ -9,4 +9,11 @@ def exchange_cost(amount):
 #raise ValueError('A very specific bad thing happened.')
 #print(exchange_cost(270270))
 
+import time
+def test():
+    for i in range(100):
+        with open("Protocols.txt", "a") as file:
+            file.write(str(i))
+        time.sleep(1)
 
+test()

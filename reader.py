@@ -21,7 +21,7 @@ def main():
                 node.rec_protocols.new_node(message[2], message[0], message[3])
 
             if message[1] == "VALID":#update block to true
-                Blockchain.Block_valid(message[2], message[0])#need to discover POS random picker find at blockchain.vaildator
+                Blockchain.Block_valid(int(message[2]), message[0])#need to discover POS random picker find at blockchain.vaildator
 
             if message[1] == "TRANS_INVALID":
                 Blockchain.invalid_trans(int(message[2]),int(message[3]))

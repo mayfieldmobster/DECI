@@ -54,7 +54,7 @@ def add_transaction(transaction):
                     pass
             blockchain[-1].append(neg_block_hash)
             blockchain[-1].append([trans_fees])
-            blockchain[-1].append([False, time.time()])#validation status
+            blockchain[-1].append([False, transaction[0]])#validation status
             new_block = [neg_block_hash,transaction]
             blockchain.append(new_block)
             with open("info/Blockchain.pickle", "wb") as file:
@@ -66,7 +66,7 @@ def validate(block_hash):
         blockchain = pickle.load(file)
     current_index = 0
     for block in blockchain:#find block index
-        if block[51] == block_hash:
+        if block[51][0] == block_hash:
             block_index = current_index
             break
         current_index += 1
@@ -93,6 +93,8 @@ def validate(block_hash):
             message = ["TRANS_INVALID", str(block_index), str(transindex)]
             message = " ".join(message)
             node.send_to_all(message)
+
+        node.send_to_all("VALID "+ str(block_index))
 
     if transindex == 50:
         blockchain[block_index][52] = True
@@ -157,7 +159,7 @@ def trans_fee_calc(block_index):
 
 
 def coin_val():
-    GOD_WAL = wallet_value("00000000000") #amount in god wallet
+    GOD_WAL = wallet_value("8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033") #amount in god wallet
     sold = 50000000 - GOD_WAL
     val = sold*0.0037
     return val
@@ -182,7 +184,7 @@ def Block_valid(index, address):
     with open("info/Blockchain.pickle", "rb") as file:
         blockchain = pickle.load(file)
         if not blockchain[index][53][0]:
-            blockchain[index][53] = [True, address]
+            blockchain[index][53] = [True, address, time.time()]
 
     with open("./info/Blockchain.pickle", "wb") as file:
         pickle.dump(blockchain, file)

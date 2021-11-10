@@ -3,6 +3,8 @@ import node
 import Blockchain
 import random
 import pickle
+from requests import get
+
 
 """
 check amount staked by node from that info
@@ -44,20 +46,22 @@ def rb(hash, time):
 
         return rb[ran_ind]
 
-def am_i_validator():
+def am_i_validator(My_pub):
+    time.sleep(4)
     while True:
-        with open("info/Nodes.pickle.pickle", "rb") as file:
-            nodes = pickle.load(file)
-
         with open("info/Blockchain.pickle", "rb") as file:
             blockchain = pickle.load(file)
-
+        block_index=0
         for block in blockchain:
             if not block[-1][0]:
-                time = block[-1][1]
+                block_time = block[-1][1]
                 hash = block[51][0]
-                node = rb(hash, time)
-            if node[]# node is equal to myself
+                node = rb(hash, block_time)
+                if node[2] == My_pub:
+                    Blockchain.validate(hash)
+
+
+            block_index += 1
 
 
 
