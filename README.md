@@ -12,4 +12,4 @@ The miners are rewarded via the crypto made through transaction fees thus the pr
 * TRANSACTION WEBSITE!!!!!!
 * AI LIBRARY!!!!!
 * legal shid !!!!!!!!
-* TIME LOCKS?
+* UPDATOR

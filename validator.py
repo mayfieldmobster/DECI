@@ -3,7 +3,6 @@ import node
 import Blockchain
 import random
 import pickle
-from requests import get
 
 
 """
@@ -46,8 +45,10 @@ def rb(hash, time):
 
         return rb[ran_ind]
 
-def am_i_validator(My_pub):
+def am_i_validator():
     time.sleep(4)
+    with open("Public_key", "r") as file:
+        my_pub = file.read()
     while True:
         with open("info/Blockchain.pickle", "rb") as file:
             blockchain = pickle.load(file)
@@ -57,7 +58,7 @@ def am_i_validator(My_pub):
                 block_time = block[-1][1]
                 hash = block[51][0]
                 node = rb(hash, block_time)
-                if node[2] == My_pub:
+                if node[2] == my_pub:
                     Blockchain.validate(hash)
 
 
