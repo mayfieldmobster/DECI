@@ -1,7 +1,9 @@
 import pickle
+import numpy as np
 from ecdsa import SigningKey, VerifyingKey, SECP112r2
 import itertools
 
+"""
 with open("../info/Test_Trans.pickle", "rb") as file:
     Transactions = pickle.load(file)
     print(str(Transactions).replace(" ",""))
@@ -23,4 +25,10 @@ with open("../info/Test_Trans.pickle", "rb") as file:
             print("yh")
         except:
             print("WTF")
+"""
+
+
+with open("../info/Blockchain.pickle", "rb") as file:
+    Blockchain = pickle.load(file)
+    print(Blockchain)
 

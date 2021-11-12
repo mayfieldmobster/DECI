@@ -6,5 +6,5 @@ with open("../info/Test_Trans.pickle", "rb") as file:
     for transaction in Block:
         transaction[3] = str(transaction[3])
 
-    with open("../info/Test_Trans.pickle", "wb") as file:
-        block = pickle.dump(Block, file)
+    with open("../info/Blockchain.pickle", "wb") as file:
+        pickle.dump([[["0"]]], file)

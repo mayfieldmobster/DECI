@@ -11,4 +11,5 @@ def rec():
         file.close()
 
 
-
+if __name__ == "__main__":
+    rec()

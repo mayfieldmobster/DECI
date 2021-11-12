@@ -27,8 +27,3 @@ if input != "ACCEPT":
 pub_key = input("public_key: ")
 with open("Public_key", "w") as file:
     file.write(pub_key)
-
-
-
-
-

@@ -77,7 +77,8 @@ def rand_act_node(num_nodes = 1):
 def request_reader(type):
     with open("recent_messages.txt", "r") as file:
         lines = file.read().splitlines()
-        del lines[0]#remove blank line to prevent error
+        if lines[0] == "":
+            del lines[0]#remove blank line to prevent error
         AI_protocols = ["AI"]
         NREQ_protocol = ["NEW_NODES"]#node request
         AI_Lines = []
@@ -210,26 +211,6 @@ def receiver():
 
         file.write("\n" + address[0] + " " + " ".join(message))
         file.close()
-
-
-"""
-def main(data):
-    while True:
-        message, address = receive()
-        if message[0] == "GET_NODES":
-            rec_protocols.get_node(address[0])
-
-        elif message[0] == "VERIFY":
-            rec_protocols.verify(address[0])
-
-        elif message[0] == "ONLINE?":
-            send(address[0], "yh")
-
-        elif message[0] == "TRANS":
-            pass
-
-
-"""
 
 
 
