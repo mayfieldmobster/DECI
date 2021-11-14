@@ -13,3 +13,4 @@ The miners are rewarded via the crypto made through transaction fees thus the pr
 * AI LIBRARY!!!!!
 * legal shid !!!!!!!!
 * UPDATOR
+* AI cancel option
