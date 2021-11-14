@@ -52,7 +52,7 @@ def upload(filename, depen_zip , AM_I = False): #am i a worker
         worker_index = 0
         for node in random_nodes:
             send(node, "AI " + str(worker_index) + " " + script_identity + " " + str(nodes).replace(" ","") +" " + script)
-            send(node, "DEPEN " + script_identity + " " + zip)
+            send(node, "DEP " + script_identity + " " + zip)
             node_config.append(node + ":1379")
 
 

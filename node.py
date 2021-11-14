@@ -81,9 +81,11 @@ def request_reader(type):
             del lines[0]#remove blank line to prevent error
         AI_protocols = ["AI"]
         NREQ_protocol = ["NEW_NODES"]#node request
+        DEP_protocol = ["DEP"]
         AI_Lines = []
         NODE_Lines = []
         NREQ_Lines = []
+        DEP_Lines = []
         for line in lines:
             line = line.split(" ")
 
@@ -92,6 +94,9 @@ def request_reader(type):
 
             elif line[1] in NREQ_protocol:
                 NREQ_Lines.append(" ".join(line))
+
+            elif line[1] in DEP_protocol:
+                DEP_Lines.append(" ".join(line))
 
             else:
                 NODE_Lines.append(" ".join(line))
@@ -111,10 +116,17 @@ def request_reader(type):
 
         if type == "NREQ":
             with open("recent_messages.txt", "w") as file:
-                for line in NODE_Lines:
+                for line in NREQ_Lines:
                     if " ".join(line) != line:
                         file.write("\n" + line)
-            return NODE_Lines
+            return NREQ_Lines[0]
+
+        if type == "DEP":
+            with open("recent_messages.txt", "w") as file:
+                for line in DEP_Lines:
+                    if " ".join(line) != line:
+                        file.write("\n" + line)
+            return DEP_Lines[0]
 
 
 

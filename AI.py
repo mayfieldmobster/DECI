@@ -1,5 +1,6 @@
 import zipfile
 import ast
+import node
 
 def write_script(string):
     script = " ".join(string)
@@ -25,4 +26,16 @@ def AI_REQ(message):
     del message[0]
     script = " ".join(message)
     write_script(script)
+    while True:
+        dependencies = node.request_reader("DEP")
+        dependencies = dependencies.split(" ")
+        try:
+            dep_identity = dependencies[2]
+            if dep_identity == script_identity:
+                write_dependencies(dependencies[3])
+                break
+        except Exception as e:
+            return e
+        #run the file
+
 
