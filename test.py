@@ -13,8 +13,7 @@ def exchange_cost(amount):
 import time
 def test():
     for i in range(100):
-        with open("Protocols.txt", "a") as file:
-            file.write(str(i))
+        print(i)
         time.sleep(1)
 
 #test()
@@ -31,12 +30,9 @@ def send(host, message):
 #send("127.0.0.1", "TRANS "+str(['1635081552.1908393','b82afe0396e554f32fb8dedbb41f8e294a44184a1b709daf4b9224b9','c18ba0025f7fa9b31ff83a203e7b14dd8ec3a6cb023864f7a70fd94e','321','206df1c0ea8983c82352287f0bb62295d5b66101cf1b02237a3bb84e']).replace(" ",""))
 
 
-i = 0
+import DECI.run
 
-while True:
-    i+=1
-    print(i)
-    break
+DECI.run.tes()
 
 
 

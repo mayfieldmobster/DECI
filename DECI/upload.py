@@ -12,8 +12,6 @@ def send(host, message):
     except:
         return "node offline"
 
-def ls():
-    print(os.listdir())
 
 def upload(filename, depen_zip , AM_I = False): #am i a worker
     script_identity = str(random.random())

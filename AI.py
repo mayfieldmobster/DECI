@@ -1,10 +1,14 @@
 import zipfile
 import ast
 import node
+import os
+import json
+import AI_run
+
 
 def write_script(string):
     script = " ".join(string)
-    with open("main.py", "w") as file:
+    with open("model.py", "w") as file:
         file.write(script)
     return script
 
@@ -14,6 +18,15 @@ def write_dependencies(string):
 
     with zipfile.ZipFile("depen.zip", 'r') as zip_ref:
         zip_ref.extractall(".")
+        
+def tf_config(nodes, index):
+    tf_config = {
+        "cluster": {
+            "worker": nodes
+        },
+        "task": {"type": "worker", "index": index}
+    }
+    os.environ['TF_CONFIG'] = json.dumps(tf_config)
 
 def AI_REQ(message):
     del message[0]#delete IP
@@ -36,6 +49,10 @@ def AI_REQ(message):
                 break
         except Exception as e:
             return e
-        #run the file
+
+    tf_config(nodes,worker_index)
+    AI_run.run()
+    
+
 
 
