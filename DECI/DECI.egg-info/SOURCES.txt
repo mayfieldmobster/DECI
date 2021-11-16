@@ -1,0 +1,6 @@
+setup.py
+DECI.egg-info/PKG-INFO
+DECI.egg-info/SOURCES.txt
+DECI.egg-info/dependency_links.txt
+DECI.egg-info/requires.txt
+DECI.egg-info/top_level.txt

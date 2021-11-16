@@ -30,11 +30,9 @@ def send(host, message):
 #send("127.0.0.1", "TRANS "+str(['1635081552.1908393','b82afe0396e554f32fb8dedbb41f8e294a44184a1b709daf4b9224b9','c18ba0025f7fa9b31ff83a203e7b14dd8ec3a6cb023864f7a70fd94e','321','206df1c0ea8983c82352287f0bb62295d5b66101cf1b02237a3bb84e']).replace(" ",""))
 
 
-import DECI.run
-
-DECI.run.tes()
-
-
+import socket
+local_ip = socket.gethostbyname(socket.gethostname())
+print(local_ip)
 
 
 

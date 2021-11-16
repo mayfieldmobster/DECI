@@ -13,6 +13,8 @@ def send(host, message):
         return "node offline"
 
 
+
+
 def upload(filename, depen_zip , AM_I = False): #am i a worker
     script_identity = str(random.random())
     with open(filename, "r") as file:

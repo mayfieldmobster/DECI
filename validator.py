@@ -47,7 +47,7 @@ def rb(hash, time):
 
 def am_i_validator():
     time.sleep(4)
-    with open("Public_key.txt", "r") as file:
+    with open("info/Public_key.txt", "r") as file:
         my_pub = file.read()
     while True:
         with open("info/Blockchain.pickle", "rb") as file:

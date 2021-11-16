@@ -12,11 +12,11 @@ import concurrent.futures
 
 
 #recieve from nodes
-def receive():
+def receive(local_ip):
     """ message is split into array the first value the type of messge
         the second value is the messgae"""
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind(("127.0.0.1", 1379))
+    server.bind((local_ip, 1379))
     server.listen()
     while True:
         client, address = server.accept()

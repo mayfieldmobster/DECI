@@ -1,8 +1,8 @@
 import node
 
-def rec():
+def rec(my_ip):
     while True:
-        message,address = node.receive()
+        message,address = node.receive(my_ip)
 
         print(address)
         file = open("recent_messages.txt", "a")
