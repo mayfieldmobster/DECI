@@ -3,7 +3,6 @@ node
 """
 
 import socket
-import numpy
 import random
 import pickle
 import time
@@ -133,7 +132,7 @@ def request_reader(type):
 
 
 def send_to_all(message):
-    with open("info/Nodes.pickle.pickle", "rb") as file:
+    with open("info/Nodes.pickle", "rb") as file:
         all_nodes = pickle.load(file)
     with concurrent.futures.ThreadPoolExecutor as executor:
         [executor.submit(send(), node[1], message) for node in all_nodes]
