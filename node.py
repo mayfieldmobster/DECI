@@ -134,80 +134,64 @@ def request_reader(type):
 def send_to_all(message):
     with open("info/Nodes.pickle", "rb") as file:
         all_nodes = pickle.load(file)
-    with concurrent.futures.ThreadPoolExecutor as executor:
-        [executor.submit(send(), node[1], message) for node in all_nodes]
+    for node in all_nodes:
+        try:
+            send(node[1], message)
+        except:
+            pass #node is offline
 
 
 
 
-#protocols to ask things
-class send_protocols():
-    def __init__(self):
-        with open("info/Nodes.pickle.pickle", "rb") as file:
-            self.nodes = pickle.load(file)
 
-    def opt_req(self, data):
-        node = rand_act_node(1)
-        send(node[0], "OPT_REQ " + data)#redo all the string stuff
+def opt_req(self, data):
+    node = rand_act_node(1)
+    send(node[0], "OPT_REQ " + data)#redo all the string stuff
 
 
-    def data_req(self,data):
-        nodes = rand_act_node(5)
-        for node in nodes:
-            send(node[0], "DATA_REQ " + data)
-        return nodes
+def data_req(self,data):
+    nodes = rand_act_node(5)
+    for node in nodes:
+        send(node[0], "DATA_REQ " + data)
+    return nodes
     
-    def announce(self, pub_key):
-        send_to_all("HELLO "+ str(time.time()) + " " + pub_key)
+def announce(self, pub_key):
+    send_to_all("HELLO "+ str(time.time()) + " " + pub_key)
 
-    def get_nodes(self):
-        node = rand_act_node()
-        send(node[1],"GET_NODES")
-        while True:
-            time.sleep(1)
-            line = request_reader("NREQ")
-            line = line.split(" ")
-            nodes = line[2]
-            nodes = ast.literal_eval(nodes)
-            with open("./info/Nodes.pickle", "wb") as file:
-                pickle.dump(nodes, file)
-
-
-
-    def get_blockchain(self):#send ask the website for blockchain as most up todate
-        pass #send get request to website
+def get_nodes(self):
+    node = rand_act_node()
+    send(node[1],"GET_NODES")
+    while True:
+        time.sleep(1)
+        line = request_reader("NREQ")
+        line = line.split(" ")
+        nodes = line[2]
+        nodes = ast.literal_eval(nodes)
+        with open("./info/Nodes.pickle", "wb") as file:
+            pickle.dump(nodes, file)
 
 
 
+def get_blockchain(self):#send ask the website for blockchain as most up todate
+    pass #send get request to website
 
 
 
-
-#protocols that receive things
-class rec_protocols():
-    def __init__(self):
-        with open("info/Nodes.pickle.pickle", "rb") as file:
-            self.nodes = pickle.load(file)
-        with open("info/Blockchain.pickle", "rb") as file:
-            self.blockchain = pickle.load(file)
-
-    def get_node(self,host):
-        str_node = str(self.nodes)
-        str_node = str_node.replace(" ", "")
-        send(host, "NREQ " + str_node)
-
-    def verify(self, host):
-        send(host, self.blockchain)
+def send_node(host):
+    with open("info/Nodes.pickle", "rb") as file:
+        Nodes = pickle.load(file)
+    str_node = str(Nodes)
+    str_node = str_node.replace(" ", "")
+    send(host, "NREQ " + str_node)
 
 
-    def new_node(self, time, new_node, address):
-        self.node.append(new_node)
-        with open("info/Nodes.pickle", "rb") as file:
-            Nodes = pickle.load(file)
-        new_node = [time, new_node, address]
-        Nodes.append(new_node)
-        with open("info/Nodes.pickle","wb") as file:
-            pickle.dump(Nodes, file)
+def new_node(time, new_node, address):
+    with open("info/Nodes.pickle", "rb") as file:
+        Nodes = pickle.load(file)
+    new_node = [time, new_node, address]
+    Nodes.append(new_node)
+    with open("info/Nodes.pickle","wb") as file:
+        pickle.dump(Nodes, file)
 
 
 

@@ -7,16 +7,14 @@ def read():
     time.sleep(5)
     print("reader started")
     while True:
+        with open("recent_messages.txt", "w") as file:
+            file.write("\n 0 0")
         NODE_Lines = node.request_reader("NODE")
         for message in NODE_Lines:
             message = message.split(" ")
 
             if message[1] == "GET_NODES":
-                node.rec_protocols.get_node(message[0])
-                print(message)
-
-            if message[1] == "VERIFY":
-                node.rec_protocols.verify(message[0])
+                node.send_node(message[0])
                 print(message)
 
             if message[1] == "TRANS":
@@ -24,7 +22,7 @@ def read():
                 print(message)
 
             if message[1] == "HELLO":
-                node.rec_protocols.new_node(message[2], message[0], message[3])
+                node.new_node(message[2], message[0], message[3])
                 print(message)
 
             if message[1] == "VALID":#update block to true
@@ -38,8 +36,7 @@ def read():
 
 
         open("recent_messages.txt", "w").close()
-        with open("recent_messages.txt", "w") as file:
-            file.write("\n 0 0")
+
 
 
 if __name__ == "__main__":
