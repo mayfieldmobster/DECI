@@ -36,6 +36,7 @@ def read():
                 print(message)
 
 
+
         open("recent_messages.txt", "w").close()
         with open("recent_messages.txt", "w") as file:
             file.write("\n 0 0")

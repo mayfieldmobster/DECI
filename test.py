@@ -31,8 +31,10 @@ def send(host, message):
 
 
 import socket
-local_ip = socket.gethostbyname(socket.gethostname())
-print(local_ip)
+import socket
+hostname = socket.gethostname()
+IPAddr = socket.gethostbyname(hostname)
+print(IPAddr)
 
 
 

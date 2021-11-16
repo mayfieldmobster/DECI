@@ -15,7 +15,6 @@ update blockchain and nodes
 #with open("recent_messages.txt", "w") as file:
     #file.write("")
 
-import socket
 local_ip = socket.gethostbyname(socket.gethostname())
 
 """
