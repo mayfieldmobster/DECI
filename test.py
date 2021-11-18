@@ -27,14 +27,20 @@ def send(host, message):
     except:
         return "node offline"
 
-#send("127.0.0.1", "TRANS "+str(['1635081552.1908393','b82afe0396e554f32fb8dedbb41f8e294a44184a1b709daf4b9224b9','c18ba0025f7fa9b31ff83a203e7b14dd8ec3a6cb023864f7a70fd94e','321','206df1c0ea8983c82352287f0bb62295d5b66101cf1b02237a3bb84e']).replace(" ",""))
+send("127.0.0.1", "TRANS "+str(['1635081552.1908393','b82afe0396e554f32fb8dedbb41f8e294a44184a1b709daf4b9224b9','c18ba0025f7fa9b31ff83a203e7b14dd8ec3a6cb023864f7a70fd94e','321','206df1c0ea8983c82352287f0bb62295d5b66101cf1b02237a3bb84e']).replace(" ",""))
 
 
-import node
+"""
+open("recent_messages.txt", "w").close()
 
-node.new_node("12","192","sskjfjsdkf")
+with open("recent_messages.txt", "r") as file:
+    text = file.read()
+    print(text)
+"""
 
 
-
+#import node
+#NODE_Lines = node.request_reader("NODE")
+#print(" ".join(NODE_Lines))
 
 

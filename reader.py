@@ -7,35 +7,35 @@ def read():
     time.sleep(5)
     print("reader started")
     while True:
-        with open("recent_messages.txt", "w") as file:
-            file.write("\n 0 0")
         NODE_Lines = node.request_reader("NODE")
+        print(NODE_Lines)
+        time.sleep(3)
         for message in NODE_Lines:
+            print(message)
             message = message.split(" ")
 
             if message[1] == "GET_NODES":
                 node.send_node(message[0])
-                print(message)
+                print("test",message)
 
             if message[1] == "TRANS":
                 Blockchain.add_transaction(ast.literal_eval(message[2]))
-                print(message)
+                print("test",message)
 
             if message[1] == "HELLO":
                 node.new_node(message[2], message[0], message[3])
-                print(message)
+                print("test",message)
 
             if message[1] == "VALID":#update block to true
                 Blockchain.Block_valid(int(message[2]), message[0])#need to discover POS random picker find at blockchain.vaildator
-                print(message)
+                print("test",message)
 
             if message[1] == "TRANS_INVALID":
                 Blockchain.invalid_trans(int(message[2]),int(message[3]))
-                print(message)
+                print("test",message)
 
-
-
-        open("recent_messages.txt", "w").close()
+            else:
+                pass
 
 
 

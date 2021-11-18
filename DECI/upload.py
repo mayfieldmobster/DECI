@@ -51,8 +51,12 @@ def upload(filename, depen_zip , AM_I = False): #am i a worker
     if not AM_I:
         worker_index = 0
         for node in random_nodes:
-            send(node, "AI " + str(worker_index) + " " + script_identity + " " + str(nodes).replace(" ","") +" " + script)
+            send(node, "AI " + str(worker_index) + " " + script_identity + " " + str(nodes).replace(" ","") +" " + script.replace(" ",""))
             send(node, "DEP " + script_identity + " " + zip)
             node_config.append(node + ":1379")
 
 
+if __name__ == "__main__":
+    file= "./model.py"
+    dependencies = "./text.zip"
+    upload(file, dependencies)

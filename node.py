@@ -21,8 +21,6 @@ def receive(local_ip):
         client, address = server.accept()
         message = client.recv(2048).decode("utf-8").split(" ")
         try:
-            print(client, " ", address)
-            print("\n", message)
             return message, address
             break
         except:
@@ -76,8 +74,7 @@ def rand_act_node(num_nodes = 1):
 def request_reader(type):
     with open("recent_messages.txt", "r") as file:
         lines = file.read().splitlines()
-        if lines[0] == "":
-            del lines[0]#remove blank line to prevent error
+        print(lines)
         AI_protocols = ["AI"]
         NREQ_protocol = ["NEW_NODES"]#node request
         DEP_protocol = ["DEP"]
@@ -85,46 +82,82 @@ def request_reader(type):
         NODE_Lines = []
         NREQ_Lines = []
         DEP_Lines = []
-        for line in lines:
-            line = line.split(" ")
+        if str(lines) != "[]":
+            print("success")
+            for line in lines:
+                line = line.split(" ")
 
-            if line[1] in AI_protocols:
-                AI_Lines.append(" ".join(line))
+                if line[0] == "":
+                    del line # delete blank lines
 
-            elif line[1] in NREQ_protocol:
-                NREQ_Lines.append(" ".join(line))
+                elif line[1] in AI_protocols:
+                    AI_Lines.append(" ".join(line))
 
-            elif line[1] in DEP_protocol:
-                DEP_Lines.append(" ".join(line))
+                elif line[1] in NREQ_protocol:
+                    NREQ_Lines.append(" ".join(line))
 
-            else:
-                NODE_Lines.append(" ".join(line))
+                elif line[1] in DEP_protocol:
+                    DEP_Lines.append(" ".join(line))
+
+                else:
+                    NODE_Lines.append(" ".join(line))
+
+
         if type == "AI":
-            with open("recent_messages.txt", "w") as file:
-                for line in AI_Lines:
-                    if " ".join(line) != line:
-                        file.write("\n" + line)
+            new_lines = []
+            with open("recent_messages.txt", "r") as file:
+                file_lines = file.readlines()
+                for f_line in file_lines:
+                    f_line.split(" ")
+                    if not f_line in AI_Lines:
+                        new_lines.append(" ".join(f_line))
+            open("recent_messages.txt", "w").close()
+            with open("recent_messages.txt", "a") as file:
+                for n_line in new_lines:
+                    file.write(n_line)
             return AI_Lines
 
         if type == "NODE":
-            with open("recent_messages.txt", "w") as file:
-                for line in NODE_Lines:
-                    if " ".join(line) != line:
-                        file.write("\n" + line)
+            new_lines = []
+            with open("recent_messages.txt", "r") as file:
+                file_lines = file.readlines()
+                for f_line in file_lines:
+                    f_line.split(" ")
+                    if not f_line in NODE_Lines:
+                        new_lines.append(" ".join(f_line))
+            open("recent_messages.txt", "w").close()
+            with open("recent_messages.txt", "a") as file:
+                for n_line in new_lines:
+                    file.write(n_line)
+
             return NODE_Lines
 
         if type == "NREQ":
-            with open("recent_messages.txt", "w") as file:
-                for line in NREQ_Lines:
-                    if " ".join(line) != line:
-                        file.write("\n" + line)
+            new_lines = []
+            with open("recent_messages.txt", "r") as file:
+                file_lines = file.readlines()
+                for f_line in file_lines:
+                    f_line.split(" ")
+                    if not f_line in NREQ_Lines:
+                        new_lines.append(" ".join(f_line))
+            open("recent_messages.txt", "w").close()
+            with open("recent_messages.txt", "a") as file:
+                for n_line in new_lines:
+                    file.write(n_line)
             return NREQ_Lines[0]
 
         if type == "DEP":
-            with open("recent_messages.txt", "w") as file:
-                for line in DEP_Lines:
-                    if " ".join(line) != line:
-                        file.write("\n" + line)
+            new_lines = []
+            with open("recent_messages.txt", "r") as file:
+                file_lines = file.readlines()
+                for f_line in file_lines:
+                    f_line.split(" ")
+                    if not f_line in DEP_Lines:
+                        new_lines.append(" ".join(f_line))
+            open("recent_messages.txt", "w").close()
+            with open("recent_messages.txt", "a") as file:
+                for n_line in new_lines:
+                    file.write(n_line)
             return DEP_Lines[0]
 
 
@@ -195,13 +228,10 @@ def new_node(time, new_node, address):
 
 
 
-
-
 def receiver():
     while True:
         message, address = receive()
 
-        print(address)
         file = open("recent_messages.txt", "a")
 
         file.write("\n" + address[0] + " " + " ".join(message))

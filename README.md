@@ -10,7 +10,7 @@ The miners are rewarded via the crypto made through transaction fees thus the pr
 # TO DO:
 
 * TRANSACTION WEBSITE!!!!!!
-* AI LIBRARY!!!!!
 * legal shid !!!!!!!!
 * UPDATOR
 * AI cancel option
+* Message checker to make sure the code wont crash

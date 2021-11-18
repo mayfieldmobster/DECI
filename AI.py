@@ -51,7 +51,8 @@ def AI_REQ(message):
             return e
 
     tf_config(nodes,worker_index)
-    AI_run.run()
+    print(os.environ['TF_CONFIG'])
+    #AI_run.run(64)
     
 
 

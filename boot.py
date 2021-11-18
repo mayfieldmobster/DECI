@@ -3,6 +3,7 @@ import node
 import concurrent.futures
 import reciever
 import reader
+import AI_reader
 import time
 import validator
 import test
@@ -15,7 +16,7 @@ update blockchain and nodes
 #with open("recent_messages.txt", "w") as file:
     #file.write("")
 
-local_ip = socket.gethostbyname(socket.gethostname())
+local_ip = "127.0.0.1"#socket.gethostbyname(socket.gethostname())
 
 """
 try:
@@ -31,7 +32,8 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
     executor.submit(node.get_nodes)#update nodes
     executor.submit(reader.read)
     executor.submit(validator.am_i_validator, "7fd8a5ba6916444357da92a5648e757af6ace943c05894ea53f7967f")
-    #executor.submit(test.test)
+    #executor.submit(AI_reader.read)
+
 
 
 
