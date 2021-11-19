@@ -23,7 +23,7 @@ def upload(filename, depen_zip , AM_I = False): #am i a worker
     with open(depen_zip, "rb") as file:
         zip = file.read()
 
-    random_nodes = requests.get() # get request for random node
+    random_nodes = "127.0.0.1"   #requests.get() # get request for random node
     nodes = []
     my_ip = requests.get('https://api.ipify.org').text
     nodes.append(my_ip)
@@ -52,7 +52,7 @@ def upload(filename, depen_zip , AM_I = False): #am i a worker
         worker_index = 0
         for node in random_nodes:
             send(node, "AI " + str(worker_index) + " " + script_identity + " " + str(nodes).replace(" ","") +" " + script.replace(" ",""))
-            send(node, "DEP " + script_identity + " " + zip)
+            send(node, "DEP " + script_identity + " " + str(zip))
             node_config.append(node + ":1379")
 
 

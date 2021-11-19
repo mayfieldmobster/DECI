@@ -8,10 +8,7 @@ def read():
     print("reader started")
     while True:
         NODE_Lines = node.request_reader("NODE")
-        print(NODE_Lines)
-        time.sleep(3)
         for message in NODE_Lines:
-            print(message)
             message = message.split(" ")
 
             if message[1] == "GET_NODES":
