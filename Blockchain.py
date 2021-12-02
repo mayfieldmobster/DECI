@@ -52,7 +52,7 @@ def add_transaction(transaction):
                     trans_fees += trans[3]*0.001
                 except:
                     pass
-            blockchain[-1].append(neg_block_hash)
+            blockchain[-1].append([neg_block_hash,transaction[0]])
             blockchain[-1].append([trans_fees])
             blockchain[-1].append([False, transaction[0]])#validation status
             new_block = [neg_block_hash,transaction]

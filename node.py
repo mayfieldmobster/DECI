@@ -44,7 +44,7 @@ def online(address):
         send(address,"ONLINE?")
     except:
         return False
-    message,address = receive()
+    message = request_reader("YH")
     if message == "yh":
         return True
     else:
@@ -74,13 +74,15 @@ def rand_act_node(num_nodes = 1):
 def request_reader(type):
     with open("recent_messages.txt", "r") as file:
         lines = file.read().splitlines()
-        AI_protocols = ["AI"]
+        AI_protocols = ["AI", "ONLINE?"]
         NREQ_protocol = ["NEW_NODES"]#node request
         DEP_protocol = ["DEP"]
+        yh_protocol = ["yh"]
         AI_Lines = []
         NODE_Lines = []
         NREQ_Lines = []
         DEP_Lines = []
+        yh_Lines = []
         if str(lines) != "[]":
             for line in lines:
                 line = line.split(" ")
@@ -96,6 +98,9 @@ def request_reader(type):
 
                 elif line[1] in DEP_protocol:
                     DEP_Lines.append(" ".join(line))
+                
+                elif line[1] in yh_protocol:
+                    yh_Lines.append(" ".join(line))
 
                 else:
                     NODE_Lines.append(" ".join(line))
@@ -115,6 +120,22 @@ def request_reader(type):
                 for n_line in new_lines:
                     file.write(n_line)
             return AI_Lines
+
+        if type == "YH":
+            new_lines = []
+            with open("recent_messages.txt", "r") as file:
+                file_lines = file.readlines()
+            for f_line in file_lines:
+                f_line.split(" ")
+                if not f_line in yh_Lines:
+                    if f_line != "" or " ":
+                        new_lines.append(" ".join(f_line))
+            open("recent_messages.txt", "w").close()
+            with open("recent_messages.txt", "a") as file:
+                for n_line in new_lines:
+                    file.write(n_line)
+
+            return yh_Lines
 
         if type == "NODE":
             new_lines = []

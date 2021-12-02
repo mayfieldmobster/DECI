@@ -13,10 +13,11 @@ update tensorflow
 update blockchain and nodes
 """
 #open("recent_messages.txt", "w").close()#clear recent message file
-#with open("recent_messages.txt", "w") as file:
-    #file.write("")
 
 local_ip = "127.0.0.1"#socket.gethostbyname(socket.gethostname())
+
+os.system("pip3 install --upgrade tensorflow")
+os.system("pip3 install --upgrade ecdsa")
 
 """
 try:
