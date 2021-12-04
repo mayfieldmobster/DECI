@@ -13,23 +13,23 @@ def read():
 
             if message[1] == "GET_NODES":
                 node.send_node(message[0])
-                print("test",message)
+                print(message)
 
             if message[1] == "TRANS":
                 Blockchain.add_transaction(ast.literal_eval(message[2]))
-                print("test",message)
+                print(message)
 
             if message[1] == "HELLO":
                 node.new_node(message[2], message[0], message[3])
-                print("test",message)
+                print(message)
 
             if message[1] == "VALID":#update block to true
                 Blockchain.Block_valid(int(message[2]), message[0])#need to discover POS random picker find at blockchain.vaildator
-                print("test",message)
+                print(message)
 
             if message[1] == "TRANS_INVALID":
                 Blockchain.invalid_trans(int(message[2]),int(message[3]))
-                print("test",message)
+                print(message)
 
             else:
                 pass

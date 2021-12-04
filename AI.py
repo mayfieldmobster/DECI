@@ -37,8 +37,7 @@ def AI_REQ(message):
     del message[0]
     nodes = ast.literal_eval(message[0])
     del message[0]
-    script = " ".join(message)
-    write_script(script)
+    write_script(message[0])
     while True:
         dependencies = node.request_reader("DEP")
         dependencies = dependencies.split(" ")
@@ -48,7 +47,7 @@ def AI_REQ(message):
                 write_dependencies(dependencies[3])
                 break
         except Exception as e:
-            return e
+            print(e)
 
     tf_config(nodes,worker_index)
     print(os.environ['TF_CONFIG'])

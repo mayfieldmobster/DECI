@@ -4,8 +4,6 @@ Online - see if node is online
 HELLO - announce self to network
 
 
-
-
 Blockchain
 Transaction - transaction sent to all nodes (address1, address2, amount, time)
 AI - send scrpit to device

@@ -1,8 +1,11 @@
 import os
 import socket
 import random
+import time
+
 import requests
 import json
+import zipfile
 
 def send(host, message):
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -18,12 +21,13 @@ def send(host, message):
 def upload(filename, depen_zip , AM_I = False): #am i a worker
     script_identity = str(random.random())
     with open(filename, "r") as file:
-        script = file.read()
+        script = file.readlines()
 
     with open(depen_zip, "rb") as file:
-        zip = file.read()
+        zip_file = file.read()
 
-    random_nodes = "127.0.0.1"   #requests.get() # get request for random node
+
+    random_nodes = ["127.0.0.1"]   #requests.get() # get request for random node
     nodes = []
     my_ip = requests.get('https://api.ipify.org').text
     nodes.append(my_ip)
@@ -36,7 +40,7 @@ def upload(filename, depen_zip , AM_I = False): #am i a worker
         worker_index = 1
         for node in random_nodes:
             send(node, "AI " + str(worker_index) + " " + script_identity + " " + str(nodes).replace(" ","")+ " " + script)
-            send(node, "DEPEN " + script_identity + " " + zip)
+            send(node, "DEPEN " + script_identity + " " + str(zip_file))
             node_config.append(node + ":1379" )
 
         tf_config = {
@@ -51,8 +55,9 @@ def upload(filename, depen_zip , AM_I = False): #am i a worker
     if not AM_I:
         worker_index = 0
         for node in random_nodes:
-            send(node, "AI " + str(worker_index) + " " + script_identity + " " + str(nodes).replace(" ","") +" " + script.replace(" ",""))
-            send(node, "DEP " + script_identity + " " + str(zip))
+            send(node, "AI " + str(worker_index) + " " + script_identity + " " + str(nodes).replace(" ","") +" " + str(script))
+            time.sleep(0.5)
+            send(node, "DEP " + script_identity + " " + str(zip_file))
             node_config.append(node + ":1379")
 
 

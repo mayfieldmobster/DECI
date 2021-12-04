@@ -11,5 +11,8 @@ def read():
                 node.send_node(message[0], "yh")
                 print(message)
 
+            if message[1] == "AI":
+                AI.AI_REQ(message)
+
 if __name__ == "__main__":
     read()

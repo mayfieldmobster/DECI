@@ -74,36 +74,37 @@ def rand_act_node(num_nodes = 1):
 def request_reader(type):
     with open("recent_messages.txt", "r") as file:
         lines = file.read().splitlines()
-        AI_protocols = ["AI", "ONLINE?"]
-        NREQ_protocol = ["NEW_NODES"]#node request
-        DEP_protocol = ["DEP"]
-        yh_protocol = ["yh"]
-        AI_Lines = []
-        NODE_Lines = []
-        NREQ_Lines = []
-        DEP_Lines = []
-        yh_Lines = []
-        if str(lines) != "[]":
-            for line in lines:
-                line = line.split(" ")
+    print("1. ",lines)
+    AI_protocols = ["AI", "ONLINE?"]
+    NREQ_protocol = ["NEW_NODES"]#node request
+    DEP_protocol = ["DEP"]
+    yh_protocol = ["yh"]
+    AI_Lines = []
+    NODE_Lines = []
+    NREQ_Lines = []
+    DEP_Lines = []
+    yh_Lines = []
+    if str(lines) != "[]":
+        for line in lines:
+            line = line.split(" ")
 
-                if line[0] == "":
-                    del line # delete blank lines
+            if line[0] == "":
+                del line # delete blank lines
 
-                elif line[1] in AI_protocols:
-                    AI_Lines.append(" ".join(line))
+            elif line[1] in AI_protocols:
+                AI_Lines.append(" ".join(line))
 
-                elif line[1] in NREQ_protocol:
-                    NREQ_Lines.append(" ".join(line))
+            elif line[1] in NREQ_protocol:
+                NREQ_Lines.append(" ".join(line))
 
-                elif line[1] in DEP_protocol:
-                    DEP_Lines.append(" ".join(line))
+            elif line[1] in DEP_protocol:
+                DEP_Lines.append(" ".join(line))
                 
-                elif line[1] in yh_protocol:
-                    yh_Lines.append(" ".join(line))
+            elif line[1] in yh_protocol:
+                yh_Lines.append(" ".join(line))
 
-                else:
-                    NODE_Lines.append(" ".join(line))
+            else:
+                NODE_Lines.append(" ".join(line))
 
 
         if type == "AI":
@@ -111,10 +112,12 @@ def request_reader(type):
             with open("recent_messages.txt", "r") as file:
                 file_lines = file.readlines()
             for f_line in file_lines:
-                f_line.split(" ")
-                if not f_line in AI_Lines:
-                    if f_line != "" or " ":
-                        new_lines.append(" ".join(f_line))
+                print("f: ",f_line)
+                print("a: ",AI_Lines[0])
+                if str(f_line) != str(AI_Lines[0]):
+                    if f_line != "" and f_line != " ":
+                        print("TRUE")
+                        new_lines.append(f_line)
             open("recent_messages.txt", "w").close()
             with open("recent_messages.txt", "a") as file:
                 for n_line in new_lines:
@@ -128,13 +131,12 @@ def request_reader(type):
             for f_line in file_lines:
                 f_line.split(" ")
                 if not f_line in yh_Lines:
-                    if f_line != "" or " ":
-                        new_lines.append(" ".join(f_line))
+                    if f_line != "" and f_line != " ":
+                        new_lines.append(f_line)
             open("recent_messages.txt", "w").close()
             with open("recent_messages.txt", "a") as file:
                 for n_line in new_lines:
                     file.write(n_line)
-
             return yh_Lines
 
         if type == "NODE":
@@ -144,8 +146,8 @@ def request_reader(type):
             for f_line in file_lines:
                 f_line.split(" ")
                 if not f_line in NODE_Lines:
-                    if f_line != "" or " ":
-                        new_lines.append(" ".join(f_line))
+                    if f_line != "" and f_line != " ":
+                        new_lines.append(f_line)
             open("recent_messages.txt", "w").close()
             with open("recent_messages.txt", "a") as file:
                 for n_line in new_lines:
@@ -160,8 +162,8 @@ def request_reader(type):
             for f_line in file_lines:
                 f_line.split(" ")
                 if not f_line in NREQ_Lines:
-                    if f_line != "" or " ":
-                        new_lines.append(" ".join(f_line))
+                    if f_line != "" and f_line != " ":
+                        new_lines.append(f_line)
             open("recent_messages.txt", "w").close()
             with open("recent_messages.txt", "a") as file:
                 for n_line in new_lines:
@@ -175,8 +177,8 @@ def request_reader(type):
             for f_line in file_lines:
                 f_line.split(" ")
                 if not f_line in DEP_Lines:
-                    if f_line != "" or " ":
-                        new_lines.append(" ".join(f_line))
+                    if f_line != "" and f_line != " ":
+                        new_lines.append(f_line)
             open("recent_messages.txt", "w").close()
             with open("recent_messages.txt", "a") as file:
                 for n_line in new_lines:
