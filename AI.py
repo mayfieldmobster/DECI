@@ -9,7 +9,6 @@ import AI_run
 def write_script(string):
     open("model.py", "w").close()
     script = " ".join(string)
-    print(type(script))
     script = ast.literal_eval(script)
     with open("model.py", "w") as file:
         for line in script:
@@ -18,7 +17,7 @@ def write_script(string):
 
 def write_dependencies(string):
     with open("text.zip","wb") as file:
-        file.write(string)
+        file.write(bytes(string))
 
     #with zipfile.ZipFile("depen.zip", 'r') as zip_ref:
         #zip_ref.extractall(".")
@@ -42,21 +41,22 @@ def AI_REQ(message):
     nodes = ast.literal_eval(message[0])
     del message[0]
     write_script(message)
-    while True:
-        dependencies = node.request_reader("DEP")
-        dependencies = dependencies.split(" ")
-        try:
-            dep_identity = dependencies[2]
-            print("TRUE")
-            if dep_identity == script_identity:
-                write_dependencies(dependencies[3])
-                break
-        except Exception as e:
-            print(e)
+    dependencies = node.request_reader("DEP")
+    print("d: ",dependencies)
+    dependencies = dependencies[0].split(" ")
+    dep_identity = dependencies[2]
+    if dep_identity == script_identity:
+        print([dependencies[3]])
+        if len(dependencies[3]) % 2 != 0:
+            print(str(type(len(dependencies[3])/2)))
+            write_dependencies(bytes.fromhex("0" + dependencies[3])) #https://stackoverflow.com/questions/56742408/valueerror-non-hexadecimal-number-found-in-fromhex-arg-at-position/56742540
+        else:
+            print(str(type(len(dependencies[3])/2)))
+            write_dependencies(bytes.fromhex(str(dependencies[3])))
 
     tf_config(nodes,worker_index)
     print(os.environ['TF_CONFIG'])
-    #AI_run.run(64)
+    AI_run.run(64)
     
 
 

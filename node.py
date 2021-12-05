@@ -19,7 +19,7 @@ def receive(local_ip):
     server.listen()
     while True:
         client, address = server.accept()
-        message = client.recv(2048).decode("utf-8").split(" ")
+        message = client.recv(33554432).decode("utf-8").split(" ")
         try:
             return message, address
             break
@@ -170,13 +170,11 @@ def request_reader(type):
             new_lines = []
             with open("recent_messages.txt", "r") as file:
                 file_lines = file.readlines()
-            print(DEP_Lines[0])
             for f_line in file_lines:
                 f_line.split(" ")
                 if not DEP_Lines[0] in f_line:
                     if f_line != "\n" or f_line != " ":
                         new_lines.append(f_line)
-                        print(f_line)
             open("recent_messages.txt", "w").close()
             with open("recent_messages.txt", "a") as file:
                 for n_line in new_lines:

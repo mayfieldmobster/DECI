@@ -1,5 +1,6 @@
 import node
 import socket
+import codecs
 def send(host, message):
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
@@ -13,10 +14,29 @@ def send(host, message):
 
 #open("recent_messages.txt", "w").close()
 
-ARR = ["123 ./.","456 :;:","789 [{}]"]
-if not "123 ./." in ARR:
-    print("yes")
-    
-lines = node.request_reader("DEP")
+#lines = node.request_reader("DEP")
 
-print("L:",lines[0])
+#print("L:",lines[0])
+
+
+with open("./DECI/text.zip", "rb") as file:
+    binar = file.read().hex()
+    print(binar)
+    print(type(binar))
+    print(bytes.fromhex(binar))
+    print(type(bytes.fromhex(binar)))
+    
+#with open("./text.zip", "wb") as file:
+    #file.write(bytes.fromhex("00" + binar))
+
+
+num = "054365"
+
+if str(type(len(num) / 2)) == "<class 'float'>":
+    print("odd")
+
+else:
+    print("even")
+
+print(len(num)/2)
+print(str(type(len(num) / 2)))

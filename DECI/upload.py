@@ -40,7 +40,7 @@ def upload(filename, depen_zip , AM_I = False): #am i a worker
         worker_index = 1
         for node in random_nodes:
             send(node, "AI " + str(worker_index) + " " + script_identity + " " + str(nodes).replace(" ","")+ " " + script)
-            send(node, "DEPEN " + script_identity + " " + str(zip_file))
+            send(node, "DEPEN " + script_identity + " " + zip_file.hex())
             node_config.append(node + ":1379" )
 
         tf_config = {
@@ -57,7 +57,7 @@ def upload(filename, depen_zip , AM_I = False): #am i a worker
         for node in random_nodes:
             send(node, "AI " + str(worker_index) + " " + script_identity + " " + str(nodes).replace(" ","") +" " + str(script))
             time.sleep(0.5)
-            send(node, "DEP " + script_identity + " " + str(zip_file))
+            send(node, "DEP " + script_identity + " " + zip_file.hex())
             node_config.append(node + ":1379")
 
 
