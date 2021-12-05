@@ -15,9 +15,6 @@ def receive(local_ip):
     """ message is split into array the first value the type of messge
         the second value is the messgae"""
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    with open("./info/ports.txt", "r"):
-
-    server.bind((local_ip, 1379))
     server.listen()
     while True:
         client, address = server.accept()
