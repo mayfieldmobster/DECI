@@ -17,6 +17,6 @@ ARR = ["123 ./.","456 :;:","789 [{}]"]
 if not "123 ./." in ARR:
     print("yes")
     
-lines = node.request_reader("AI")
+lines = node.request_reader("DEP")
 
-print(lines[0])
+print("L:",lines[0])
