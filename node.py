@@ -111,7 +111,7 @@ def request_reader(type):
                 file_lines = file.readlines()
             for f_line in file_lines:
                 if not AI_Lines[0] in f_line:#update to check multiple lines to lazy to do rn
-                    if f_line != "\n" or f_line != " ":
+                    if not f_line.strip("\n") == "":
                         new_lines.append(f_line)
             open("recent_messages.txt", "w").close()
             with open("recent_messages.txt", "a") as file:
@@ -126,7 +126,7 @@ def request_reader(type):
             for f_line in file_lines:
                 f_line.split(" ")
                 if not yh_Lines[0] in f_line:
-                    if f_line != "\n" or f_line != " ":
+                    if not f_line.strip("\n") == "":
                         new_lines.append(f_line)
             open("recent_messages.txt", "w").close()
             with open("recent_messages.txt", "a") as file:
@@ -141,7 +141,7 @@ def request_reader(type):
             for f_line in file_lines:
                 f_line.split(" ")
                 if not NODE_Lines[0] in f_line:
-                    if f_line != "\n" or f_line != " ":
+                    if not f_line.strip("\n") == "":
                         new_lines.append(f_line)
             open("recent_messages.txt", "w").close()
             with open("recent_messages.txt", "a") as file:
@@ -157,7 +157,7 @@ def request_reader(type):
             for f_line in file_lines:
                 f_line.split(" ")
                 if not NREQ_Lines[0] in f_line:
-                    if f_line != "\n" or f_line != " ":
+                    if not f_line.strip("\n") == "":
                         new_lines.append(f_line)
             open("recent_messages.txt", "w").close()
             with open("recent_messages.txt", "a") as file:
@@ -172,7 +172,7 @@ def request_reader(type):
             for f_line in file_lines:
                 f_line.split(" ")
                 if not DEP_Lines[0] in f_line:
-                    if f_line != "\n" or f_line != " ":
+                    if not f_line.strip("\n") == "":
                         new_lines.append(f_line)
             open("recent_messages.txt", "w").close()
             with open("recent_messages.txt", "a") as file:
