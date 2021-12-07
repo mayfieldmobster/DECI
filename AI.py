@@ -3,7 +3,8 @@ import ast
 import node
 import os
 import json
-import AI_run
+import TF_run
+import Torch_run
 
 
 def write_script(string):
@@ -21,6 +22,34 @@ def write_dependencies(string):
 
     #with zipfile.ZipFile("depen.zip", 'r') as zip_ref:
         #zip_ref.extractall(".")
+
+def please_no_hack():
+
+    libraries = ["tensorflow",
+                 "torch",
+                 "keras",
+                 "glob",
+                 "cv2",
+                 "numpy",
+                 "matplotlib",
+                 "time" ]
+
+    with open("model.py", "r") as file:
+        lines = file.readlines()
+        for line in lines:
+            if "import" in line:
+                for library in libraries:
+                    if library in line:
+                        if library == "tensorflow":
+                            return False, "tensorflow"
+                        if library == "torch":
+                            return False, "torch"
+                    else:
+                        return True, ""
+
+        return True, ""
+
+
         
 def tf_config(nodes, index):
     tf_config = {
@@ -56,7 +85,13 @@ def AI_REQ(message):
 
     tf_config(nodes,worker_index)
     print(os.environ['TF_CONFIG'])
-    AI_run.run(64)
+    virus, framework = please_no_hack()
+    if not virus:
+        if framework == "tensorflow":
+            TF_run.run(64)
+        if framework == "torch":
+            Torch_run.run()
+
     
 
 
