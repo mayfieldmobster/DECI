@@ -1,6 +1,6 @@
-# DCENT
+# DECI (decentralized intelligence)
 
-DCENT is the newest innovation in AI.
+DECI is the newest innovation in AI.
 
 We take the GPU powered used in PoW crypto mining and give it to the people. Using our custom Neural Network library you can train your models on other peoples gpus for free
 via people mining our cryptocurrency. Their CPUs are running a low demanding PoS algorithm whilst their GPUs are running the neural nets.
@@ -9,8 +9,10 @@ The miners are rewarded via the crypto made through transaction fees thus the pr
 
 # TO DO:
 
-* TRANSACTION WEBSITE!!!!!!
-* legal shid !!!!!!!!
+* TRANSACTION WEBSITE
+* legal stuff
 * UPDATOR
 * AI cancel option
-* Message checker to make sure the code wont crash
+* Pytorch support
+* malware checker
+* multi port support

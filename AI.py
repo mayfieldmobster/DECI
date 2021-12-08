@@ -32,7 +32,8 @@ def please_no_hack():
                  "cv2",
                  "numpy",
                  "matplotlib",
-                 "time" ]
+                 "time",
+                 "PIL"]
 
     with open("model.py", "r") as file:
         lines = file.readlines()
