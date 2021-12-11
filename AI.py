@@ -64,17 +64,20 @@ def tf_config(nodes, index):
 def AI_REQ(message):
     del message[0]#delete IP
     del message[0]#delete protocol
-    worker_index = message[0]
+    worker_index = int(message[0])
     del message[0]
     script_identity = message[0]
     del message[0]
     nodes = ast.literal_eval(message[0])
+    del message[0]#wipe info so just left with script
+    batch_size = int(message[0])
     del message[0]
     write_script(message)
     dependencies = node.request_reader("DEP")
     print("d: ",dependencies)
     dependencies = dependencies[0].split(" ")
     dep_identity = dependencies[2]
+
     if dep_identity == script_identity:
         print([dependencies[3]])
         if len(dependencies[3]) % 2 != 0:
@@ -84,13 +87,19 @@ def AI_REQ(message):
             print(str(type(len(dependencies[3])/2)))
             write_dependencies(bytes.fromhex(str(dependencies[3])))
 
-    tf_config(nodes,worker_index)
-    print(os.environ['TF_CONFIG'])
+
     virus, framework = please_no_hack()
     if not virus:
+
         if framework == "tensorflow":
-            TF_run.run(64)
+            tf_config(nodes, worker_index)
+            print(os.environ['TF_CONFIG'])
+            TF_run.run(batch_size)
+
         if framework == "torch":
+            master_node = nodes[0].split(":")
+            os.environ['MASTER_ADDR'] = master_node[0]
+            os.environ['MASTER_PORT'] = master_node[1]
             Torch_run.run()
 
     

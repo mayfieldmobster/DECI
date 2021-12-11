@@ -166,19 +166,39 @@ def coin_val():
 
 def buy_cost(amount):
     start_val = coin_val()
-    new_val = start_val + amount*0.0037
-    total_val = start_val + new_val
-    avg_val = total_val/2.0
-    cost = avg_val*amount
-    return cost
+
+    amount_dif_dec = round(amount%1,10)
+    amount_dif = amount - amount_dif_dec
+
+    cost = 0
+
+    cur_val = start_val
+
+    for i in range(int(amount_dif)):
+        cost += cur_val
+        cur_val += 0.0037
+
+    cost += amount_dif_dec *0.0037
+
+    return round(cost,10)
 
 def sell_cost(amount):
     start_val = coin_val()
-    new_val = start_val - amount * 0.0037
-    total_val = start_val + new_val
-    avg_val = total_val / 2.0
-    cost = avg_val * amount
-    return cost
+
+    amount_dif_dec = round(amount % 1, 10)
+    amount_dif = amount - amount_dif_dec
+
+    cost = 0
+
+    cur_val = start_val
+
+    for i in range(int(amount_dif)):
+        cost += cur_val
+        cur_val += 0.0037
+
+    cost += amount_dif_dec * 0.0037
+
+    return round(cost, 10)
 
 def Block_valid(index, address):
     with open("info/Blockchain.pickle", "rb") as file:

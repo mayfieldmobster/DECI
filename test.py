@@ -18,7 +18,7 @@ def send(host, message):
 
 #print("L:",lines[0])
 
-
+"""
 with open("./DECI/text.zip", "rb") as file:
     binar = file.read().hex()
     print(binar)
@@ -26,10 +26,11 @@ with open("./DECI/text.zip", "rb") as file:
     print(bytes.fromhex(binar))
     print(type(bytes.fromhex(binar)))
     
+"""
 #with open("./text.zip", "wb") as file:
     #file.write(bytes.fromhex("00" + binar))
 
-
+"""
 num = "054365"
 
 if str(type(len(num) / 2)) == "<class 'float'>":
@@ -40,3 +41,27 @@ else:
 
 print(len(num)/2)
 print(str(type(len(num) / 2)))
+"""
+
+
+def buy_cost(amount):
+    start_val = 0.00389
+    new_val = start_val + amount * 0.0037
+
+    amount_dif_dec = round(amount % 1, 10)
+    amount_dif = amount - amount_dif_dec
+    print(amount_dif,amount_dif_dec)
+
+    cost = 0
+
+    cur_val = start_val
+
+    for i in range(int(amount_dif)):
+        cost += cur_val
+        cur_val += 0.0037
+
+    cost += amount_dif_dec * 0.0037
+
+    return round(cost,10)
+
+print(buy_cost(98.1))
