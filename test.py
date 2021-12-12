@@ -42,15 +42,14 @@ else:
 print(len(num)/2)
 print(str(type(len(num) / 2)))
 """
-
+import time
 
 def buy_cost(amount):
-    start_val = 0.00389
+    start_val = 0
     new_val = start_val + amount * 0.0037
 
     amount_dif_dec = round(amount % 1, 10)
     amount_dif = amount - amount_dif_dec
-    print(amount_dif,amount_dif_dec)
 
     cost = 0
 
@@ -61,7 +60,11 @@ def buy_cost(amount):
         cur_val += 0.0037
 
     cost += amount_dif_dec * 0.0037
-
+    print("coin_val:", cur_val)
     return round(cost,10)
 
-print(buy_cost(98.1))
+start = time.time()
+
+print(buy_cost(1000000))
+
+print("time:", time.time()-start)

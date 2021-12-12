@@ -37,14 +37,14 @@ def sign_trans(private_key, transaction):
 def add_transaction(transaction):
     with open("info/Blockchain.pickle", "rb") as file:
         blockchain = pickle.load(file)
-        if len(blockchain[-1])< 50: # 50 transactions, prev and block hash
+        if len(blockchain[-1])< 500: # 50 transactions, prev and block hash
             print(blockchain[-1])
             if transaction not in blockchain:
                 blockchain[-1].append(transaction)
             with open("info/Blockchain.pickle", "wb") as file:
                 pickle.dump(blockchain, file)
 
-        elif len(blockchain[-1]) >= 50:#51 as that the amount in the array without hash
+        elif len(blockchain[-1]) >= 500:#51 as that the amount in the array without hash
             neg_block_hash = [hash_block(blockchain[-1])]#current block
             trans_fees = 0
             for trans in blockchain[-1]:
@@ -97,7 +97,7 @@ def validate(block_hash):
         node.send_to_all("VALID "+ str(block_index))
 
     if transindex == 50:
-        blockchain[block_index][52] = True
+        blockchain[block_index][502] = True
         with open("info/Blockchain.pickle", "wb") as file:
             pickle.dump(blockchain, file)
 
@@ -112,8 +112,8 @@ def invalid_trans(Block_index, trans_index):#for when theres a invalid transacti
     pre_hashed_blocks = []
     block_hashes = []
     for i in range(len(blockchain)-Block_index):
-        del secondary_blockchain[Block_index + i][52]
-        del secondary_blockchain[Block_index + i][51]
+        del secondary_blockchain[Block_index + i][502]
+        del secondary_blockchain[Block_index + i][501]
         pre_hashed_blocks.append(secondary_blockchain[Block_index + i])
 
     for block in pre_hashed_blocks:
@@ -122,7 +122,7 @@ def invalid_trans(Block_index, trans_index):#for when theres a invalid transacti
         block_hashes.append(hash(block_str))
 
     for i in range(len(blockchain) - Block_index):#update hashes
-        blockchain[Block_index + i][51] = [block_hashes[i]]
+        blockchain[Block_index + i][501] = [block_hashes[i]]
 
     with open("info/Blockchain.pickle", "w") as file:
         pickle.dump(blockchain, file)
@@ -136,7 +136,7 @@ def wallet_value(pub_adrress):
     amount_in_wallet = 0.0
 
     for block in blockchain:
-        if block[52][0]:
+        if block[502][0]:
             for transaction in block:
                 if transaction[2] == pub_adrress:
                     amount_in_wallet += float(transaction[3])
@@ -203,8 +203,8 @@ def sell_cost(amount):
 def Block_valid(index, address):
     with open("info/Blockchain.pickle", "rb") as file:
         blockchain = pickle.load(file)
-        if not blockchain[index][53][0]:
-            blockchain[index][53] = [True, address, time.time()]
+        if not blockchain[index][503][0]:
+            blockchain[index][503] = [True, address, time.time()]
 
     with open("./info/Blockchain.pickle", "wb") as file:
         pickle.dump(blockchain, file)
