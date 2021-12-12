@@ -61,45 +61,37 @@ def add_transaction(transaction):
                 pickle.dump(blockchain, file)
 
 
-def validate(block_hash):
+def validate(block_hash, block_index, time_of_validation):
     with open("info/Blockchain.pickle", "rb") as file:
         blockchain = pickle.load(file)
-    current_index = 0
-    for block in blockchain:#find block index
-        if block[51][0] == block_hash:
-            block_index = current_index
-            break
-        current_index += 1
 
     transindex = 0
     prev_time = 0
+    not_transactions = [0,501,502,503]
 
     for transaction in blockchain[block_index]:
-        trans_no_sig = []
-        trans_no_sig.append(transaction)
-        trans_no_sig = list(itertools.chain.from_iterable(trans_no_sig))
-        del trans_no_sig[4]
-        trans_no_sig = " ".join(trans_no_sig)
-        public_key = VerifyingKey.from_string(bytes.formathex(transaction[1]), curve=SECP112r2)
-        try:
-            assert public_key.verify(bytes.fromhex(transaction[4]), trans_no_sig.encode())
-            if float(transaction[0]) >prev_time:
-                prev_time = transaction[0]
-            else:
-                raise ValueError('times out of order')
+        if transindex not in not_transactions:
+            trans_no_sig = []
+            for value in transaction:
+                trans_no_sig.append(value)
+            del trans_no_sig[4] #left with trans without sig
+            trans_no_sig = " ".join(trans_no_sig)
+            public_key = VerifyingKey.from_string(bytes.formathex(transaction[1]), curve=SECP112r2)
+            try:
+                assert public_key.verify(bytes.fromhex(transaction[4]), trans_no_sig.encode())
+                if float(transaction[0]) > prev_time:
+                    prev_time = transaction[0]
+                else:
+                    raise ValueError('times out of order')
+            except:
+                print("WTF")
+                message = ["TRANS_INVALID", str(block_index), str(transindex)]
+                message = " ".join(message)
+                node.send_to_all(message)
             transindex += 1
-        except:
-            print("WTF")
-            message = ["TRANS_INVALID", str(block_index), str(transindex)]
-            message = " ".join(message)
-            node.send_to_all(message)
 
-        node.send_to_all("VALID "+ str(block_index))
+    node.send_to_all("VALID "+ str(block_index) + " " + str(time_of_validation))
 
-    if transindex == 50:
-        blockchain[block_index][502] = True
-        with open("info/Blockchain.pickle", "wb") as file:
-            pickle.dump(blockchain, file)
 
 
 
@@ -108,10 +100,13 @@ def invalid_trans(Block_index, trans_index):#for when theres a invalid transacti
         blockchain = pickle.load(file)
 
     del blockchain[Block_index][trans_index]#delete false transaction
-    secondary_blockchain = blockchain
+    secondary_blockchain = []
+    for value in blockchain:
+        secondary_blockchain.append(value)
     pre_hashed_blocks = []
     block_hashes = []
     for i in range(len(blockchain)-Block_index):
+        del secondary_blockchain[Block_index + i][503]
         del secondary_blockchain[Block_index + i][502]
         del secondary_blockchain[Block_index + i][501]
         pre_hashed_blocks.append(secondary_blockchain[Block_index + i])
@@ -123,6 +118,7 @@ def invalid_trans(Block_index, trans_index):#for when theres a invalid transacti
 
     for i in range(len(blockchain) - Block_index):#update hashes
         blockchain[Block_index + i][501] = [block_hashes[i]]
+        blockchain[Block_index + i+1][0] = [block_hashes[i]]
 
     with open("info/Blockchain.pickle", "w") as file:
         pickle.dump(blockchain, file)
@@ -200,19 +196,16 @@ def sell_cost(amount):
 
     return round(cost, 10)
 
-def Block_valid(index, address):
+def Block_valid(index, address, time_of_valid):
     with open("info/Blockchain.pickle", "rb") as file:
         blockchain = pickle.load(file)
         if not blockchain[index][503][0]:
-            blockchain[index][503] = [True, address, time.time()]
+            blockchain[index][503] = [True, address, time_of_valid]
 
     with open("./info/Blockchain.pickle", "wb") as file:
         pickle.dump(blockchain, file)
 
 
-def validator():
-    with open("info/Blockchain.pickle", "rb") as file:
-        blockchain = pickle.load(file)
 
 
 def trans(sender, receiver, amount, priv_key):

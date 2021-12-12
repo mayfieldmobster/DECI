@@ -238,10 +238,10 @@ def send_node(host):
     send(host, "NREQ " + str_node)
 
 
-def new_node(time, new_node, address):
+def new_node(time, ip, pub_key):
     with open("info/Nodes.pickle", "rb") as file:
         Nodes = pickle.load(file)
-    new_node = [time, new_node, address]
+    new_node = [time, ip, pub_key]
     Nodes.append(new_node)
     with open("info/Nodes.pickle","wb") as file:
         pickle.dump(Nodes, file)

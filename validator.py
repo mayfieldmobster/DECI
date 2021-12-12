@@ -15,7 +15,7 @@ def hash_num(hash):
     num = int(hash,16)
     return num
 
-def validator_updator(time):
+def validator_updator(time):#can probably delete this function             could be used to have specific file for validator transactions
     with open("info/Validator.pickle", "rb") as file:
         validator = pickle.load(file)
         
@@ -41,7 +41,7 @@ def validator_updator(time):
         
 
 
-def rb(hash, time):#random bias
+def rb(hash, time):#random bias function returns index of node
     with open("info/Nodes.pickle", "rb") as file:
         nodes = pickle.load(file)
 
@@ -72,7 +72,7 @@ def rb(hash, time):#random bias
     random.seed(hash_num(hash))
     ran_ind = random.randint(0, len(rb))
 
-    return rb[ran_ind]
+    return rb[ran_ind], time
     
 
 def am_i_validator():
@@ -82,28 +82,16 @@ def am_i_validator():
     while True:
         with open("info/Blockchain.pickle", "rb") as file:
             blockchain = pickle.load(file)
-        block_index=0
+        block_num =0
         for block in blockchain:
             if not block[-1][0]:
                 block_time = block[-1][1]
                 hash = block[51][0]
-                node = rb(hash, block_time)
+                node,time_valid = rb(hash, block_time)
                 if node[2] == my_pub:
-                    Blockchain.validate(hash)
+                    Blockchain.validate(hash, block_num, time_valid)
 
 
-            block_index += 1
-
-
-
-
-
-
-
-
-
-
-
-
+            block_num += 1
 
 

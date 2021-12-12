@@ -68,3 +68,8 @@ start = time.time()
 print(buy_cost(1000000))
 
 print("time:", time.time()-start)
+
+import itertools
+block = [[1,2,3],[4,5,6],[7,8,9]]
+block = list(itertools.chain.from_iterable(block))
+print(block)
