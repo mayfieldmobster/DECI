@@ -66,7 +66,7 @@ def validate(block_hash, block_index, time_of_validation):
         blockchain = pickle.load(file)
 
     transindex = 0
-    prev_time = 0
+    prev_time = blockchain[block_index-1][503][1]#time of prev block for reference
     not_transactions = [0,501,502,503]
 
     for transaction in blockchain[block_index]:
@@ -78,11 +78,19 @@ def validate(block_hash, block_index, time_of_validation):
             trans_no_sig = " ".join(trans_no_sig)
             public_key = VerifyingKey.from_string(bytes.formathex(transaction[1]), curve=SECP112r2)
             try:
-                assert public_key.verify(bytes.fromhex(transaction[4]), trans_no_sig.encode())
-                if float(transaction[0]) > prev_time:
+
+                assert public_key.verify(bytes.fromhex(transaction[4]), trans_no_sig.encode())#check if sig correct
+
+                if float(transaction[0]) > prev_time:#check if time stamp correct
                     prev_time = transaction[0]
-                else:
+
+                elif float(transaction[0]) < float(prev_time):
                     raise ValueError('times out of order')
+
+                if float(wallet_value(transaction[1])) < float(transaction[3]):
+                    raise ValueError("not enough money")
+
+
             except:
                 print("WTF")
                 message = ["TRANS_INVALID", str(block_index), str(transindex)]
@@ -95,33 +103,65 @@ def validate(block_hash, block_index, time_of_validation):
 
 
 
-def invalid_trans(Block_index, trans_index):#for when theres a invalid transaction found
+def invalid_trans(block_index, trans_index):#for when theres a invalid transaction found
     with open("info/Blockchain.pickle", "rb") as file:
         blockchain = pickle.load(file)
 
-    del blockchain[Block_index][trans_index]#delete false transaction
-    secondary_blockchain = []
-    for value in blockchain:
-        secondary_blockchain.append(value)
-    pre_hashed_blocks = []
-    block_hashes = []
-    for i in range(len(blockchain)-Block_index):
-        del secondary_blockchain[Block_index + i][503]
-        del secondary_blockchain[Block_index + i][502]
-        del secondary_blockchain[Block_index + i][501]
-        pre_hashed_blocks.append(secondary_blockchain[Block_index + i])
+    block_index = int(block_index)
+    trans_index = int(trans_index)
+    if trans_index == 1:
+        prev_time = blockchain[block_index-1][503][1]
+    else:
+        prev_time = blockchain[block_index][trans_index-1][0]
 
-    for block in pre_hashed_blocks:
-        ONED_block = list(itertools.chain.from_iterable(block))
-        block_str = " ".join(ONED_block)
-        block_hashes.append(hash(block_str))
+    transaction = blockchain[block_index][trans_index]
+    prev_time = blockchain[block_index][trans_index-1][0]
+    trans_no_sig = []
+    for value in transaction:
+        trans_no_sig.append(value)
+    del trans_no_sig[4]  # left with trans without sig
+    trans_no_sig = " ".join(trans_no_sig)
 
-    for i in range(len(blockchain) - Block_index):#update hashes
-        blockchain[Block_index + i][501] = [block_hashes[i]]
-        blockchain[Block_index + i+1][0] = [block_hashes[i]]
 
-    with open("info/Blockchain.pickle", "w") as file:
-        pickle.dump(blockchain, file)
+    public_key = VerifyingKey.from_string(bytes.formathex(transaction[1]), curve=SECP112r2)
+    try:
+        assert public_key.verify(bytes.fromhex(transaction[4]), trans_no_sig.encode())  # check if sig correct
+
+        if float(transaction[0]) < float(prev_time):
+            raise ValueError('times out of order')
+
+        if float(wallet_value(transaction[1])) < float(transaction[3]):
+            raise ValueError("not enough money")
+
+        invalid_tran = True
+
+    except:
+        invalid_tran = False
+
+    if invalid_tran:
+        del blockchain[block_index][trans_index]#delete false transaction
+        secondary_blockchain = []
+        for value in blockchain:
+            secondary_blockchain.append(value)
+        pre_hashed_blocks = []
+        block_hashes = []
+        for i in range(len(blockchain)-block_index):
+            del secondary_blockchain[block_index + i][503]
+            del secondary_blockchain[block_index + i][502]
+            del secondary_blockchain[block_index + i][501]
+            pre_hashed_blocks.append(secondary_blockchain[block_index + i])
+
+        for block in pre_hashed_blocks:
+            ONED_block = list(itertools.chain.from_iterable(block))
+            block_str = " ".join(ONED_block)
+            block_hashes.append(hash(block_str))
+
+        for i in range(len(blockchain) - block_index):#update hashes
+            blockchain[block_index + i][501] = [block_hashes[i]]
+            blockchain[block_index + i+1][0] = [block_hashes[i]]
+
+        with open("info/Blockchain.pickle", "w") as file:
+            pickle.dump(blockchain, file)
 
 
 
@@ -132,7 +172,7 @@ def wallet_value(pub_adrress):
     amount_in_wallet = 0.0
 
     for block in blockchain:
-        if block[502][0]:
+        if block[503][0]:
             for transaction in block:
                 if transaction[2] == pub_adrress:
                     amount_in_wallet += float(transaction[3])
@@ -200,7 +240,7 @@ def Block_valid(index, address, time_of_valid):
     with open("info/Blockchain.pickle", "rb") as file:
         blockchain = pickle.load(file)
         if not blockchain[index][503][0]:
-            blockchain[index][503] = [True, address, time_of_valid]
+            blockchain[index][503] = [True, time_of_valid, address]
 
     with open("./info/Blockchain.pickle", "wb") as file:
         pickle.dump(blockchain, file)

@@ -3,6 +3,7 @@ import node
 import Blockchain
 import random
 import pickle
+import math
 
 
 """
@@ -65,6 +66,8 @@ def rb(hash, time):#random bias function returns index of node
 
                         if transaction[2] == public and transaction[1] == steak:
                             amount_steaked -= transaction[3]
+
+            amount_steaked = math.ceil(amount_steaked)
 
             for _ in range(int(amount_steaked)):
                 rb.append(node)
