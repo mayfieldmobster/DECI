@@ -77,11 +77,13 @@ def request_reader(type):
     NREQ_protocol = ["NEW_NODES"]#node request
     DEP_protocol = ["DEP"]
     yh_protocol = ["yh"]
+    Trans_protocol = ["TRANS"]
     AI_Lines = []
     NODE_Lines = []
     NREQ_Lines = []
     DEP_Lines = []
     yh_Lines = []
+    Trans_Lines = []
     if str(lines) != "[]":
         for line in lines:
             line = line.split(" ")
@@ -101,84 +103,106 @@ def request_reader(type):
             elif line[1] in yh_protocol:
                 yh_Lines.append(" ".join(line))
 
+            elif line[1] in Trans_protocol:
+                Trans_Lines.append(" ".join(line))
+
             else:
                 NODE_Lines.append(" ".join(line))
 
 
         if type == "AI":
-            new_lines = []
-            with open("recent_messages.txt", "r") as file:
-                file_lines = file.readlines()
-            for f_line in file_lines:
-                if not AI_Lines[0] in f_line:#update to check multiple lines to lazy to do rn
-                    if not f_line.strip("\n") == "":
-                        new_lines.append(f_line)
-            open("recent_messages.txt", "w").close()
-            with open("recent_messages.txt", "a") as file:
-                for n_line in new_lines:
-                    file.write(n_line)
+            if len(AI_Lines) != 0:
+                new_lines = []
+                with open("recent_messages.txt", "r") as file:
+                    file_lines = file.readlines()
+                for f_line in file_lines:
+                    if not AI_Lines[0] in f_line:#update to check multiple lines to lazy to do rn
+                        if not f_line.strip("\n") == "":
+                            new_lines.append(f_line)
+                open("recent_messages.txt", "w").close()
+                with open("recent_messages.txt", "a") as file:
+                    for n_line in new_lines:
+                        file.write(n_line)
             return AI_Lines
 
         if type == "YH":
-            new_lines = []
-            with open("recent_messages.txt", "r") as file:
-                file_lines = file.readlines()
-            for f_line in file_lines:
-                f_line.split(" ")
-                if not yh_Lines[0] in f_line:
-                    if not f_line.strip("\n") == "":
-                        new_lines.append(f_line)
-            open("recent_messages.txt", "w").close()
-            with open("recent_messages.txt", "a") as file:
-                for n_line in new_lines:
-                    file.write(n_line)
+            if len(yh_Lines) != 0:
+                new_lines = []
+                with open("recent_messages.txt", "r") as file:
+                    file_lines = file.readlines()
+                for f_line in file_lines:
+                    f_line.split(" ")
+                    if not yh_Lines[0] in f_line:
+                        if not f_line.strip("\n") == "":
+                            new_lines.append(f_line)
+                open("recent_messages.txt", "w").close()
+                with open("recent_messages.txt", "a") as file:
+                    for n_line in new_lines:
+                        file.write(n_line)
             return yh_Lines
 
         if type == "NODE":
-            new_lines = []
-            with open("recent_messages.txt", "r") as file:
-                file_lines = file.readlines()
-            for f_line in file_lines:
-                f_line.split(" ")
-                if not NODE_Lines[0] in f_line:
-                    if not f_line.strip("\n") == "":
-                        new_lines.append(f_line)
-            open("recent_messages.txt", "w").close()
-            with open("recent_messages.txt", "a") as file:
-                for n_line in new_lines:
-                    file.write(n_line)
-
+            if len(NODE_Lines) != 0:
+                new_lines = []
+                with open("recent_messages.txt", "r") as file:
+                    file_lines = file.readlines()
+                for f_line in file_lines:
+                    f_line.split(" ")
+                    if not NODE_Lines[0] in f_line:
+                        if not f_line.strip("\n") == "":
+                            new_lines.append(f_line)
+                open("recent_messages.txt", "w").close()
+                with open("recent_messages.txt", "a") as file:
+                    for n_line in new_lines:
+                        file.write(n_line)
             return NODE_Lines
 
         if type == "NREQ":
-            new_lines = []
-            with open("recent_messages.txt", "r+") as file:
-                file_lines = file.readlines()
-            for f_line in file_lines:
-                f_line.split(" ")
-                if not NREQ_Lines[0] in f_line:
-                    if not f_line.strip("\n") == "":
-                        new_lines.append(f_line)
-            open("recent_messages.txt", "w").close()
-            with open("recent_messages.txt", "a") as file:
-                for n_line in new_lines:
-                    file.write(n_line)
+            if len(NREQ_Lines) != 0:
+                new_lines = []
+                with open("recent_messages.txt", "r+") as file:
+                    file_lines = file.readlines()
+                for f_line in file_lines:
+                    f_line.split(" ")
+                    if not NREQ_Lines[0] in f_line:
+                        if not f_line.strip("\n") == "":
+                            new_lines.append(f_line)
+                open("recent_messages.txt", "w").close()
+                with open("recent_messages.txt", "a") as file:
+                    for n_line in new_lines:
+                        file.write(n_line)
             return NREQ_Lines
 
         if type == "DEP":
-            new_lines = []
-            with open("recent_messages.txt", "r") as file:
-                file_lines = file.readlines()
-            for f_line in file_lines:
-                f_line.split(" ")
-                if not DEP_Lines[0] in f_line:
-                    if not f_line.strip("\n") == "":
-                        new_lines.append(f_line)
-            open("recent_messages.txt", "w").close()
-            with open("recent_messages.txt", "a") as file:
-                for n_line in new_lines:
-                    file.write(n_line)
+            if len(DEP_Lines) != 0:
+                new_lines = []
+                with open("recent_messages.txt", "r") as file:
+                    file_lines = file.readlines()
+                for f_line in file_lines:
+                    f_line.split(" ")
+                    if not DEP_Lines[0] in f_line:
+                        if not f_line.strip("\n") == "":
+                            new_lines.append(f_line)
+                open("recent_messages.txt", "w").close()
+                with open("recent_messages.txt", "a") as file:
+                    for n_line in new_lines:
+                        file.write(n_line)
             return DEP_Lines
+
+        if type == "TRANS":
+            if len(Trans_Lines) != 0:
+                new_lines = []
+                with open("recent_messages.txt", "r") as file:
+                    file_lines = file.readlines()
+                for f_line in file_lines:
+                    if not Trans_Lines[0] in f_line:#update to check multiple lines to lazy to do rn
+                        if not f_line.strip("\n") == "":
+                            new_lines.append(f_line)
+                open("recent_messages.txt", "w").close()
+                with open("recent_messages.txt", "a") as file:
+                    for n_line in new_lines:
+                        file.write(n_line)
+            return Trans_Lines
 
 
 
