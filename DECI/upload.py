@@ -37,17 +37,18 @@ def upload(filename, depen_zip , AM_I = False, port = "1379", batch_size=64): #a
 
     nodes = ["127.0.0.1:1379"]   #requests.get() # get request for random node
     my_ip = requests.get('https://api.ipify.org').text
-    for node in nodes:
-        nodes.append(node)
     node_config = []
-    node_config.insert(0,my_ip + ":" + port)
+    for node in nodes:
+        node_config.append(node)
+    print(node_config)
 
     if AM_I:
         worker_index = 1
+        node_config.insert(0, my_ip + ":" + port)
         for node in nodes:
             node = node.split(":")
-            send(node[0],node[1], "AI " + str(worker_index) + " " + script_identity + " " + str(node_config).replace(" ","") +  " " + str(batch_size) + " " + script)
-            send(node[0],node[1], "DEPEN " + script_identity + " " + zip_file.hex())
+            send(node[0],int(node[1]), "AI " + str(worker_index) + " " + script_identity + " " + str(node_config).replace(" ","") +  " " + str(batch_size) + " " + script)
+            send(node[0],int(node[1]), "DEPEN " + script_identity + " " + zip_file.hex())
             worker_index += 1
 
         if framework == "tensorflow":
@@ -69,14 +70,15 @@ def upload(filename, depen_zip , AM_I = False, port = "1379", batch_size=64): #a
     if not AM_I:
         worker_index = 0
         for node in nodes:
-            send(node[0],node[1], "AI " + str(worker_index) + " " + script_identity + " " + str(nodes).replace(" ","") + " " + str(batch_size) + " " + str(script))
+            node = node.split(":")
+            send(node[0],int(node[1]), "AI " + str(worker_index) + " " + script_identity + " " + str(nodes).replace(" ","") + " " + str(batch_size) + " " + str(script))
             time.sleep(0.5)
-            send(node[0],node[1], "DEP " + script_identity + " " + zip_file.hex())
+            send(node[0],int(node[1]), "DEP " + script_identity + " " + zip_file.hex())
             worker_index += 1
 
 
 
 if __name__ == "__main__":
     file= "./model.py"
-    dependencies = "./text.zip"
+    dependencies = "./iCloudSetup.zip"
     upload(file, dependencies)

@@ -15,10 +15,11 @@ def receive(local_ip):
     """ message is split into array the first value the type of messge
         the second value is the messgae"""
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind((local_ip,1379))
     server.listen()
     while True:
         client, address = server.accept()
-        message = client.recv(33554432).decode("utf-8").split(" ")
+        message = client.recv(pow(2,50)).decode("utf-8").split(" ")
         try:
             return message, address
             break
@@ -27,7 +28,7 @@ def receive(local_ip):
 
 
 #send to node
-def send(host, message):
+def send(host,message):
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         client.connect((host, 1379))

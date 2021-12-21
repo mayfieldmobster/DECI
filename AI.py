@@ -87,7 +87,7 @@ def AI_REQ(message):
             print(str(type(len(dependencies[3])/2)))
             write_dependencies(bytes.fromhex(str(dependencies[3])))
 
-
+    """
     virus, framework = please_no_hack()
     if not virus:
 
@@ -103,6 +103,6 @@ def AI_REQ(message):
             Torch_run.run()
 
     
-
+    """
 
 

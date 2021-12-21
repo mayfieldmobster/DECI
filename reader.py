@@ -17,10 +17,6 @@ def read():
                 node.send_node(message[0])
                 print(message)
 
-            if message[1] == "TRANS":
-                Blockchain.add_transaction(ast.literal_eval(message[2]))
-                print(message)
-
             if message[1] == "HELLO":
                 node.new_node(message[2], message[0], message[3])
                 print(message)
