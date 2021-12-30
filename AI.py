@@ -5,6 +5,7 @@ import os
 import json
 import TF_run
 import Torch_run
+import re
 
 
 def write_script(string):
@@ -21,7 +22,71 @@ def write_dependencies(string):
         file.write(bytes(string))
 
     #with zipfile.ZipFile("depen.zip", 'r') as zip_ref:
-        #zip_ref.extractall(".")
+        #zip_ref.extractall(".")#
+
+
+def no_read(lines):
+    no_virus = True
+
+    lines= lines.replace('\n','')
+    lines
+
+    linux = ["/bin", "/boot", "/cdrom", "/dev", "/etc", "/home", "/lib", "/lost+found", "/media", "/mnt", "/opt", "/proc", "/root", "/run", "/sbin", "/selinux", "/srv", "/tmp", "/usr", "/var"]
+
+    aloud = ["'r'", "'rb'", '"r"', '"rb"']
+    for line in lines:
+        if "open" in line:
+            info = re.findall(r'\(.*?\)', line)[0]
+            info = info.replace("(", "").replace(")", "").split(",")
+
+            for mode in aloud:
+                if mode != info[1]:#if second val in open("lol.txt","wb")
+                    no_virus = False
+                    break
+
+            for val in info: #if mode used open(mode="wb", "file=lol.txt")
+                if "mode" in val:
+                    for mode in aloud:
+                        if mode in val:
+                            no_virus = False
+                            break
+        if "C:" in line:
+            no_virus = False
+            break
+
+        if ".." in line:
+            no_virus = False
+            break
+
+        if "raise" in line:
+            no_virus = False
+            break
+
+        if "compile(" in line:
+            no_virus = False
+            break
+
+        if "eval" in line:
+            no_virus = False
+            break
+
+        if "exec" in line:
+            no_virus = False
+            break
+
+        if "__import__"in line:
+            no_virus = False
+            break
+
+
+        for directory in linux:
+            if directory in line:
+                no_virus = False
+                break
+
+    return no_virus
+
+
 
 def please_no_hack():
 
@@ -37,21 +102,31 @@ def please_no_hack():
 
     with open("model.py", "r") as file:
         lines = file.readlines()
+        no_malware = no_read(lines)
+        virus = False
+        framework = ""
+        if not no_malware:
+            return True, ""
         for line in lines:
             if "import" in line:
+                if "#" in line or "'" in line or '"' in line or "," in line:
+                    return True, ""
                 for library in libraries:
                     if library in line:
                         if library == "tensorflow":
-                            return False, "tensorflow"
+                            virus = False
+                            framework = "tensorflow"
                         if library == "torch":
-                            return False, "torch"
+                            virus = False
+                            framework = "torch"
                     else:
                         return True, ""
 
-        return True, ""
+
+    return virus, framework
 
 
-        
+
 def tf_config(nodes, index):
     tf_config = {
         "cluster": {

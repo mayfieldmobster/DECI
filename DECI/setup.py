@@ -11,6 +11,7 @@ setup(
         "socket",
         "random",
         "requests",
-        "json"
+        "json",
+        "python-magic-bin"
     ]
 )

@@ -22,7 +22,7 @@ def read():
                 print(message)
 
             if message[1] == "VALID":#update block to true
-                Blockchain.Block_valid(int(message[2]), message[0], message[3])#need to discover POS random picker find at blockchain.vaildator
+                Blockchain.Block_valid(int(message[2]), message[0], message[3],message[4])
                 print(message)
 
             if message[1] == "TRANS_INVALID":

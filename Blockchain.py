@@ -6,6 +6,7 @@ import node
 import time
 from ecdsa.util import randrange_from_seed__trytryagain
 import os
+import validator
 
 def hash_block(data):
     data = list(itertools.chain.from_iterable(data))
@@ -69,7 +70,7 @@ def add_transaction(transaction):
                 pickle.dump(blockchain, file)
 
 
-def validate(block_hash, block_index, time_of_validation):
+def validate(block_hash, block_index, time_of_validation, validator=True):
     with open("info/Blockchain.pickle", "rb") as file:
         blockchain = pickle.load(file)
 
@@ -100,11 +101,15 @@ def validate(block_hash, block_index, time_of_validation):
 
 
             except:
-                print("WTF")
-                message = ["TRANS_INVALID", str(block_index), str(transindex)]
-                message = " ".join(message)
-                node.send_to_all(message)
-                invalid_trans(block_index,transindex)
+                if validator:
+                    print("WTF")
+                    message = ["TRANS_INVALID", str(block_index), str(transindex)]#BIG PROBLEM ADD SEND TO ALL EXCEPT SELF
+                    message = " ".join(message)
+                    node.send_to_all(message)
+                    invalid_trans(block_index,transindex)
+
+                if not validator:
+                    return False
             transindex += 1
 
     with open("./info/Blockchain.pickle","rb")as file:
@@ -115,7 +120,11 @@ def validate(block_hash, block_index, time_of_validation):
         del block[-1]
         hash = hash_block(block)
 
-    node.send_to_all("VALID "+ str(block_index) + " " + str(time_of_validation) + " " + hash)
+    if validator:
+        node.send_to_all("VALID "+ str(block_index) + " " + str(time_of_validation) + " " + hash)
+
+    if not validator:
+        return True
 
 
 
@@ -253,11 +262,16 @@ def sell_cost(amount):
 
     return round(cost, 10)
 
-def Block_valid(index, address, time_of_valid):
+def Block_valid(index, address, time_of_valid, hash):
     with open("info/Blockchain.pickle", "rb") as file:
+
         blockchain = pickle.load(file)
-        if not blockchain[index][-1][0]:
-            blockchain[index][-1] = [True, time_of_valid, address]
+        node = validator.rb(hash,blockchain[index][-1][0])
+        cor_validation = validate(hash,index,time_of_valid,False)
+        if cor_validation:
+            if node[1] == address:
+                if not blockchain[index][-1][0]:
+                    blockchain[index][-1] = [True, time_of_valid, address]
 
     with open("./info/Blockchain.pickle", "wb") as file:
         pickle.dump(blockchain, file)
