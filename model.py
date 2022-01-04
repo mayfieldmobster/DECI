@@ -26,3 +26,5 @@ def build_and_compile_cnn_model():
       optimizer=tf.keras.optimizers.SGD(learning_rate=0.001),
       metrics=['accuracy'])
   return model
+
+print(dataset(64))

@@ -8,6 +8,7 @@ from ecdsa import SigningKey, VerifyingKey, SECP112r2
 
 def read():
     transactions = []
+    time.sleep(5)
     while True:
         time.sleep(0.01)
         Trans_lines = node.request_reader("TRANS")
@@ -23,7 +24,7 @@ def read():
                 public_key = VerifyingKey.from_string(bytes.formathex(trans[1]), curve=SECP112r2)
                 try:
                     sig_cor = public_key.verify(bytes.fromhex(trans[4]), trans_no_sig.encode())
-                except:
+                except ValueError:
                     sig_cor = False
                 if sig_cor:
                     if trans[0] < (time.time()-20.0):

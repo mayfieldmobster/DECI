@@ -80,7 +80,6 @@ def split_dir(path, num_nodes,AM_I = False, paired = False):
                 print(files)
                 index = 0
                 for group in files:
-                    filename = path + "dep" + str(index) + "/" + dir_names[dir_index]
                     for file in group:
 
                         try:
@@ -106,7 +105,6 @@ def split_dir(path, num_nodes,AM_I = False, paired = False):
                 print(files)
                 index = 0
                 for group in files:
-                    filename = path + "dep" + str(index) + "/" + dir_names[dir_index]
                     for file in group:
 
                         try:
