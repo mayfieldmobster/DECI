@@ -88,11 +88,12 @@ def am_i_validator():
         block_num =0
         for block in blockchain:
             if not block[-1][0]:
-                block_time = block[-1][1]
-                hash = block[51][0]
-                node,time_valid = rb(hash, block_time)
-                if node[2] == my_pub:
-                    Blockchain.validate(hash, block_num, time_valid)
+                if int(time.time() - float(blockchain[-1][1]["time"])) > 900:
+                    block_time = block[-1][1]
+                    hash = block[51][0]
+                    node,time_valid = rb(hash, block_time)
+                    if node[2] == my_pub:
+                        Blockchain.validate(hash, block_num, time_valid)
 
 
             block_num += 1

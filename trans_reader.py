@@ -27,11 +27,12 @@ def read():
                 except ValueError:
                     sig_cor = False
                 if sig_cor:
-                    if trans[0] < (time.time()-20.0):
-                        transactions.append(trans)
+                    if float(trans[0]) < (time.time()-30.0):
+                        if not float(trans[0]) > time.time():
+                            transactions.append(trans)
 
         if len(transactions) >= 50:
-            transactions = sorted(transactions, key=lambda transactions: transactions[0])
+            transactions = sorted(transactions, key=lambda transactions: float(transactions[0]))
             for trans in transactions:
                 Blockchain.add_transaction(trans)
                 time.sleep(3)

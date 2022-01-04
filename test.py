@@ -18,34 +18,24 @@ def send(host, message):
 
 #print("L:",lines[0])
 
-"""
-with open("./DECI/text.zip", "rb") as file:
-    binar = file.read().hex()
-    print(binar)
-    print(type(binar))
-    print(bytes.fromhex(binar))
-    print(type(bytes.fromhex(binar)))
-    
-"""
 #with open("./text.zip", "wb") as file:
     #file.write(bytes.fromhex("00" + binar))
 
 """
-num = "054365"
+import glob
+import os
 
-if str(type(len(num) / 2)) == "<class 'float'>":
-    print("odd")
+os.chdir(".")
+names={}
+for fn in glob.glob('*.py'):
+    with open(fn) as f:
+        names[fn]=sum(1 for line in f if line.strip() and not line.startswith('#'))
 
-else:
-    print("even")
-
-print(len(num)/2)
-print(str(type(len(num) / 2)))
+print(sum(names.values()))
 """
 
+import copy
 
-
-def hello():
-    print("hello")
-
-hello(3)
+arr = [[1,2,3],[4,5,6],[ 7,8,9]]
+arr2 = copy.copy(arr[1:])
+print(arr,arr2)
