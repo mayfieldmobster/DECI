@@ -34,8 +34,10 @@ for fn in glob.glob('*.py'):
 print(sum(names.values()))
 """
 
-import copy
+import sys
+import objsize
 
-arr = [[1,2,3],[4,5,6],[ 7,8,9]]
-arr2 = copy.copy(arr[1:])
-print(arr,arr2)
+chain = {"time": "217347237437828", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"}
+print(objsize.get_deep_size(chain))
+chain = ['1635081552.1908393', 'b81f8e294a44184a1b709daf4b9224b9', 'c18ba0025f7fa9b31ff83a203e7b14dd8ec3a6cb023864f7a70fd94e', '321', '206df1c0ea8983c82352287f0bb62295d5b66101cf1b02237a3bb84e']
+print(objsize.get_deep_size(chain))

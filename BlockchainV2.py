@@ -67,6 +67,7 @@ class Blockchain:
                         temp_block.pop()
                         
                         self.chain[-2][-3] = [self.hash_block(temp_block),trans["time"]]
+                        self.chain[-1][0] = [self.hash_block(temp_block)]
                         self.chain[-2][-2][0] +=  (trans["amount"] * 0.01)
                         self.chain[-2][-1][1] = trans["time"]
 
@@ -142,18 +143,18 @@ class Blockchain:
 
         if invalid_trans:
             del self.chain[block_index][trans_index]
-            pre_hashed_blocks = copy.copy(self.chain[block_index:])
-            block_hashes = []
+            pre_hashed_blocks = copy.copy(self.chain)
 
-            for block in pre_hashed_blocks:
-                block.pop()
-                block.pop()
-                block.pop()
-                block_hashes.append(self.hash_block(block))#calculates hash from wrong previous hash
+            for i in range(len(self.chain) - block_index):#update hashes
+                pre_hashed_blocks[block_index + i].pop()
+                pre_hashed_blocks[block_index + i].pop()
+                pre_hashed_blocks[block_index + i].pop()
+                block_hash = self.hash_block(pre_hashed_blocks[block_index + i])
+                self.chain[block_index + i][-3][0] = block_hash
+                self.chain[block_index + i + 1][0] = [block_hash]
 
-            for i in range(len(self.chain) - block_index):  # update hashes
-                self.chain[block_index + i][-3][0] = block_hashes[i]
-                self.chain[block_index + i + 1][0] = [block_hashes][i]
+
+
 
 
 

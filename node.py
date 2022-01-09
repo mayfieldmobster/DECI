@@ -75,7 +75,7 @@ def request_reader(type):
     with open("recent_messages.txt", "r") as file:
         lines = file.read().splitlines()
     AI_protocols = ["AI", "ONLINE?"]
-    NREQ_protocol = ["NEW_NODES"]#node request
+    NREQ_protocol = ["NREQ"]#node request
     DEP_protocol = ["DEP"]
     yh_protocol = ["yh"]
     Trans_protocol = ["TRANS"]
@@ -220,18 +220,6 @@ def send_to_all(message):
 
 
 
-
-
-def opt_req(self, data):
-    node = rand_act_node(1)
-    send(node[0], "OPT_REQ " + data)#redo all the string stuff
-
-
-def data_req(self,data):
-    nodes = rand_act_node(5)
-    for node in nodes:
-        send(node[0], "DATA_REQ " + data)
-    return nodes
     
 def announce(self, pub_key):
     send_to_all("HELLO "+ str(time.time()) + " " + pub_key)
