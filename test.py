@@ -1,3 +1,5 @@
+import terminal as terminal
+
 import node
 import socket
 import codecs
@@ -18,34 +20,26 @@ def send(host, message):
 
 #print("L:",lines[0])
 
-"""
-with open("./DECI/text.zip", "rb") as file:
-    binar = file.read().hex()
-    print(binar)
-    print(type(binar))
-    print(bytes.fromhex(binar))
-    print(type(bytes.fromhex(binar)))
-    
-"""
 #with open("./text.zip", "wb") as file:
     #file.write(bytes.fromhex("00" + binar))
 
 """
-num = "054365"
+import glob
+import os
 
-if str(type(len(num) / 2)) == "<class 'float'>":
-    print("odd")
+os.chdir(".")
+names={}
+for fn in glob.glob('*.py'):
+    with open(fn) as f:
+        names[fn]=sum(1 for line in f if line.strip() and not line.startswith('#'))
 
-else:
-    print("even")
-
-print(len(num)/2)
-print(str(type(len(num) / 2)))
+print(sum(names.values()))
 """
+import objsize
+
+chain = {"time": "217347237437828", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"}
 
 
-
-def hello():
-    print("hello")
-
-hello(3)
+arr = [x for x in range(100)]
+print(arr)
+print(arr[1:-3])

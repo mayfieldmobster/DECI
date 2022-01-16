@@ -53,12 +53,12 @@ def add_transaction(transaction):
 
 
 
-        elif len(blockchain[-1]) >= 500:#51 as that the amount in the array without hash
+        elif len(blockchain[-1]) >= 500:#500 as that the amount in the array without hash
             neg_block_hash = [hash_block(blockchain[-1])]#current block
             trans_fees = 0
             for trans in blockchain[-1]:
                 try:
-                    trans_fees += trans[3]*0.001
+                    trans_fees += trans[3]*0.01
                 except:
                     pass
             blockchain[-1].append([neg_block_hash,transaction[0]])
@@ -96,7 +96,7 @@ def validate(block_hash, block_index, time_of_validation, validator=True):
                 elif float(transaction[0]) < float(prev_time):
                     raise ValueError('times out of order')
 
-                if float(wallet_value(transaction[1])) < float(transaction[3]):
+                if float(wallet_value(transaction[1])) <= float(transaction[3]):
                     raise ValueError("not enough money")
 
 
@@ -159,10 +159,10 @@ def invalid_trans(block_index, trans_index):#for when theres a invalid transacti
         if float(wallet_value(transaction[1])) < float(transaction[3]):
             raise ValueError("not enough money")
 
-        invalid_tran = True
+        invalid_tran = False
 
     except:
-        invalid_tran = False
+        invalid_tran = True
 
     if invalid_tran:
         del blockchain[block_index][trans_index]#delete false transaction
@@ -204,7 +204,7 @@ def wallet_value(pub_adrress):
                     amount_in_wallet += float(transaction[3])
                 if transaction[1] == pub_adrress:
                     amount_in_wallet -= float(transaction[3])
-                    amount_in_wallet -= float(transaction[3]) * 0.001
+                    amount_in_wallet -= float(transaction[3]) * 0.01
 
     return amount_in_wallet
 
@@ -215,52 +215,11 @@ def trans_fee_calc(block_index):
 
     trans_fee = 0.0
     for transaction in blockchain[block_index]:
-        trans_fee += float(transaction[3])*0.001
+        trans_fee += float(transaction[3])*0.01
 
     return trans_fee
 
 
-def coin_val():
-    GOD_WAL = wallet_value("8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033") #amount in god wallet
-    sold = 50000000 - GOD_WAL
-    val = sold*0.0037
-    return val
-
-def buy_cost(amount):
-    start_val = coin_val()
-
-    amount_dif_dec = round(amount%1,10)
-    amount_dif = amount - amount_dif_dec
-
-    cost = 0
-
-    cur_val = start_val
-
-    for i in range(int(amount_dif)):
-        cost += cur_val
-        cur_val += 0.0037
-
-    cost += amount_dif_dec *0.0037
-
-    return round(cost,10)
-
-def sell_cost(amount):
-    start_val = coin_val()
-
-    amount_dif_dec = round(amount % 1, 10)
-    amount_dif = amount - amount_dif_dec
-
-    cost = 0
-
-    cur_val = start_val
-
-    for i in range(int(amount_dif)):
-        cost += cur_val
-        cur_val += 0.0037
-
-    cost += amount_dif_dec * 0.0037
-
-    return round(cost, 10)
 
 def Block_valid(index, address, time_of_valid, hash):
     with open("info/Blockchain.pickle", "rb") as file:

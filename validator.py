@@ -1,6 +1,5 @@
 import time
 import node
-import Blockchain
 import random
 import pickle
 import math
@@ -16,66 +15,34 @@ def hash_num(hash):
     num = int(hash,16)
     return num
 
-def validator_updator(time):#can probably delete this function             could be used to have specific file for validator transactions
-    with open("info/Validator.pickle", "rb") as file:
-        validator = pickle.load(file)
-        
-    with open("info/Nodes.pickle", "rb") as file:
-        nodes = pickle.load(file)
-    
-    with open("info/Blockchain.pickle", "rb") as file:
-        blockchain = pickle.load(file)
-    
-    for node in nodes:
-        if node[0] <= time:
-            public = node[2]
-            steak = "4aa5f462171c2c71129d6064b5c986a9a0610ff4afb1f90b13f4e29e"
-            amount_steaked = 0.0
-            for block in blockchain:
-                if block[52][0]:
-                    for transaction in block:
-                        if transaction[1] == public and transaction[2] == steak:
-                            amount_steaked += transaction[3]
 
-                        if transaction[2] == public and transaction[1] == steak:
-                            amount_steaked -= transaction[3]
-        
-
-
-def rb(hash, time):#random bias function returns index of node
+def rb(hash, time, return_length=1):#random bias function returns index of node
     with open("info/Nodes.pickle", "rb") as file:
         nodes = pickle.load(file)
 
-    with open("info/Blockchain.pickle", "rb") as file:
-        blockchain = pickle.load(file)
-        
+    with open("info/stake_trans.pickle", "rb") as file:
+        stake_trans = pickle.load(file)
 
     rb = []#random biased
     for node in nodes:
-        if node[0] <= time:
-            public = node[2]
-            steak = "4aa5f462171c2c71129d6064b5c986a9a0610ff4afb1f90b13f4e29e"
-            amount_steaked = 0.0
-            for block in blockchain:
-                if block[0][1] >= time:
-                    break
-                if block[52][0]:
-                    for transaction in block:
-                        if transaction[1] == public and transaction[2] == steak:
-                            amount_steaked += transaction[3]
+        public = node[2]
+        amount_steaked = 0.0
+        for transaction in stake_trans:
+            if float(transaction["time"]) < time:
 
-                        if transaction[2] == public and transaction[1] == steak:
-                            amount_steaked -= transaction[3]
+                if transaction["sender"] == public:
+                    amount_steaked -= transaction["amount"]*0.99
 
-            amount_steaked = math.ceil(amount_steaked)
+                if transaction["reciever"] == public:
+                    amount_steaked += transaction["amount"]*0.99
 
-            for _ in range(int(amount_steaked)):
-                rb.append(node)
+        amount_steaked = math.ceil(amount_steaked)
+        rb.append(amount_steaked)
 
     random.seed(hash_num(hash))
-    ran_ind = random.randint(0, len(rb))
+    rand_node = random.choices(nodes, weights=rb, k=return_length)
 
-    return rb[ran_ind], time
+    return rand_node, time
     
 
 def am_i_validator():
@@ -88,11 +55,12 @@ def am_i_validator():
         block_num =0
         for block in blockchain:
             if not block[-1][0]:
-                block_time = block[-1][1]
-                hash = block[51][0]
-                node,time_valid = rb(hash, block_time)
-                if node[2] == my_pub:
-                    Blockchain.validate(hash, block_num, time_valid)
+                if int(time.time() - float(blockchain[-1][1]["time"])) > 900:
+                    block_time = block[-1][1]
+                    hash = block[-3][0]
+                    node,time_valid = rb(hash, block_time)
+                    if node[2] == my_pub:
+                        blockchain.validate(hash, block_num, time_valid)
 
 
             block_num += 1
