@@ -221,10 +221,10 @@ def send_to_all(message):
 
 
     
-def announce(self, pub_key):
+def announce(pub_key):
     send_to_all("HELLO "+ str(time.time()) + " " + pub_key)
 
-def get_nodes(self):
+def get_nodes():
     node = rand_act_node()
     send(node[1],"GET_NODES")
     while True:
@@ -238,7 +238,7 @@ def get_nodes(self):
 
 
 
-def get_blockchain(self):#send ask the website for blockchain as most up todate
+def get_blockchain():#send ask the website for blockchain as most up todate
     pass #send get request to website
 
 
