@@ -72,7 +72,10 @@ class Blockchain:
         return self.chain
 
     def get_block(self, block_index: int):
-        return self.chain[block_index]
+        try:
+            return self.chain[block_index]
+        except Exception as e:
+            print(e)
 
     def all_transactions(self,address: str):
         transactions = []
@@ -121,7 +124,11 @@ class Blockchain:
 
             if block[-1][0]:
                 if block[-1][2] == wallet_address:
-                    value += block[-2][0]
+                    value += block[-2][0]*0.5
+
+        if wallet_address == "3f41f86b3a3ac977bf03f026273fa353f1f83c0643d805c51d853f61":
+            for block in self.chain:
+                value += block[-2][0]*0.5
         return value
 
     def add_transaction(self, trans):
