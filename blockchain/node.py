@@ -74,15 +74,11 @@ def rand_act_node(num_nodes = 1):
 def request_reader(type):
     with open("recent_messages.txt", "r") as file:
         lines = file.read().splitlines()
-    AI_protocols = ["AI", "ONLINE?"]
     NREQ_protocol = ["NREQ"]#node request
-    DEP_protocol = ["DEP"]
     yh_protocol = ["yh"]
     Trans_protocol = ["TRANS"]
-    AI_Lines = []
     NODE_Lines = []
     NREQ_Lines = []
-    DEP_Lines = []
     yh_Lines = []
     Trans_Lines = []
     if str(lines) != "[]":
@@ -92,14 +88,8 @@ def request_reader(type):
             if line[0] == "":
                 del line # delete blank lines
 
-            elif line[1] in AI_protocols:
-                AI_Lines.append(" ".join(line))
-
             elif line[1] in NREQ_protocol:
                 NREQ_Lines.append(" ".join(line))
-
-            elif line[1] in DEP_protocol:
-                DEP_Lines.append(" ".join(line))
                 
             elif line[1] in yh_protocol:
                 yh_Lines.append(" ".join(line))
@@ -110,21 +100,6 @@ def request_reader(type):
             else:
                 NODE_Lines.append(" ".join(line))
 
-
-        if type == "AI":
-            if len(AI_Lines) != 0:
-                new_lines = []
-                with open("recent_messages.txt", "r") as file:
-                    file_lines = file.readlines()
-                for f_line in file_lines:
-                    if not AI_Lines[0] in f_line:#update to check multiple lines to lazy to do rn
-                        if not f_line.strip("\n") == "":
-                            new_lines.append(f_line)
-                open("recent_messages.txt", "w").close()
-                with open("recent_messages.txt", "a") as file:
-                    for n_line in new_lines:
-                        file.write(n_line)
-            return AI_Lines
 
         if type == "YH":
             if len(yh_Lines) != 0:
@@ -142,7 +117,7 @@ def request_reader(type):
                         file.write(n_line)
             return yh_Lines
 
-        if type == "NODE":
+        elif type == "NODE":
             if len(NODE_Lines) != 0:
                 new_lines = []
                 with open("recent_messages.txt", "r") as file:
@@ -158,7 +133,7 @@ def request_reader(type):
                         file.write(n_line)
             return NODE_Lines
 
-        if type == "NREQ":
+        elif type == "NREQ":
             if len(NREQ_Lines) != 0:
                 new_lines = []
                 with open("recent_messages.txt", "r+") as file:
@@ -174,23 +149,7 @@ def request_reader(type):
                         file.write(n_line)
             return NREQ_Lines
 
-        if type == "DEP":
-            if len(DEP_Lines) != 0:
-                new_lines = []
-                with open("recent_messages.txt", "r") as file:
-                    file_lines = file.readlines()
-                for f_line in file_lines:
-                    f_line.split(" ")
-                    if not DEP_Lines[0] in f_line:
-                        if not f_line.strip("\n") == "":
-                            new_lines.append(f_line)
-                open("recent_messages.txt", "w").close()
-                with open("recent_messages.txt", "a") as file:
-                    for n_line in new_lines:
-                        file.write(n_line)
-            return DEP_Lines
-
-        if type == "TRANS":
+        elif type == "TRANS":
             if len(Trans_Lines) != 0:
                 new_lines = []
                 with open("recent_messages.txt", "r") as file:

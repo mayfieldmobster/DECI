@@ -74,7 +74,6 @@ def rand_act_node(num_nodes = 1):
 def request_reader(type):
     with open("recent_messages.txt", "r") as file:
         lines = file.read().splitlines()
-    AI_protocols = ["AI", "ONLINE?"]
     NREQ_protocol = ["NREQ"]#node request
     DEP_protocol = ["DEP"]
     yh_protocol = ["yh"]
@@ -90,9 +89,6 @@ def request_reader(type):
             if line[0] == "":
                 del line # delete blank lines
 
-            elif line[1] in AI_protocols:
-                AI_Lines.append(" ".join(line))
-
             elif line[1] in NREQ_protocol:
                 NREQ_Lines.append(" ".join(line))
 
@@ -103,21 +99,6 @@ def request_reader(type):
                 yh_Lines.append(" ".join(line))
 
 
-
-        if type == "AI":
-            if len(AI_Lines) != 0:
-                new_lines = []
-                with open("recent_messages.txt", "r") as file:
-                    file_lines = file.readlines()
-                for f_line in file_lines:
-                    if not AI_Lines[0] in f_line:#update to check multiple lines to lazy to do rn
-                        if not f_line.strip("\n") == "":
-                            new_lines.append(f_line)
-                open("recent_messages.txt", "w").close()
-                with open("recent_messages.txt", "a") as file:
-                    for n_line in new_lines:
-                        file.write(n_line)
-            return AI_Lines
 
         if type == "YH":
             if len(yh_Lines) != 0:
@@ -214,17 +195,12 @@ def get_nodes():
         with open("./info/Nodes.pickle", "wb") as file:
             pickle.dump(nodes, file)
 
-def get_blockchain():#send ask the website for blockchain as most up todate
-    rand_act_node()
-
-
 def send_node(host):
     with open("info/Nodes.pickle", "rb") as file:
         Nodes = pickle.load(file)
     str_node = str(Nodes)
     str_node = str_node.replace(" ", "")
     send(host, "NREQ " + str_node)
-
 
 def new_node(time, ip, pub_key):
     with open("info/Nodes.pickle", "rb") as file:

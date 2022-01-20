@@ -1,7 +1,7 @@
 from blockchain import node
 import time
 from requests import get#
-import pickle
+import ai
 
 def read():
     time.sleep(5)
@@ -19,6 +19,13 @@ def read():
             if message[1] == "HELLO":
                 node.new_node(message[2], message[0], message[3])
                 print(message)
+
+            if message[1] == "ONLINE?":
+                node.send_node(message[0], "yh")
+                print(message)
+
+            elif message[1] == "AI":
+                AI.AI_REQ(message)
 
             else:
                 pass

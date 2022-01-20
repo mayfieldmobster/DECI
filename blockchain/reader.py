@@ -16,11 +16,11 @@ def read():
                 node.send_node(message[0])
                 print(message)
 
-            if message[1] == "HELLO":
+            elif message[1] == "HELLO":
                 node.new_node(message[2], message[0], message[3])
                 print(message)
 
-            if message[1] == "VALID":#update block to true
+            elif message[1] == "VALID":#update block to true
                 with open("../info/Blockchain.pickle", "rb") as file:
                     blockchain = pickle.load(file)
                 with open("../info/Nodes.pickle", "rb") as file:
@@ -34,7 +34,7 @@ def read():
                 with open("info/Blocks.pickle","wb") as file:
                     pickle.dump(blockchain, file)
 
-            if message[1] == "TRANS_INVALID":
+            elif message[1] == "TRANS_INVALID":
                 if ip != message[0]:
                     with open("../info/Blockchain.pickle", "rb") as file:
                         blockchain = pickle.load(file)
@@ -43,12 +43,16 @@ def read():
                     with open("info/Blocks.pickle", "wb") as file:
                         pickle.dump(blockchain, file)
 
-            if message[1] == "BLOCKCHAIN?":
+            elif message[1] == "ONLINE?":
+                node.send_node(message[0], "yh")
+                print(message)
+
+            elif message[1] == "BLOCKCHAIN?":
                 with open("../info/Blockchain.pickle", "rb") as file:
                     blockchain = pickle.load(file)
                 node.send_node(message[0], "BLOCKCHAIN " + blockchain.send_blockchain())
 
-            if message[1] == "BLOCKCHAIN":
+            elif message[1] == "BLOCKCHAIN":
                 with open("../info/Blockchain.pickle", "rb") as file:
                     blockchain = pickle.load(file)
                 blockchain.update(message)
