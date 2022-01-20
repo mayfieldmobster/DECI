@@ -1,18 +1,13 @@
-import pickle
 import itertools
 import hashlib
-import sys
-
-import self as self
+import ast
 from ecdsa import SigningKey, VerifyingKey, SECP112r2
 import node
-import time
 from ecdsa.util import randrange_from_seed__trytryagain
 import os
 import validator
 import copy
 from numba import jit
-
 
 def priv_key_gen():
     seed = os.urandom(SECP112r2.baselen)
@@ -20,17 +15,14 @@ def priv_key_gen():
     key, hex_key = SigningKey.from_secret_exponent(secexp, curve=SECP112r2)
     return key, hex_key
 
-
 def pub_key_gen(private_key):
     public_key = private_key.verifying_key
     hex_key = public_key.to_string().hex()
     return public_key, hex_key
 
-
 def sign_trans(private_key, transaction):
     signature = private_key.sign(transaction.encode())
     return signature
-
 
 def hash_block(block):
     for val in block:
@@ -79,7 +71,7 @@ class Blockchain:
     def __call__(self):
         return self.chain
 
-    def get_block(self,block_index: int):
+    def get_block(self, block_index: int):
         return self.chain[block_index]
 
     def all_transactions(self,address: str):
@@ -101,10 +93,19 @@ class Blockchain:
             total += block[-2][0]
         return total
 
-
+    def hash_block(self,block):
+        for val in block:
+            if isinstance(val, dict):
+                val = list(val.values())
+        block = list(itertools.chain.from_iterable(block))
+        print(block)
+        str_data = " ".join(block)
+        hashed = hashlib.sha256(str_data.encode())
+        hex_hashed = hashed.hexdigest()
+        return hex_hashed
 
     def update(self, prev_chain):
-        self.chain = prev_chain
+        self.chain = ast.literal_eval(str(prev_chain))
 
     @jit(nopython=True)
     def wallet_value(self, wallet_address):
@@ -142,8 +143,8 @@ class Blockchain:
                         temp_block.pop()
                         temp_block.pop()
 
-                        self.chain[-2][-3] = [hash_block(temp_block), trans["time"]]
-                        self.chain[-1][0] = [hash_block(temp_block)]
+                        self.chain[-2][-3] = [self.hash_block(temp_block), trans["time"]]
+                        self.chain[-1][0] = [self.hash_block(temp_block)]
                         self.chain[-2][-2][0] += (trans["amount"] * 0.01)
                         self.chain[-2][-1][1] = trans["time"]
 
@@ -152,16 +153,15 @@ class Blockchain:
 
         elif relative_time > 900:
             b_time = self.chain[-1][-1]["time"]
-            block_hash = hash(self.chain[-1])
+            block_hash = self.hash_block(self.chain[-1])
             trans_fees = 0
             for b_trans in self.chain[-1]:
                 if isinstance(b_trans, dict):
                     trans_fees += b_trans["amount"] * 0.01
 
             block = copy.copy(self.chain[-1])
-            block = sorted(block[1:], key=lambda block: float(block["time"]))
+            block = sorted(block[1:], key=lambda block : float(block["time"]))
             self.chain[-1] = block.insert(0, self.chain[-1][0])
-
             self.chain[-1].append([block_hash, b_time])
             self.chain[-1].append([trans_fees])
             self.chain[-1].append([False, b_time])
@@ -185,12 +185,12 @@ class Blockchain:
                     raise ValueError("sender does not have ")
 
             except:
-                if validator:
+                if validating:
                     message = ["TRANS_INVALID", str(block_index), str(transindex)]
                     message = " ".join(message)
                     node.send_to_all(message)
 
-                if not validator:
+                if not validating:
                     return False
 
             transindex += 1
@@ -230,7 +230,7 @@ class Blockchain:
                 pre_hashed_blocks[block_index + i].pop()
                 pre_hashed_blocks[block_index + i].pop()
                 pre_hashed_blocks[block_index + i].pop()
-                block_hash = hash_block(pre_hashed_blocks[block_index + i])
+                block_hash = self.hash_block(pre_hashed_blocks[block_index + i])
                 self.chain[block_index + i][-3][0].append(block_hash)
                 self.chain[block_index + i + 1][0] = [block_hash]
 
@@ -246,6 +246,9 @@ class Blockchain:
                 if ran_node[2] == public_key:
                     if not self.chain[-1][0]:
                         self.chain[block_index][-1] = [True, time_of_validation, public_key]
+
+    def send_blockchain(self):
+        return str(self.chain).replace(" ", "")
 
 
 

@@ -1,4 +1,3 @@
-import zipfile
 import ast
 import node
 import os
@@ -10,10 +9,10 @@ import numpy as np
 
 
 def write_script(string):
-    open("model.py", "w").close()
+    open("../model.py", "w").close()
     script = " ".join(string)
     script = ast.literal_eval(script)
-    with open("model.py", "w") as file:
+    with open("../model.py", "w") as file:
         for line in script:
             file.write(line)
     return script
@@ -110,7 +109,7 @@ def please_no_hack():
                  "pandas",
                  "scipy"]
 
-    with open("model.py", "r") as file:
+    with open("../model.py", "r") as file:
         lines = file.readlines()
         no_malware = no_read(lines)
         virus = False

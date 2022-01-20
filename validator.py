@@ -52,6 +52,7 @@ def am_i_validator():
     while True:
         with open("info/Blockchain.pickle", "rb") as file:
             blockchain = pickle.load(file)
+            blockchain = blockchain
         block_num =0
         for block in blockchain:
             if not block[-1][0]:

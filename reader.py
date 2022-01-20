@@ -44,6 +44,15 @@ def read():
                     with open("info/Blocks.pickle", "wb") as file:
                         pickle.dump(blockchain, file)
 
+            if message[1] == "BLOCKCHAIN?":
+                with open("info/Blockchain.pickle", "rb") as file:
+                    blockchain = pickle.load(file)
+                node.send_node(message[0], "BLOCKCHAIN " + blockchain.send_blockchain())
+
+            if message[1] == "BLOCKCHAIN":
+                with open("info/Blockchain.pickle", "rb") as file:
+                    blockchain = pickle.load(file)
+                blockchain.update(message)
 
             else:
                 pass

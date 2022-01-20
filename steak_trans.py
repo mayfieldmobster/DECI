@@ -5,7 +5,7 @@ def updator():
     while True:
         with open("info/Blockchain.pickle", "rb") as file:
             blockchain = pickle.load(file)
-            blockchain = blockchain()
+            blockchain = blockchain
 
         with open("info/stake_trans.pickle", "rb") as file:
             stake_trans = pickle.load(file)
