@@ -1,5 +1,4 @@
 import time
-import node
 import random
 import pickle
 import math
@@ -17,10 +16,10 @@ def hash_num(hash):
 
 
 def rb(hash, time, return_length=1):#random bias function returns index of node
-    with open("info/Nodes.pickle", "rb") as file:
+    with open("../info/Nodes.pickle", "rb") as file:
         nodes = pickle.load(file)
 
-    with open("info/stake_trans.pickle", "rb") as file:
+    with open("../info/stake_trans.pickle", "rb") as file:
         stake_trans = pickle.load(file)
 
     rb = []#random biased
@@ -47,10 +46,10 @@ def rb(hash, time, return_length=1):#random bias function returns index of node
 
 def am_i_validator():
     time.sleep(4)
-    with open("info/Public_key.txt", "r") as file:
+    with open("../info/Public_key.txt", "r") as file:
         my_pub = file.read()
     while True:
-        with open("info/Blockchain.pickle", "rb") as file:
+        with open("../info/Blockchain.pickle", "rb") as file:
             blockchain = pickle.load(file)
             blockchain = blockchain
         block_num =0

@@ -1,5 +1,5 @@
 from AI import Blockchain
-import node
+from blockchain import node
 import time
 from ecdsa import VerifyingKey, SECP112r2
 import copy
@@ -24,7 +24,7 @@ def read():
                     sig_cor = public_key.verify(bytes.fromhex(trans["sig"]), trans_no_sig.encode())
                 except:
                     continue
-                with open("info/Blockchain.pickle", "rb") as file:
+                with open("../info/Blockchain.pickle", "rb") as file:
                     blockchain = pickle.load(file)
                     blockchain = blockchain
                 if trans in blockchain[-1] or trans in blockchain[-2]:

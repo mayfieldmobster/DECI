@@ -3,11 +3,11 @@ import pickle
 def updator():
     STAKE_WALLET = "4aa5f462171c2c71129d6064b5c986a9a0610ff4afb1f90b13f4e29e"
     while True:
-        with open("info/Blockchain.pickle", "rb") as file:
+        with open("../info/Blockchain.pickle", "rb") as file:
             blockchain = pickle.load(file)
             blockchain = blockchain
 
-        with open("info/stake_trans.pickle", "rb") as file:
+        with open("../info/stake_trans.pickle", "rb") as file:
             stake_trans = pickle.load(file)
 
         for block in blockchain:
@@ -17,7 +17,7 @@ def updator():
                         if trans not in stake_trans:
                             stake_trans.append(trans)
 
-        with open("info/stake_trans.pickle", "wb") as file:
+        with open("../info/stake_trans.pickle", "wb") as file:
             pickle.dump(stake_trans, file)
 
 

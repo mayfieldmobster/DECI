@@ -6,7 +6,8 @@ import node
 import time
 from ecdsa.util import randrange_from_seed__trytryagain
 import os
-import validator
+from blockchain import validator
+
 
 def hash_block(data):
     data = list(itertools.chain.from_iterable(data))
@@ -225,7 +226,7 @@ def Block_valid(index, address, time_of_valid, hash):
     with open("../info/Blockchain.pickle", "rb") as file:
 
         blockchain = pickle.load(file)
-        node = validator.rb(hash,blockchain[index][-1][0])
+        node = validator.rb(hash, blockchain[index][-1][0])
         cor_validation = validate(hash,index,time_of_valid,False)
         if cor_validation:
             if node[1] == address:

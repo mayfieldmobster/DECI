@@ -210,7 +210,7 @@ def request_reader(type):
 
 
 def send_to_all(message):
-    with open("info/Nodes.pickle", "rb") as file:
+    with open("../info/Nodes.pickle", "rb") as file:
         all_nodes = pickle.load(file)
     for node in all_nodes:
         try:
@@ -233,7 +233,7 @@ def get_nodes():
         line = line.split(" ")
         nodes = line[2]
         nodes = ast.literal_eval(nodes)
-        with open("./info/Nodes.pickle", "wb") as file:
+        with open("../info/Nodes.pickle", "wb") as file:
             pickle.dump(nodes, file)
 
 def get_blockchain():#send ask the website for blockchain as most up todate
@@ -241,7 +241,7 @@ def get_blockchain():#send ask the website for blockchain as most up todate
 
 
 def send_node(host):
-    with open("info/Nodes.pickle", "rb") as file:
+    with open("../info/Nodes.pickle", "rb") as file:
         Nodes = pickle.load(file)
     str_node = str(Nodes)
     str_node = str_node.replace(" ", "")
@@ -249,7 +249,7 @@ def send_node(host):
 
 
 def new_node(time, ip, pub_key):
-    with open("info/Nodes.pickle", "rb") as file:
+    with open("../info/Nodes.pickle", "rb") as file:
         nodes = pickle.load(file)
     new_node = [time, ip, pub_key]
     repeat = False
@@ -258,7 +258,7 @@ def new_node(time, ip, pub_key):
             repeat = True
     if not repeat:
         nodes.append(new_node)
-        with open("info/Nodes.pickle","wb") as file:
+        with open("../info/Nodes.pickle", "wb") as file:
             pickle.dump(nodes, file)
 
 def receiver():

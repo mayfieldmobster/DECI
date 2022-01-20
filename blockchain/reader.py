@@ -1,5 +1,4 @@
-import node
-import ast
+from blockchain import node
 import time
 from requests import get#
 import pickle
@@ -22,9 +21,9 @@ def read():
                 print(message)
 
             if message[1] == "VALID":#update block to true
-                with open("info/Blockchain.pickle", "rb") as file:
+                with open("../info/Blockchain.pickle", "rb") as file:
                     blockchain = pickle.load(file)
-                with open("info/Nodes.pickle", "rb") as file:
+                with open("../info/Nodes.pickle", "rb") as file:
                     nodes = pickle.load(file)
                 for nod in nodes:
                     if nod[1] == message[0]:
@@ -37,7 +36,7 @@ def read():
 
             if message[1] == "TRANS_INVALID":
                 if ip != message[0]:
-                    with open("info/Blockchain.pickle", "rb") as file:
+                    with open("../info/Blockchain.pickle", "rb") as file:
                         blockchain = pickle.load(file)
                     blockchain.invalid_trans(int(message[2]),int(message[3]))
                     print(message)
@@ -45,12 +44,12 @@ def read():
                         pickle.dump(blockchain, file)
 
             if message[1] == "BLOCKCHAIN?":
-                with open("info/Blockchain.pickle", "rb") as file:
+                with open("../info/Blockchain.pickle", "rb") as file:
                     blockchain = pickle.load(file)
                 node.send_node(message[0], "BLOCKCHAIN " + blockchain.send_blockchain())
 
             if message[1] == "BLOCKCHAIN":
-                with open("info/Blockchain.pickle", "rb") as file:
+                with open("../info/Blockchain.pickle", "rb") as file:
                     blockchain = pickle.load(file)
                 blockchain.update(message)
 

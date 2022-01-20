@@ -1,14 +1,7 @@
 import os
-import node
+from blockchain import node, reader, reciever, trans_reader, validator
 import concurrent.futures
-import reciever
-import reader
-import AI_reader
-import time
-import validator
-import test
-import socket
-import trans_reader
+from AI import AI_reader
 
 """
 update tensorflow
