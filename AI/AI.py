@@ -8,6 +8,24 @@ import re
 import numpy as np
 
 
+class DECIError(Exception):
+    pass
+
+
+class LibraryError(DECIError):
+    """This Exception is raised when an invalid library is used"""
+    pass
+
+
+class OpenError(DECIError):
+    """This Exception is raised when the script is trying to open a file it is not aloud to"""
+
+
+class ScriptError(DECIError):
+    """This Exception is raised when invalid function are trying to be used"""
+    pass
+
+
 def write_script(string):
     open("../model.py", "w").close()
     script = " ".join(string)
@@ -37,59 +55,70 @@ def no_read(lines):
     aloud = ["'r'", "'rb'", '"r"', '"rb"']
     for line in lines:
         if "open" in line:
+            if line.count(",") > 1:
+                no_virus = False
+                raise OpenError("There are multiple ',' in the open line")
             info = re.findall(r'\(.*?\)', line)[0]
             info = info.replace("(", "").replace(")", "").split(",")
 
-            for mode in aloud:
-                if mode != info[1]:  # if second val in open("lol.txt","wb")
-                    no_virus = False
-                    break
+            if info[1] not in aloud:  # if second val in open("lol.txt","wb")
+                no_virus = False
+                raise OpenError("mode is invalid (No writing to files)")
+                break
 
-            for val in info:  # if mode used open(mode="wb", "file=lol.txt")
-                if "mode" in val:
-                    for mode in aloud:
-                        if mode in val:
-                            no_virus = False
-                            break
         if "C:" in line:
             no_virus = False
+            raise ScriptError("You are not allowed to access drive")
             break
 
         if ".." in line:
             no_virus = False
+            raise ScriptError("You are not allowed to access other directories")
             break
 
         if "raise" in line:
             no_virus = False
+            raise ScriptError("You are not allowed to raise Errors")
             break
 
-        if "compile(" in line:
+        if "compile" in line and "compile_" not in line:
             no_virus = False
+            raise ScriptError("The compile function is not allowed")
             break
 
         if "eval" in line:
             no_virus = False
+            raise ScriptError("The eval function is not allowed")
             break
 
         if "exec" in line:
             no_virus = False
+            raise ScriptError("The exec function is not allowed")
             break
 
         if "__import__" in line:
             no_virus = False
+            raise ScriptError("Please use the normal import method")
             break
 
         if "cimport" in line:
             no_virus = False
+            raise ScriptError("cimport is not allowed")
             break
 
         if "cdef" in line:
             no_virus = False
+            raise ScriptError("cdef is not allowed")
             break
+
+        if "cython" in line:
+            no_virus = False
+            raise ScriptError("Cython is not allowed")
 
         for directory in linux:
             if directory in line:
                 no_virus = False
+                raise ScriptError("You are not allowed to access base directories")
                 break
 
     return no_virus
@@ -111,7 +140,10 @@ def please_no_hack():
 
     with open("../model.py", "r") as file:
         lines = file.readlines()
-        no_malware = no_read(lines)
+        try:
+            no_malware = no_read(lines)
+        except Exception as e:
+            return
         virus = False
         framework = ""
         if not no_malware:
@@ -158,6 +190,10 @@ def tf_config(nodes, index):
 
 
 def AI_REQ(message):
+    """
+    values in message are deleted to leave only the lines in the script
+    """
+    ip = message[0]
     del message[0]  # delete IP
     del message[0]  # delete protocol
 
@@ -234,7 +270,7 @@ def AI_REQ(message):
             print(str(type(len(dependencies[3]) / 2)))
             write_dependencies(bytes.fromhex(str(dependencies[3])))
 
-    virus, framework = please_no_hack()
+    virus, framework, error = please_no_hack()
     if not virus:
 
         if framework == "tensorflow":

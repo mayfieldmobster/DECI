@@ -180,8 +180,8 @@ def send_to_all(message):
 
 
     
-def announce(pub_key):
-    send_to_all("HELLO "+ str(time.time()) + " " + pub_key)
+def announce(pub_key, port, version, node_type):
+    send_to_all(f"HELLO {str(time.time())} {pub_key} {str(port)} {version} {node_type}")
 
 def get_nodes():
     node = rand_act_node()
@@ -207,27 +207,28 @@ def send_node(host):
     send(host, "NREQ " + str_node)
 
 
-def new_node(time, ip, pub_key):
-    with open("../info/Nodes.pickle", "rb") as file:
+def new_node(time, ip, pub_key, port, version, node_type):
+    with open("info/Nodes.pickle", "rb") as file:
         nodes = pickle.load(file)
-    new_node = [time, ip, pub_key]
-    repeat = False
+    new_node = [time, ip, pub_key, port, version, node_type]
     for node in nodes:
         if node[2] == pub_key:
-            repeat = True
-    if not repeat:
-        nodes.append(new_node)
-        with open("../info/Nodes.pickle", "wb") as file:
-            pickle.dump(nodes, file)
+            return
+    nodes.append(new_node)
+    with open("info/Nodes.pickle","wb") as file:
+        pickle.dump(nodes, file)
 
-def receiver():
-    while True:
-        message, address = receive()
+def version(ver):
+    send_to_all(f"VERSION {ver}")
 
-        file = open("recent_messages.txt", "a")
+def version_update(ip, ver):
+    with open("./info/Nodes.pickle", "rb") as file:
+        nodes = pickle.load(file)
+    for nod in nodes:
+        if nod[1] == ip:
+            nod[4] = ver
+            break
 
-        file.write("\n" + address[0] + " " + " ".join(message))
-        file.close()
 
 if __name__ == "__main__":
     receive()

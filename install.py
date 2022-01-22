@@ -31,7 +31,7 @@ with open("./info/Public_key.txt", "w") as file:
 with open("./info/ports.txt", "w") as file:
     file.write(norm_port + "\n" + ai_port)
 
-print("Thats you,\n"
+print("That's you,\n"
       "make sure you are port forwarding BOTH PORTS!!!,\n"
       "run DECI.exe to start,\n"
       "if you want to change anything run this again.\n")

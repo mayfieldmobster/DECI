@@ -1,6 +1,5 @@
 import os
 import concurrent.futures
-import AI_reader
 import node
 import reciever
 
@@ -26,7 +25,7 @@ except:
 with concurrent.futures.ThreadPoolExecutor() as executor:
     executor.submit(reciever.rec, local_ip)#start recieving
     executor.submit(node.get_nodes)#update nodes
-    executor.submit(AI_reader.read)
+
 
 
 

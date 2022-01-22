@@ -1,7 +1,7 @@
 from blockchain import node
 import time
 from requests import get#
-import ai
+import AI
 
 def read():
     time.sleep(5)
