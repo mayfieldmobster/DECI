@@ -54,6 +54,7 @@ def no_read(lines):
 
     aloud = ["'r'", "'rb'", '"r"', '"rb"']
     for line in lines:
+        line = line.lower()
         if "open" in line:
             if line.count(",") > 1:
                 raise OpenError("There are multiple ',' in the open line")
@@ -64,7 +65,7 @@ def no_read(lines):
                 raise OpenError("mode is invalid (No writing to files)")
                 break
 
-        if "C:" in line:
+        if "c:" in line:
             raise ScriptError("You are not allowed to access drive")
             break
 
@@ -98,6 +99,10 @@ def no_read(lines):
 
         if "cdef" in line:
             raise ScriptError("cdef is not allowed")
+            break
+
+        if "cpdef" in line:
+            raise ScriptError("cpdef is not allowed")
             break
 
         if "cython" in line:
