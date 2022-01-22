@@ -56,72 +56,58 @@ def no_read(lines):
     for line in lines:
         if "open" in line:
             if line.count(",") > 1:
-                no_virus = False
                 raise OpenError("There are multiple ',' in the open line")
             info = re.findall(r'\(.*?\)', line)[0]
             info = info.replace("(", "").replace(")", "").split(",")
 
             if info[1] not in aloud:  # if second val in open("lol.txt","wb")
-                no_virus = False
                 raise OpenError("mode is invalid (No writing to files)")
                 break
 
         if "C:" in line:
-            no_virus = False
             raise ScriptError("You are not allowed to access drive")
             break
 
         if ".." in line:
-            no_virus = False
             raise ScriptError("You are not allowed to access other directories")
             break
 
         if "raise" in line:
-            no_virus = False
             raise ScriptError("You are not allowed to raise Errors")
             break
 
         if "compile" in line and "compile_" not in line:
-            no_virus = False
             raise ScriptError("The compile function is not allowed")
             break
 
         if "eval" in line:
-            no_virus = False
             raise ScriptError("The eval function is not allowed")
             break
 
         if "exec" in line:
-            no_virus = False
             raise ScriptError("The exec function is not allowed")
             break
 
         if "__import__" in line:
-            no_virus = False
             raise ScriptError("Please use the normal import method")
             break
 
         if "cimport" in line:
-            no_virus = False
             raise ScriptError("cimport is not allowed")
             break
 
         if "cdef" in line:
-            no_virus = False
             raise ScriptError("cdef is not allowed")
             break
 
         if "cython" in line:
-            no_virus = False
             raise ScriptError("Cython is not allowed")
 
         for directory in linux:
             if directory in line:
-                no_virus = False
                 raise ScriptError("You are not allowed to access base directories")
                 break
 
-    return no_virus
 
 
 def please_no_hack():
@@ -140,31 +126,29 @@ def please_no_hack():
 
     with open("../model.py", "r") as file:
         lines = file.readlines()
-        try:
-            no_malware = no_read(lines)
-        except Exception as e:
-            return
+        no_read(lines)
         virus = False
         framework = ""
-        if not no_malware:
-            return True, ""
         for line in lines:
             if "import" in line:
                 if "#" in line or "'" in line or '"' in line or "," in line:
-                    return True, ""
+                    raise LibraryError("no comments aloud in import line or multiple functions "
+                                       "(from tensorflow.keras import layers, regularizers)")
                 for library in libraries:
-
                     if library in line:
                         if "as" in line:
                             if library in line.split("as")[1]:
-                                return True, ""
+                                raise LibraryError("Library cannot be used as import name "
+                                                   "(import os as numpy)")
 
                         if "from" in line:
                             if not library in line.split("import")[0]:
-                                return True, ""
+                                raise LibraryError("import invalid "
+                                                   "(from os import pytorch)")
 
                         if not library in line.split(".")[0]:
-                            return True, ""
+                            raise LibraryError("import invalid "
+                                               "(import os.time)")
 
                     if library in line:
                         if library == "tensorflow":
@@ -174,7 +158,7 @@ def please_no_hack():
                             virus = False
                             framework = "torch"
                     else:
-                        return True, ""
+                        raise LibraryError("Invalid Import make sure to use only supported packages")
 
     return virus, framework
 
@@ -269,8 +253,11 @@ def AI_REQ(message):
         else:
             print(str(type(len(dependencies[3]) / 2)))
             write_dependencies(bytes.fromhex(str(dependencies[3])))
-
-    virus, framework, error = please_no_hack()
+    try:
+        virus, framework, error = please_no_hack()
+    except Exception as e:
+        if isinstance(e, LibraryError):
+            node.send(ip, f"Error {str(e)}")
     if not virus:
 
         if framework == "tensorflow":
