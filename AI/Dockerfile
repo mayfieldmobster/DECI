@@ -22,10 +22,14 @@ RUN wget https://developer.download.nvidia.com/compute/machine-learning/repos/ub
 RUN apt install -y ./libnvinfer7_7.1.3-1+cuda11.0_amd64.deb
 RUN apt-get update
 
-RUN apt-get -y --allow-downgrades install --no-install-recommends cuda-11-0 libcudnn8=8.0.4.30-1+cuda11.0 libcudnn8-dev=8.0.4.30-1+cuda11.0
+RUN apt-get -y --allow-downgrades install cuda-11-0
+RUN apt-get -y --allow-downgrades install libcudnn8=8.0.4.30-1+cuda11.0
+RUN apt-get -y --allow-downgrades install libcudnn8-dev=8.0.4.30-1+cuda11.0
 RUN reboot
 
-RUN apt-get -y --allow-downgrades install --no-install-recommends libnvinfer7=7.1.3-1+cuda11.0 libnvinfer-dev=7.1.3-1+cuda11.0 libnvinfer-plugin7=7.1.3-1+cuda11.0
+RUN apt-get -y --allow-downgrades install libnvinfer7=7.1.3-1+cuda11.0
+RUN apt-get -y --allow-downgrades install libnvinfer-dev=7.1.3-1+cuda11.0
+RUN apt-get -y --allow-downgrades install libnvinfer-plugin7=7.1.3-1+cuda11.0
 
 RUN apt-get -y install python3 python3-pip
 
