@@ -16,11 +16,11 @@ def read():
                 node.send_node(message[0])
                 print(message)
 
-            if message[1] == "HELLO":
+            elif message[1] == "HELLO":
                 node.new_node(message[2], message[0], message[3])
                 print(message)
 
-            if message[1] == "ONLINE?":
+            elif message[1] == "ONLINE?":
                 node.send_node(message[0], "yh")
                 print(message)
 

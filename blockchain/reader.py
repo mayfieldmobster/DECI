@@ -1,7 +1,8 @@
 from blockchain import node
 import time
-from requests import get#
+from requests import get
 import pickle
+import blockchain
 
 def read():
     time.sleep(5)
@@ -21,41 +22,20 @@ def read():
                 print(message)
 
             elif message[1] == "VALID":#update block to true
-                with open("../info/Blockchain.pickle", "rb") as file:
-                    blockchain = pickle.load(file)
-                with open("../info/Nodes.pickle", "rb") as file:
-                    nodes = pickle.load(file)
-                for nod in nodes:
-                    if nod[1] == message[0]:
-                        address = nod[2]
-                        break
-                blockchain.block_valid(int(message[2]), address, message[3])
-                print(message)
-                with open("info/Blocks.pickle","wb") as file:
-                    pickle.dump(blockchain, file)
+                blockchain.validate_blockchain(int(message[2], message[0], message[3]))
 
             elif message[1] == "TRANS_INVALID":
                 if ip != message[0]:
-                    with open("../info/Blockchain.pickle", "rb") as file:
-                        blockchain = pickle.load(file)
-                    blockchain.invalid_trans(int(message[2]),int(message[3]))
-                    print(message)
-                    with open("info/Blocks.pickle", "wb") as file:
-                        pickle.dump(blockchain, file)
+                    blockchain.invalid_blockchain(int(message[2], int(message[3])))
 
             elif message[1] == "ONLINE?":
                 node.send_node(message[0], "yh")
                 print(message)
 
             elif message[1] == "BLOCKCHAIN?":
-                with open("../info/Blockchain.pickle", "rb") as file:
-                    blockchain = pickle.load(file)
-                node.send_node(message[0], "BLOCKCHAIN " + blockchain.send_blockchain())
+                chain = blockchain.read_blockchain
+                node.send_node(message[0], "BLOCKCHAIN " + chain.send_blockchain())
 
-            elif message[1] == "BLOCKCHAIN":
-                with open("../info/Blockchain.pickle", "rb") as file:
-                    blockchain = pickle.load(file)
-                blockchain.update(message)
 
             else:
                 pass

@@ -6,8 +6,7 @@ import pickle
 
 
 def read():
-    transactions = []
-    time.sleep(5)
+    time.sleep(20)
     while True:
         Trans_lines = node.request_reader("TRANS")
         if Trans_lines:

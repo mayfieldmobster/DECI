@@ -1,5 +1,5 @@
 """
-node 
+node
 """
 
 import socket
@@ -7,7 +7,7 @@ import random
 import pickle
 import time
 import ast
-import concurrent.futures
+import blockchain
 
 
 #recieve from nodes
@@ -77,10 +77,12 @@ def request_reader(type):
     NREQ_protocol = ["NREQ"]#node request
     yh_protocol = ["yh"]
     Trans_protocol = ["TRANS"]
+    BREQ_protocol = ["BLOCKCHAIN?"]
     NODE_Lines = []
     NREQ_Lines = []
     yh_Lines = []
     Trans_Lines = []
+    BREQ_Lines = []
     if str(lines) != "[]":
         for line in lines:
             line = line.split(" ")
@@ -90,11 +92,14 @@ def request_reader(type):
 
             elif line[1] in NREQ_protocol:
                 NREQ_Lines.append(" ".join(line))
-                
+
             elif line[1] in yh_protocol:
                 yh_Lines.append(" ".join(line))
 
             elif line[1] in Trans_protocol:
+                Trans_Lines.append(" ".join(line))
+
+            elif line[1] in BREQ_protocol:
                 Trans_Lines.append(" ".join(line))
 
             else:
@@ -164,6 +169,20 @@ def request_reader(type):
                         file.write(n_line)
             return Trans_Lines
 
+        elif type == "BREQ":
+            if len(BREQ_Lines) != 0:
+                new_lines = []
+                with open("recent_messages.txt", "r") as file:
+                    file_lines = file.readlines()
+                for f_line in file_lines:
+                    if not BREQ_Lines[0] in f_line:#update to check multiple lines to lazy to do rn
+                        if not f_line.strip("\n") == "":
+                            new_lines.append(f_line)
+                open("recent_messages.txt", "w").close()
+                with open("recent_messages.txt", "a") as file:
+                    for n_line in new_lines:
+                        file.write(n_line)
+            return BREQ_Lines
 
 
 
@@ -196,8 +215,17 @@ def get_nodes():
             pickle.dump(nodes, file)
 
 def get_blockchain():#send ask the website for blockchain as most up todate
-    rand_act_node()
-
+    node = rand_act_node()
+    send(node[1], "BLOCKCHAIN?")
+    while True:
+        lines = request_reader("BREQ")
+        if lines:
+            for line in lines:
+                line = line.split(" ")
+                if line[0] == node[1]:
+                    chain = ast.literal_eval(line[1])
+                    blockchain.write_blockchain(chain)
+                    return
 
 def send_node(host):
     with open("../info/Nodes.pickle", "rb") as file:
