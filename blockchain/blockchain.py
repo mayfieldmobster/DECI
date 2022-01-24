@@ -8,6 +8,7 @@ import os
 import validator
 import copy
 from numba import jit
+import pickle
 
 def priv_key_gen():
     seed = os.urandom(SECP112r2.baselen)
@@ -256,6 +257,36 @@ class Blockchain:
 
     def send_blockchain(self):
         return str(self.chain).replace(" ", "")
+
+
+def write_blockchain(blockchain):
+    with open("info/Blockchain.pickle", "wb") as file:
+        pickle.dump(blockchain, file)
+
+def read_blockchain():
+    with open("info/Blockchain.pickle", "rb") as file:
+        return pickle.load(file)
+
+def read_nodes():
+    with open("info/Nodes.pickle", "rb") as file:
+        return pickle.load(file)
+
+def validate_blockchain(block_index, ip, time):
+    chain = read_blockchain()
+    nodes = pickle.load()
+    for node in nodes:
+        if node[1] == ip:
+            wallet = node[2]
+            break
+    chain.block_valid(block_index, wallet, time)
+    write_blockchain(chain)
+
+def invalid_blockchain(block_index,transaction_index):
+    chain = read_blockchain()
+    chain.invalid_trans(block_index,transaction_index)
+    write_blockchain(chain)
+
+
 
 
 
