@@ -10,20 +10,24 @@ import copy
 from numba import jit
 import pickle
 
+
 def priv_key_gen():
     seed = os.urandom(SECP112r2.baselen)
     secexp = randrange_from_seed__trytryagain(seed, SECP112r2.order)
     key, hex_key = SigningKey.from_secret_exponent(secexp, curve=SECP112r2)
     return key, hex_key
 
+
 def pub_key_gen(private_key):
     public_key = private_key.verifying_key
     hex_key = public_key.to_string().hex()
     return public_key, hex_key
 
+
 def sign_trans(private_key, transaction):
     signature = private_key.sign(transaction.encode())
     return signature
+
 
 def hash_block(block):
     for val in block:
@@ -45,7 +49,7 @@ class Blockchain:
                                "amount": str(2 ^ 24), "sig": "0"}]]
 
     def __repr__(self):
-        return str(self.chain)#.replace("]", "]\n")
+        return str(self.chain)  # .replace("]", "]\n")
 
     def print_block(self, block_index):
         return str(self.chain[block_index]).replace("]", "]\n")
@@ -78,7 +82,7 @@ class Blockchain:
         except Exception as e:
             print(e)
 
-    def all_transactions(self,address: str):
+    def all_transactions(self, address: str):
         transactions = []
         for block in self.chain:
             for trans in block:
@@ -97,7 +101,7 @@ class Blockchain:
             total += block[-2][0]
         return total
 
-    def hash_block(self,block):
+    def hash_block(self, block):
         for val in block:
             if isinstance(val, dict):
                 val = list(val.values())
@@ -121,20 +125,20 @@ class Blockchain:
                         value -= float(trans["amount"])
                     if trans["receiver"] == wallet_address:
                         if block[-1][0]:
-                            value += (float(trans["amount"])*0.99)
+                            value += (float(trans["amount"]) * 0.99)
 
             if block[-1][0]:
                 if block[-1][2] == wallet_address:
-                    value += block[-2][0]*0.5
+                    value += block[-2][0] * 0.5
 
         if wallet_address == "3f41f86b3a3ac977bf03f026273fa353f1f83c0643d805c51d853f61":
             for block in self.chain:
-                value += block[-2][0]*0.5
+                value += block[-2][0] * 0.5
         return value
 
-    def add_transaction(self, trans):
+    def add_transaction(self, trans: dict):
         relative_time = int(float(trans["time"]) - float(self.chain[-1][1]["time"]))
-        #prev_relative_time = int(float(trans["time"]) - float(self.chain[-2][1]["time"]))
+        # prev_relative_time = int(float(trans["time"]) - float(self.chain[-2][1]["time"]))
         prev_relative_time = 10000
 
         if relative_time < 900:
@@ -168,7 +172,7 @@ class Blockchain:
                     trans_fees += b_trans["amount"] * 0.01
 
             block = copy.copy(self.chain[-1])
-            block = sorted(block[1:], key=lambda block : float(block["time"]))
+            block = sorted(block[1:], key=lambda block: float(block["time"]))
             self.chain[-1] = block.insert(0, self.chain[-1][0])
             self.chain[-1].append([block_hash, b_time])
             self.chain[-1].append([trans_fees])
@@ -177,7 +181,7 @@ class Blockchain:
             new_block = [[block_hash], trans]
             self.chain.append(new_block)
 
-    def validate(self, block_index, time_of_validation=0.0, validating=True):
+    def validate(self, block_index: int, time_of_validation: float = 0.0, validating: bool = True):
         transindex = 0
         for trans in self.chain[block_index]:
             if isinstance(trans, dict):
@@ -197,6 +201,7 @@ class Blockchain:
                     message = ["TRANS_INVALID", str(block_index), str(transindex)]
                     message = " ".join(message)
                     node.send_to_all(message)
+                    self.invalid_trans(block_index, transindex)
 
                 if not validating:
                     return False
@@ -209,7 +214,7 @@ class Blockchain:
         if not validating:
             return True
 
-    def invalid_trans(self, block_index, trans_index):
+    def invalid_trans(self, block_index: int, trans_index: int):
         block_index = int(block_index)
         trans_index = int(trans_index)
 
@@ -242,7 +247,7 @@ class Blockchain:
                 self.chain[block_index + i][-3][0].append(block_hash)
                 self.chain[block_index + i + 1][0] = [block_hash]
 
-    def block_valid(self, block_index, public_key, time_of_validation):
+    def block_valid(self, block_index: int, public_key: str, time_of_validation: float):
         # check if is actual validator
         nodes = []
         for hash in self.chain[block_index][-3]:
@@ -263,13 +268,16 @@ def write_blockchain(blockchain):
     with open("info/Blockchain.pickle", "wb") as file:
         pickle.dump(blockchain, file)
 
+
 def read_blockchain():
     with open("info/Blockchain.pickle", "rb") as file:
         return pickle.load(file)
 
+
 def read_nodes():
     with open("info/Nodes.pickle", "rb") as file:
         return pickle.load(file)
+
 
 def validate_blockchain(block_index, ip, time):
     chain = read_blockchain()
@@ -281,54 +289,113 @@ def validate_blockchain(block_index, ip, time):
     chain.block_valid(block_index, wallet, time)
     write_blockchain(chain)
 
-def invalid_blockchain(block_index,transaction_index):
+
+def invalid_blockchain(block_index, transaction_index):
     chain = read_blockchain()
-    chain.invalid_trans(block_index,transaction_index)
+    chain.invalid_trans(block_index, transaction_index)
     write_blockchain(chain)
-
-
-
 
 
 import objsize
 import time
+
 blockchain = Blockchain()
 start = time.time()
-blockchain.add_transaction({"time": "10", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "11", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "12", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "13", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "10", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "11", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "12", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "13", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
+blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
+                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
 time.sleep(0.1)
 end = time.time()
 print(blockchain)
 print(objsize.get_deep_size(blockchain))
-print(end-start-0.1)
-
-
+print(end - start - 0.1)

@@ -18,7 +18,7 @@ def read():
                 print(message)
 
             elif message[1] == "HELLO":
-                node.new_node(message[2], message[0], message[3])
+                node.new_node(message[2], message[0], message[3], message[4],message[5], message[6], message[7])
                 print(message)
 
             elif message[1] == "VALID":#update block to true
@@ -36,6 +36,11 @@ def read():
                 chain = blockchain.read_blockchain
                 node.send_node(message[0], "BLOCKCHAIN " + chain.send_blockchain())
 
+            elif message[1] == "UPDATE":
+                node.update_node(message[0],message[2], message[3], message[4], message[5], message[6])
+
+            elif message[1] == "DELETE":
+                node.delete_node(message[2], message[0], message[3], message[4])
 
             else:
                 pass

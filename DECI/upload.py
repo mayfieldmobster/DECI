@@ -18,9 +18,9 @@ def send(host, port, message):
         return "node offline"
 
 
-def upload(filename, depen_zip, AM_I=False, port="1379", sharding_type="OFF", batch_size=64, epochs=1, shuffle=True,
-           class_weight=None, sample_weight=None, initial_epoch=0, steps_per_epoch=None,
-           max_queue_size=10, ):  # am i a worker
+def upload(filename, depen_zip, AM_I: bool = False, port="1379", sharding_type: str= "OFF", batch_size: int = 64,
+           epochs: int = 1, shuffle: bool = True,class_weight: float = None, sample_weight=None, initial_epoch: int = 0,
+           steps_per_epoch: int = None, max_queue_size: int = 10, ):  # am i a worker
     script_identity = str(random.random())
     with open(filename, "r") as file:
         script = file.readlines()

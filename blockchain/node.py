@@ -8,7 +8,10 @@ import pickle
 import time
 import ast
 import blockchain
+import time
+from ecdsa import SigningKey, VerifyingKey, SECP112r2
 
+__version__ = "1.0"
 
 #recieve from nodes
 def receive(local_ip):
@@ -185,8 +188,6 @@ def request_reader(type):
             return BREQ_Lines
 
 
-
-
 def send_to_all(message):
     with open("../info/Nodes.pickle", "rb") as file:
         all_nodes = pickle.load(file)
@@ -196,11 +197,27 @@ def send_to_all(message):
         except:
             pass #node is offline
 
-
-
     
-def announce(pub_key, port, version, node_type):
-    send_to_all(f"HELLO {str(time.time())} {pub_key} {str(port)} {version} {node_type}")
+def announce(pub_key, port, version, node_type, priv_key):
+    announcement_time = str(time.time())
+    if not isinstance(priv_key, bytes):
+        priv_key = SigningKey.from_string(bytes.formathex(priv_key), curve=SECP112r2)
+    sig = priv_key.sign(announcement_time.encode("utf-8"))
+    send_to_all(f"HELLO {announcement_time} {pub_key} {str(port)} {version} {node_type} {sig}")
+
+def update(pub_key, port, version, priv_key):
+    update_time = str(time.time())
+    if not isinstance(priv_key, bytes):
+        priv_key = SigningKey.from_string(bytes.formathex(priv_key), curve=SECP112r2)
+    sig = priv_key.sign(update_time.encode("utf-8"))
+    send_to_all(f"UPDATE {update_time} {pub_key} {str(port)} {version} {sig}")
+
+def delete(pub_key, priv_key):
+    update_time = str(time.time())
+    if not isinstance(priv_key, bytes):
+        priv_key = SigningKey.from_string(bytes.formathex(priv_key), curve=SECP112r2)
+    sig = priv_key.sign(update_time.encode("utf-8"))
+    send_to_all(f"DELETE {update_time} {pub_key} {sig}")
 
 def get_nodes():
     node = rand_act_node()
@@ -235,16 +252,54 @@ def send_node(host):
     send(host, "NREQ " + str_node)
 
 
-def new_node(time, ip, pub_key, port, version, node_type):
+def new_node(time, ip, pub_key, port, version, node_type, sig):
     with open("info/Nodes.pickle", "rb") as file:
         nodes = pickle.load(file)
-    new_node = [time, ip, pub_key, port, version, node_type]
-    for node in nodes:
-        if node[2] == pub_key:
-            return
-    nodes.append(new_node)
-    with open("info/Nodes.pickle","wb") as file:
-        pickle.dump(nodes, file)
+    public_key = VerifyingKey.from_string(bytes.formathex(pub_key), curve=SECP112r2)
+    try:
+        assert public_key.verify(bytes.fromhex(sig), time.encode())
+        new_node = [time, ip, pub_key, port, version, node_type]
+        for node in nodes:
+            if node[2] == pub_key:
+                return
+            if node[1] == ip:
+                return
+        nodes.append(new_node)
+        with open("info/Nodes.pickle","wb") as file:
+            pickle.dump(nodes, file)
+    except:
+        return "node invalid"
+
+def update_node(ip, update_time, pub_key, port, version, sig):
+    with open("info/Nodes.pickle", "rb") as file:
+        nodes = pickle.load(file)
+    public_key = VerifyingKey.from_string(bytes.formathex(pub_key), curve=SECP112r2)
+    try:
+        assert public_key.verify(bytes.fromhex(sig), update_time.encode())
+        for node in nodes:
+            if node[1] == ip:
+                node[2] = pub_key
+                node[3] = port
+                node[4] = version
+        with open("info/Nodes.pickle","wb") as file:
+            pickle.dump(nodes, file)
+    except:
+        return "update invalid"
+
+def delete_node(time, ip, pub_key, sig):
+    with open("info/Nodes.pickle", "rb") as file:
+        nodes = pickle.load(file)
+    public_key = VerifyingKey.from_string(bytes.formathex(pub_key), curve=SECP112r2)
+    try:
+        assert public_key.verify(bytes.fromhex(sig), time.encode())
+        for node in nodes:
+            if node[1] == ip and node[2] == pub_key:
+                del node
+        with open("info/Nodes.pickle", "wb") as file:
+            pickle.dump(nodes, file)
+    except:
+        return "cancel invalid"
+
 
 def version(ver):
     send_to_all(f"VERSION {ver}")
