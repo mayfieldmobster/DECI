@@ -10,13 +10,15 @@ import ast
 import blockchain
 import time
 from ecdsa import SigningKey, VerifyingKey, SECP112r2
+import node
 
 __version__ = "1.0"
 
 #recieve from nodes
 def receive(local_ip):
-    """ message is split into array the first value the type of messge
-        the second value is the messgae"""
+    """
+    message is split into array the first value the type of message the second value is the message
+    """
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind((local_ip,1379))
     server.listen()
@@ -31,18 +33,39 @@ def receive(local_ip):
 
 
 #send to node
-def send(host,message):
+def send(host, message, port=1379, all = False):
+    """
+    sends a message to the given host
+    tries the default port and if it doesn't work search for actual port
+    this process is skipped if send to all for speed
+    """
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
-        client.connect((host, 1379))
+        client.connect((host, port))
         client.send(message.encode("utf-8"))
+        return
     except:
-        return "node offline"
+        pass  # bad practice will fix later
+    if not all:
+        try:
+            with open("info/Nodes.pickle", "rb") as file:
+                nodes = pickle.load(file)
+            for node in nodes:
+                if node[1] == host:
+                    if not int(node[3]) == 1379:
+                        client.connect((host, int(node[3])))
+                        client.send(message.encode("utf-8"))
+                        return
+        except:
+            return "node offline"
 
 
 
 #check if nodes online
 def online(address):
+    """
+    asks if a node is online and if it is it returns yh
+    """
     try:
         send(address,"ONLINE?")
     except:
@@ -54,10 +77,13 @@ def online(address):
         return False
 
 def rand_act_node(num_nodes = 1):
+    """
+    returns a list of random active nodes which is x length
+    """
     nodes = []
     i = 0
-    while i != num_nodes:
-        with open("info/Nodes.pickle.pickle", "rb") as file:
+    while i != num_nodes: # turn into for loop
+        with open("info/Nodes.pickle", "rb") as file:
             all_nodes = pickle.load(file)
         node_index = random.randint(len(all_nodes) - 1)
         node = all_nodes[node_index]
@@ -75,6 +101,9 @@ def rand_act_node(num_nodes = 1):
 
 
 def request_reader(type):
+    """
+    reads the recent messages and returns the message of the requested type
+    """
     with open("recent_messages.txt", "r") as file:
         lines = file.read().splitlines()
     NREQ_protocol = ["NREQ"]#node request
@@ -189,11 +218,14 @@ def request_reader(type):
 
 
 def send_to_all(message):
+    """
+    sends to all nodes
+    """
     with open("../info/Nodes.pickle", "rb") as file:
         all_nodes = pickle.load(file)
     for node in all_nodes:
         try:
-            send(node[1], message)
+            send(node[1], message, port=node[3], all=True)
         except:
             pass #node is offline
 
@@ -300,9 +332,8 @@ def delete_node(time, ip, pub_key, sig):
     except:
         return "cancel invalid"
 
-
 def version(ver):
-    send_to_all(f"VERSION {ver}")
+    send_to_all(f"VERSION {node.__version__}")
 
 def version_update(ip, ver):
     with open("./info/Nodes.pickle", "rb") as file:
@@ -311,7 +342,3 @@ def version_update(ip, ver):
         if nod[1] == ip:
             nod[4] = ver
             break
-
-
-if __name__ == "__main__":
-    receive()
