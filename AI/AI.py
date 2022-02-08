@@ -60,6 +60,8 @@ def no_read(lines):
                 raise OpenError("There are multiple ',' in the open line")
             info = re.findall(r'\(.*?\)', line)[0]
             info = info.replace("(", "").replace(")", "").split(",")
+            if "+" in info:
+                raise OpenError("+ was found in open")
 
             if info[1] not in aloud:  # if second val in open("lol.txt","wb")
                 raise OpenError("mode is invalid (No writing to files)")

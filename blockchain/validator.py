@@ -2,6 +2,8 @@ import time
 import random
 import pickle
 import math
+from numba import jit
+import blockchain
 
 
 """
@@ -14,6 +16,7 @@ def hash_num(hash):
     num = int(hash,16)
     return num
 
+@jit(nopython=True)
 def rb(hash, time, return_length=1):
     """
     the random biased function returns a random node based on the amount a node has stakes
@@ -59,18 +62,20 @@ def am_i_validator():
     with open("../info/Public_key.txt", "r") as file:
         my_pub = file.read()
     while True:
-        with open("../info/Blockchain.pickle", "rb") as file:
-            blockchain = pickle.load(file)
-            blockchain = blockchain
-        block_num = 0
-        for block in blockchain:
+        chain = blockchain.read_blockchain()
+        chain = chain  # return actual chain not object
+        block_index = 0
+        for block in chain:  # not efficient as checking validated blocks
             if not block[-1][0]:
-                if int(time.time() - float(blockchain[-1][1]["time"])) > 30:
+                if int(time.time() - float(chain[-1][1]["time"])) > 30:
                     block_time = block[-1][1]
                     hash = block[-3][0]
-                    node,time_valid = rb(hash, block_time)
-                    if node[2] == my_pub:
-                        blockchain.validate(hash, block_num, time_valid)
-            block_num += 1
+                    fallbacks = math.ceil(time.time()/block_time)
+                    node,time_valid = rb(hash, block_time, fallbacks)
+
+                    if node[-1][2] == my_pub:
+                        chain = blockchain.read_blockchain()
+                        chain.validate(block_index, time_valid)
+            block_index += 1
 
 
