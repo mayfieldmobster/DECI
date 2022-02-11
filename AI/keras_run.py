@@ -6,7 +6,7 @@ import keras
 
 def run(batch_size, epochs, sharding_type="OFF",
         shuffle=True, class_weight=None, sample_weight=None,
-        initial_epoch=0, steps_per_epoch=None, max_queue_size=10):
+        initial_epoch=0, steps_per_epoch=None, max_queue_size=10, compression=None):
 
     # Horovod: initialize Horovod.
     hvd.init()
