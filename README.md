@@ -9,10 +9,8 @@ The miners are rewarded via the crypto made through transaction fees thus the pr
 
 # TO DO:
 
-* TRANSACTION WEBSITE
+* Website
 * legal stuff
-* UPDATOR
-* AI cancel option
 * Pytorch support
-* malware checker
-* multi port support
+* Lite Nodes
+* Test network at a large scale
