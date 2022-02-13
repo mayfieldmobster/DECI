@@ -24,12 +24,12 @@ def receive(local_ip):
     server.listen()
     while True:
         client, address = server.accept()
-        message = client.recv(pow(2, 50)).decode("utf-8").split(" ")
         try:
+            message = client.recv(pow(2, 50)).decode("utf-8").split(" ")
             return message, address
             break
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
 
 # send to node
@@ -44,20 +44,20 @@ def send(host, message, port=1379, all=False):
         client.connect((host, port))
         client.send(message.encode("utf-8"))
         return
-    except:
-        pass  # bad practice will fix later
-    if not all:
-        try:
-            with open("info/Nodes.pickle", "rb") as file:
-                nodes = pickle.load(file)
-            for node in nodes:
-                if node[1] == host:
-                    if not int(node["port"]) == 1379:
-                        client.connect((host, int(node["port"])))
-                        client.send(message.encode("utf-8"))
-                        return
-        except:
-            return "node offline"
+    except Exception as e:
+        if isinstance(e, ConnectionRefusedError):
+            if not all:
+                try:
+                    with open("info/Nodes.pickle", "rb") as file:
+                        nodes = pickle.load(file)
+                    for node in nodes:
+                        if node[1] == host:
+                            if not int(node["port"]) == 1379:
+                                client.connect((host, int(node["port"])))
+                                client.send(message.encode("utf-8"))
+                                return
+                except Exception as e:
+                    return "node offline"
 
 
 # check if nodes online
