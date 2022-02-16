@@ -182,7 +182,7 @@ class Blockchain:
             self.chain.append(new_block)
 
     def validate(self, block_index: int, time_of_validation: float = 0.0, validating: bool = True):
-        transindex = 0
+        trans_index = 0
         for trans in self.chain[block_index]:
             if isinstance(trans, dict):
                 trans_no_sig = copy.copy(trans)
@@ -196,17 +196,17 @@ class Blockchain:
                 if self.wallet_value(trans["sender"]) < float(trans["amount"]):
                     raise ValueError("sender does not have ")
 
-            except:
-                if validating:
-                    message = ["TRANS_INVALID", str(block_index), str(transindex)]
-                    message = " ".join(message)
-                    node.send_to_all(message)
-                    self.invalid_trans(block_index, transindex)
+            except Exception as e:
+                if isinstance(e, AssertionError) or isinstance(e, ValueError):
+                    if validating:
+                        message = f"TRANS_INVALID {block_index} {trans_index}"
+                        node.send_to_all(message)
+                        self.invalid_trans(block_index, trans_index)
 
-                if not validating:
-                    return False
+                    if not validating:
+                        return False
 
-            transindex += 1
+            trans_index += 1
 
         if validating:
             node.send_to_all("VALID " + str(block_index) + " " + str(time_of_validation))
@@ -250,11 +250,11 @@ class Blockchain:
     def block_valid(self, block_index: int, public_key: str, time_of_validation: float):
         # check if is actual validator
         nodes = []
-        for hash in self.chain[block_index][-3]:
-            ran_node = validator.rb(hash)
-            nodes.append(ran_node)
-        cor_validation = self.validate(block_index, validating=False)
-        if cor_validation:
+        for block_hash in self.chain[block_index][-3]:
+            val_node = validator.rb(block_hash, time_of_validation)
+            nodes.append(val_node)
+        correct_validation = self.validate(block_index, validating=False)
+        if correct_validation:
             for ran_node in nodes:
                 if ran_node[2] == public_key:
                     if not self.chain[-1][0]:

@@ -17,7 +17,7 @@ def hash_num(hash):
     return num
 
 @jit(nopython=True)
-def rb(hash, time, return_length=1):
+def rb(hash, time):
     """
     the random biased function returns a random node based on the amount a node has stakes
     the random node is calculated using a seed
@@ -46,9 +46,10 @@ def rb(hash, time, return_length=1):
         rb.append(amount_staked)
 
     random.seed(hash_num(hash))
-    rand_node = random.choices(nodes, weights=rb, k=return_length)
+    number_of_misses = math.ciel(300.0/time.time())
+    rand_node = random.choices(nodes, weights=rb, k=(number_of_misses + 1))
 
-    return rand_node, time
+    return rand_node[-1], time
     
 
 def am_i_validator():
@@ -70,8 +71,7 @@ def am_i_validator():
                 if int(time.time() - float(chain[-1][1]["time"])) > 30:
                     block_time = block[-1][1]
                     hash = block[-3][0]
-                    fallbacks = math.ceil(time.time()/block_time)
-                    node,time_valid = rb(hash, block_time, fallbacks)
+                    node,time_valid = rb(hash, block_time)
 
                     if node[-1][2] == my_pub:
                         chain = blockchain.read_blockchain()
