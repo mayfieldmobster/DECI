@@ -2,7 +2,7 @@ import time
 import random
 import pickle
 import math
-from numba import jit
+#from numba import jit
 import blockchain
 
 
@@ -16,7 +16,7 @@ def hash_num(hash):
     num = int(hash,16)
     return num
 
-@jit(nopython=True)
+#@jit(nopython=True)
 def rb(hash, time):
     """
     the random biased function returns a random node based on the amount a node has stakes
