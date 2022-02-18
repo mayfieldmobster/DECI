@@ -229,7 +229,7 @@ def send_to_all(message):
 def announce(pub_key, port, version, node_type, priv_key):
     announcement_time = str(time.time())
     if not isinstance(priv_key, bytes):
-        priv_key = SigningKey.from_string(bytes.formathex(priv_key), curve=SECP112r2)
+        priv_key = SigningKey.from_string(bytes.fromhex(priv_key), curve=SECP112r2)
     sig = priv_key.sign(announcement_time.encode("utf-8"))
     send_to_all(f"HELLO {announcement_time} {pub_key} {str(port)} {version} {node_type} {sig}")
 
