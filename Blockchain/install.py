@@ -1,6 +1,6 @@
 import os
 
-os.system("pip3 install ecdsa objsize")
+os.system("pip3 install ecdsa objsize numba")
 
 import node
 
