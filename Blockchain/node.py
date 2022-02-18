@@ -220,7 +220,7 @@ def send_to_all(message):
     """
     sends to all nodes
     """
-    with open("../info/Nodes.pickle", "rb") as file:
+    with open("./info/Nodes.pickle", "rb") as file:
         all_nodes = pickle.load(file)
     for node in all_nodes:
         send(node[1], message, port=node[3], send_all=True)
