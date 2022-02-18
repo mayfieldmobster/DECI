@@ -14,7 +14,8 @@ import pickle
 def priv_key_gen():
     seed = os.urandom(SECP112r2.baselen)
     secexp = randrange_from_seed__trytryagain(seed, SECP112r2.order)
-    key, hex_key = SigningKey.from_secret_exponent(secexp, curve=SECP112r2)
+    key = SigningKey.from_secret_exponent(secexp, curve=SECP112r2)
+    hex_key = key.to_string().hex()
     return key, hex_key
 
 
@@ -188,7 +189,7 @@ class Blockchain:
                 trans_no_sig = copy.copy(trans)
                 trans_no_sig.pop("sig")
                 trans_no_sig = " ".join(trans_no_sig)
-                public_key = VerifyingKey.from_string(bytes.formathex(trans["sender"]), curve=SECP112r2)
+                public_key = VerifyingKey.from_string(bytes.fromhex(trans["sender"]), curve=SECP112r2)
 
             try:
                 assert public_key.verify(bytes.fromhex(trans["sig"]), trans_no_sig.encode())
@@ -399,3 +400,11 @@ end = time.time()
 print(blockchain)
 print(objsize.get_deep_size(blockchain))
 print(end - start - 0.1)
+
+priv, hex_priv = priv_key_gen()
+pub, hex_pub = pub_key_gen(priv)
+cur_time = time.time()
+sig = sign_trans(priv, str(cur_time))
+print(hex_priv, hex_pub, sig.hex(), cur_time)
+public_key = VerifyingKey.from_string(bytes.fromhex(hex_pub), curve=SECP112r2)
+assert public_key.verify(bytes.fromhex(sig.hex()), str(cur_time).encode())

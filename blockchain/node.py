@@ -289,8 +289,9 @@ def new_node(initiation_time, ip, pub_key, port, node_version, node_type, sig):
     with open("info/Nodes.pickle", "rb") as file:
         nodes = pickle.load(file)
     public_key = VerifyingKey.from_string(bytes.formathex(pub_key), curve=SECP112r2)
+    node_types = ["AI", "blockchain", "lite"]
     try:
-        assert public_key.verify(bytes.fromhex(sig), initiation_time.encode())
+        assert public_key.verify(bytes.fromhex(sig), str(initiation_time).encode())
         new_node = {"time": initiation_time, "ip": ip, "pub_key": pub_key, "port": port, "version": node_version,
                     "node_type": node_type}
         for node in nodes:
@@ -298,6 +299,8 @@ def new_node(initiation_time, ip, pub_key, port, node_version, node_type, sig):
                 return
             if node["ip"] == ip:
                 return
+        if node["node_type"] not in node_types:
+            return
         nodes.append(new_node)
         with open("info/Nodes.pickle", "wb") as file:
             pickle.dump(nodes, file)
@@ -310,7 +313,7 @@ def update_node(ip, update_time, pub_key, port, node_version, sig):
         nodes = pickle.load(file)
     public_key = VerifyingKey.from_string(bytes.formathex(pub_key), curve=SECP112r2)
     try:
-        assert public_key.verify(bytes.fromhex(sig), update_time.encode())
+        assert public_key.verify(bytes.fromhex(sig), str(update_time).encode())
         for node in nodes:
             if node["ip"] == ip:
                 node["pub_key"] = pub_key
@@ -327,7 +330,7 @@ def delete_node(deletion_time, ip, pub_key, sig):
         nodes = pickle.load(file)
     public_key = VerifyingKey.from_string(bytes.formathex(pub_key), curve=SECP112r2)
     try:
-        assert public_key.verify(bytes.fromhex(sig), deletion_time.encode())
+        assert public_key.verify(bytes.fromhex(sig), str(deletion_time).encode())
         for node in nodes:
             if node["ip"] == ip and node["pub_key"] == pub_key:
                 del node
