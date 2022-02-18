@@ -48,7 +48,7 @@ class Blockchain:
     def __init__(self):
         self.chain = [[["0"], {"time": "0", "sender": "0",
                                "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                               "amount": str(2 ^ 24), "sig": "0"}]]
+                               "amount": str(2**23), "sig": "0"}]]
 
     def __repr__(self):
         return str(self.chain)  # .replace("]", "]\n")
@@ -307,3 +307,6 @@ def key_tester():
     print(hex_priv, hex_pub, sig.hex(), cur_time)
     public_key = VerifyingKey.from_string(bytes.fromhex(hex_pub), curve=SECP112r2)
     assert public_key.verify(bytes.fromhex(sig.hex()), str(cur_time).encode())
+
+CHAIN = Blockchain()
+write_blockchain(CHAIN)

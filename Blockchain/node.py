@@ -270,7 +270,7 @@ def get_nodes():
 
 
 def get_blockchain():  # send ask the website for Blockchain as most up to date
-    print("GETTING BLOCKCHAIN")
+    print("---GETTING BLOCKCHAIN---")
     node = rand_act_node()
     send(node["ip"], "BLOCKCHAIN?")
     while True:
