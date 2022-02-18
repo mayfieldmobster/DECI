@@ -223,6 +223,8 @@ def send_to_all(message):
     with open("./info/Nodes.pickle", "rb") as file:
         all_nodes = pickle.load(file)
     for node in all_nodes:
+        print(message)
+        print(node["ip"], node["port"])
         send(node["ip"], message, port=node["port"], send_all=True)
 
 
