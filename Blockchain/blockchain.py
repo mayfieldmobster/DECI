@@ -7,7 +7,7 @@ from ecdsa.util import randrange_from_seed__trytryagain
 import os
 import validator
 import copy
-from numba import jit
+#from numba import jit
 import pickle
 import time
 
@@ -117,7 +117,7 @@ class Blockchain:
     def update(self, prev_chain):
         self.chain = ast.literal_eval(str(prev_chain))
 
-    @jit(nopython=True)
+    #@jit(nopython=True)
     def wallet_value(self, wallet_address):
         value = 0.0
         for block in self.chain:
