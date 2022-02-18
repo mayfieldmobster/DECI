@@ -3,7 +3,7 @@ import os
 """
 install dependencies
 create folders
-request nodes and blockchain with
+request nodes and Blockchain with
 ask for wallet to use and how much to stake
 annonounce self and time of creation
 """

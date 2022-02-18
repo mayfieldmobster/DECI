@@ -1,4 +1,4 @@
-from blockchain import node
+import node
 import time
 from ecdsa import VerifyingKey, SECP112r2
 import copy

@@ -28,7 +28,7 @@ with open("../info/Test_Trans.pickle", "rb") as file:
 """
 
 
-with open("../info/Test_Trans.pickle", "rb") as file:
-    Blockchain = pickle.load(file)
-    print(Blockchain)
+with open("../Blockchain/info/Nodes.pickle", "rb") as file:
+    Nodes = pickle.load(file)
+    print(Nodes)
 

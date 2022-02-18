@@ -1,4 +1,4 @@
-from blockchain import node
+import node
 
 
 def rec(my_ip):

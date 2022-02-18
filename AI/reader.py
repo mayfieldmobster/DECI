@@ -1,4 +1,4 @@
-from blockchain import node
+from blockchain_node import node
 import time
 from requests import get#
 import AI

@@ -192,7 +192,7 @@ def get_nodes():
         with open("../info/Nodes.pickle", "wb") as file:
             pickle.dump(nodes, file)
 
-def get_blockchain():#send ask the website for blockchain as most up todate
+def get_blockchain():#send ask the website for Blockchain as most up todate
     rand_act_node()
 
 

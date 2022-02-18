@@ -5,7 +5,7 @@ import reciever
 
 """
 update tensorflow
-update blockchain and nodes
+update Blockchain and nodes
 """
 #open("recent_messages.txt", "w").close()#clear recent message file
 

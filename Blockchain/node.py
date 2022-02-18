@@ -269,7 +269,7 @@ def get_nodes():
             continue
 
 
-def get_blockchain():  # send ask the website for blockchain as most up to date
+def get_blockchain():  # send ask the website for Blockchain as most up to date
     print("GETTING BLOCKCHAIN")
     node = rand_act_node()
     send(node["ip"], "BLOCKCHAIN?")
@@ -296,7 +296,7 @@ def new_node(initiation_time, ip, pub_key, port, node_version, node_type, sig):
     with open("info/Nodes.pickle", "rb") as file:
         nodes = pickle.load(file)
     public_key = VerifyingKey.from_string(bytes.formathex(pub_key), curve=SECP112r2)
-    node_types = ["AI", "blockchain", "lite"]
+    node_types = ["AI", "Blockchain", "lite"]
     try:
         assert public_key.verify(bytes.fromhex(sig), str(initiation_time).encode())
         new_node = {"time": initiation_time, "ip": ip, "pub_key": pub_key, "port": port, "version": node_version,

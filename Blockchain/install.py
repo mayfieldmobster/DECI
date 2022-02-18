@@ -4,7 +4,7 @@ import node
 """
 install dependencies
 create folders
-request nodes and blockchain with
+request nodes and Blockchain with
 ask for wallet to use and how much to stake
 annonounce self and time of creation
 """
@@ -34,4 +34,4 @@ print("That's you,\n"
       "run DECI.exe to start,\n"
       "if you want to change anything run this again.\n")
 
-node.announce(pub_key, norm_port, node.__version__, "blockchain", priv_key)
+node.announce(pub_key, norm_port, node.__version__, "Blockchain", priv_key)

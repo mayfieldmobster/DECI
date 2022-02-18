@@ -54,7 +54,7 @@ def rb(hash, time):
 
 def am_i_validator():
     """
-    Reads the blockchain checking if blocks is going to be validated by your node
+    Reads the Blockchain checking if blocks is going to be validated by your node
 
     # This problem with the current iteration is that it checks to see if valid blocks are valid or not. a list of
       unvalid blocks

@@ -10,7 +10,7 @@ import concurrent.futures
 
 """
 update tensorflow
-update blockchain and nodes
+update Blockchain and nodes
 """
 #open("recent_messages.txt", "w").close()#clear recent message file
 
@@ -29,7 +29,7 @@ except:
 
 with concurrent.futures.ThreadPoolExecutor() as executor:
     executor.submit(reciever.rec, local_ip)#start recieving
-    executor.submit(node.get_blockchain)#update blockchain
+    executor.submit(node.get_blockchain)#update Blockchain
     executor.submit(node.get_nodes)#update nodes
     executor.submit(reader.read)
     executor.submit(trans_reader.read)

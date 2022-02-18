@@ -1,4 +1,4 @@
-from blockchain import node
+import node
 import time
 from requests import get
 import pickle
