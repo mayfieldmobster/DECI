@@ -233,7 +233,7 @@ def announce(pub_key, port, version, node_type, priv_key):
     if not isinstance(priv_key, bytes):
         priv_key = SigningKey.from_string(bytes.fromhex(priv_key), curve=SECP112r2)
     sig = priv_key.sign(announcement_time.encode("utf-8"))
-    send_to_all(f"HELLO {announcement_time} {pub_key} {str(port)} {version} {node_type} {sig}")
+    send_to_all(f"HELLO {announcement_time} {pub_key} {str(port)} {version} {node_type} {sig.hex()}")
 
 
 def update(pub_key, port, version, priv_key):
