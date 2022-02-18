@@ -15,8 +15,8 @@ annonounce self and time of creation
 os.system("pip3 install ecdsa objsize")
 
 print("\nBy Using our product you except our Terms and Conditions")
-input = input("To Accept type 'ACCEPT'  : ")
-if input != "ACCEPT":
+accept = input("To Accept type 'ACCEPT'  : ")
+if accept != "ACCEPT":
     exit()
 
 print("Your Private key is need to verify that your public key belongs to you make sure you are using the official version of deci")
