@@ -6,11 +6,13 @@ import pickle
 
 
 def read():
-    time.sleep(20)
+    time.sleep(10)
+    print("---TRANSACTION READER STARTED---")
     while True:
         Trans_lines = node.request_reader("TRANS")
         if Trans_lines:
             for line in Trans_lines:
+                print(line)
                 line = line.split(" ")
                 trans = {"time": line[2], "sender": line[3], "receiver": line[4], "amount": line[5], "sig": line[6]}
                 trans_no_sig = copy.copy(trans)

@@ -9,6 +9,7 @@ import validator
 import copy
 from numba import jit
 import pickle
+import time
 
 
 def priv_key_gen():
@@ -297,114 +298,12 @@ def invalid_blockchain(block_index, transaction_index):
     write_blockchain(chain)
 
 
-import objsize
-import time
 
-blockchain = Blockchain()
-start = time.time()
-blockchain.add_transaction({"time": "10", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "11", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "12", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "13", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-blockchain.add_transaction({"time": "14", "sender": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                            "amount": str(2 ^ 25), "sig": "asfsdfgshdfhfsffs2"})
-time.sleep(0.1)
-end = time.time()
-print(blockchain)
-print(objsize.get_deep_size(blockchain))
-print(end - start - 0.1)
-
-priv, hex_priv = priv_key_gen()
-pub, hex_pub = pub_key_gen(priv)
-cur_time = time.time()
-sig = sign_trans(priv, str(cur_time))
-print(hex_priv, hex_pub, sig.hex(), cur_time)
-public_key = VerifyingKey.from_string(bytes.fromhex(hex_pub), curve=SECP112r2)
-assert public_key.verify(bytes.fromhex(sig.hex()), str(cur_time).encode())
+def key_tester():
+    priv, hex_priv = priv_key_gen()
+    pub, hex_pub = pub_key_gen(priv)
+    cur_time = time.time()
+    sig = sign_trans(priv, str(cur_time))
+    print(hex_priv, hex_pub, sig.hex(), cur_time)
+    public_key = VerifyingKey.from_string(bytes.fromhex(hex_pub), curve=SECP112r2)
+    assert public_key.verify(bytes.fromhex(sig.hex()), str(cur_time).encode())

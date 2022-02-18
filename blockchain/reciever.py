@@ -2,6 +2,7 @@ from blockchain import node
 
 
 def rec(my_ip):
+    print("---RECEIVER STARTED---")
     while True:
         message, address = node.receive(my_ip)
         print(message)

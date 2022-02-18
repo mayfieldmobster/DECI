@@ -60,6 +60,7 @@ def am_i_validator():
       unvalid blocks
     """
     time.sleep(4)
+    print("---VALIDATOR STARTED---")
     with open("../info/Public_key.txt", "r") as file:
         my_pub = file.read()
     while True:

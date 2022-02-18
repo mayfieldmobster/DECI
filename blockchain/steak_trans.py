@@ -1,6 +1,7 @@
 import pickle
 
 def updator():
+    print("---STAKE UPDATOR STARTED---")
     STAKE_WALLET = "4aa5f462171c2c71129d6064b5c986a9a0610ff4afb1f90b13f4e29e"
     while True:
         with open("../info/Blockchain.pickle", "rb") as file:

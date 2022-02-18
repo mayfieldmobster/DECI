@@ -251,19 +251,26 @@ def delete(pub_key, priv_key):
 
 
 def get_nodes():
+    print("---GETTING NODES---")
     node = rand_act_node()
     send(node["ip"], "GET_NODES")
     while True:
         time.sleep(1)
         line = request_reader("NREQ")
-        line = line[0].split(" ")
-        nodes = line[2]
-        nodes = ast.literal_eval(nodes)
-        with open("../info/Nodes.pickle", "wb") as file:
-            pickle.dump(nodes, file)
+        if line:
+            line = line[0].split(" ")
+            nodes = line[2]
+            nodes = ast.literal_eval(nodes)
+            if line[0] == node["ip"]:
+                print("---NODES RECEIVED---")
+                with open("../info/Nodes.pickle", "wb") as file:
+                    pickle.dump(nodes, file)
+        else:
+            continue
 
 
-def get_blockchain():  # send ask the website for blockchain as most up todate
+def get_blockchain():  # send ask the website for blockchain as most up to date
+    print("GETTING BLOCKCHAIN")
     node = rand_act_node()
     send(node["ip"], "BLOCKCHAIN?")
     while True:
