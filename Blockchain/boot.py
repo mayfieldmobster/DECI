@@ -6,6 +6,7 @@ import trans_reader
 import validator
 import steak_trans
 import concurrent.futures
+import socket
 
 
 """
@@ -14,7 +15,7 @@ update Blockchain and nodes
 """
 #open("recent_messages.txt", "w").close()#clear recent message file
 
-local_ip = "192.168.68.112"#socket.gethostbyname(socket.gethostname())
+local_ip = "192.168.68.112"
 
 os.system("pip3 install --upgrade ecdsa")
 

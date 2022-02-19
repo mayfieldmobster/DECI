@@ -31,6 +31,6 @@ def send(host):
     client.send(message.encode("utf-8"))
 
 
-send("127.0.0.1")
+send("192.168.0.33")
 
 
