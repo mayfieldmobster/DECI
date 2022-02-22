@@ -86,7 +86,7 @@ def rand_act_node(num_nodes=1):
     while i != num_nodes:  # turn into for loop
         with open("info/Nodes.pickle", "rb") as file:
             all_nodes = pickle.load(file)
-        node_index = random.randint(len(all_nodes) - 1)
+        node_index = random.randint(0, len(all_nodes) - 1)
         node = all_nodes[node_index]
         alive = online(node["ip"])
         i += 1
@@ -298,8 +298,7 @@ def send_node(host):
 def new_node(initiation_time, ip, pub_key, port, node_version, node_type, sig):
     with open("info/Nodes.pickle", "rb") as file:
         nodes = pickle.load(file)
-    public_key = VerifyingKey.from_string(bytes.formathex(pub_key), curve=SECP112r2)
-    node_types = ["AI", "Blockchain", "lite"]
+    public_key = VerifyingKey.from_string(bytes.fromhex(pub_key), curve=SECP112r2)
     try:
         assert public_key.verify(bytes.fromhex(sig), str(initiation_time).encode())
         new_node = {"time": initiation_time, "ip": ip, "pub_key": pub_key, "port": port, "version": node_version,
@@ -309,19 +308,18 @@ def new_node(initiation_time, ip, pub_key, port, node_version, node_type, sig):
                 return
             if node["ip"] == ip:
                 return
-        if node["node_type"] not in node_types:
-            return
         nodes.append(new_node)
         with open("info/Nodes.pickle", "wb") as file:
             pickle.dump(nodes, file)
-    except:
+    except Exception as e:
+        print(e)
         return "node invalid"
 
 
 def update_node(ip, update_time, pub_key, port, node_version, sig):
     with open("info/Nodes.pickle", "rb") as file:
         nodes = pickle.load(file)
-    public_key = VerifyingKey.from_string(bytes.formathex(pub_key), curve=SECP112r2)
+    public_key = VerifyingKey.from_string(bytes.fromhex(pub_key), curve=SECP112r2)
     try:
         assert public_key.verify(bytes.fromhex(sig), str(update_time).encode())
         for node in nodes:
@@ -338,7 +336,7 @@ def update_node(ip, update_time, pub_key, port, node_version, sig):
 def delete_node(deletion_time, ip, pub_key, sig):
     with open("info/Nodes.pickle", "rb") as file:
         nodes = pickle.load(file)
-    public_key = VerifyingKey.from_string(bytes.formathex(pub_key), curve=SECP112r2)
+    public_key = VerifyingKey.from_string(bytes.fromhex(pub_key), curve=SECP112r2)
     try:
         assert public_key.verify(bytes.fromhex(sig), str(deletion_time).encode())
         for node in nodes:
@@ -382,8 +380,11 @@ class UnrecognisedArg(NodeError):
 def message_handler(message):
     try:
         protocol = message[1]
+        print(protocol)
     except:
         raise UnrecognisedArg("No Protocol Found")
+
+    node_types = ["Lite", "Blockchain", "AI"]
 
     if protocol == "GET_NODES":
         # host, GET_NODES
@@ -410,7 +411,7 @@ def message_handler(message):
         except:
             raise ValueTypeError("port not given as int")
 
-        if port >= 0 and port < 65535:
+        if not port > 0 and port < 65535:
             raise ValueTypeError("TCP port out of range")
 
         try:
@@ -420,7 +421,7 @@ def message_handler(message):
         except:
             raise ValueTypeError("version not given as float")
 
-        if message[6] != "Lite" or "AI" or "Blockchain":
+        if message[6] not in node_types:
             raise UnrecognisedArg("Node Type Unknown")
 
     elif protocol == "VALID":
@@ -485,7 +486,7 @@ def message_handler(message):
         except:
             raise ValueTypeError("port not given as int")
 
-        if port >= 0 and port < 65535:
+        if not port >= 0 and port < 65535:
             raise ValueTypeError("TCP port out of range")
 
         try:
