@@ -81,6 +81,8 @@ def rand_act_node(num_nodes=1):
     """
     returns a list of random active nodes which is x length
     """
+    with open("./info/Public_key.txt", "r") as file:
+        key = file.read()
     nodes = []
     i = 0
     while i != num_nodes:  # turn into for loop
@@ -88,6 +90,8 @@ def rand_act_node(num_nodes=1):
             all_nodes = pickle.load(file)
         node_index = random.randint(0, len(all_nodes) - 1)
         node = all_nodes[node_index]
+        if node["pub_key"] == key:
+            continue
         alive = online(node["ip"])
         i += 1
         if alive:
@@ -265,9 +269,9 @@ def get_nodes():
             nodes = line[2]
             nodes = ast.literal_eval(nodes)
             if line[0] == node["ip"]:
-                print("---NODES RECEIVED---")
                 with open("../info/Nodes.pickle", "wb") as file:
                     pickle.dump(nodes, file)
+                print("---NODES RECEIVED---")
         else:
             continue
 
@@ -284,6 +288,7 @@ def get_blockchain():  # send ask the website for Blockchain as most up to date
                 if line[0] == node["ip"]:
                     chain = ast.literal_eval(line[1])
                     blockchain.write_blockchain(chain)
+                    print("---BLOCKCHAIN RECEIVED---")
                     return
 
 

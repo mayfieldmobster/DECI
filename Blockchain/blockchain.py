@@ -216,7 +216,16 @@ class Blockchain:
         if not validating:
             return True
 
-    def invalid_trans(self, block_index: int, trans_index: int):
+    def invalid_trans(self, block_index: int, trans_index: int, ip: str):
+        nodes = read_nodes()
+        node_pub = None
+        for nod in nodes:
+            if nod["ip"] == ip:
+                node_pub = nod["pub_key"]
+
+        if not node_pub:
+            return
+
         block_index = int(block_index)
         trans_index = int(trans_index)
 
@@ -249,6 +258,17 @@ class Blockchain:
                 self.chain[block_index + i][-3][0].append(block_hash)
                 self.chain[block_index + i + 1][0] = [block_hash]
 
+        if not invalid_trans:
+            stake_removal = f"LIAR {node_pub}"
+            with open("./info/stake_trans.pickle") as file:
+                stake_trans = pickle.load(file)
+            stake_trans.append(stake_removal)
+            with open("./info/stake_trans.pickle") as file:
+                pickle.dump(file)
+
+
+
+
     def block_valid(self, block_index: int, public_key: str, time_of_validation: float):
         # check if is actual validator
         nodes = []
@@ -258,7 +278,7 @@ class Blockchain:
         correct_validation = self.validate(block_index, validating=False)
         if correct_validation:
             for ran_node in nodes:
-                if ran_node[2] == public_key:
+                if ran_node["pub_key"] == public_key:
                     if not self.chain[-1][0]:
                         self.chain[block_index][-1] = [True, time_of_validation, public_key]
 

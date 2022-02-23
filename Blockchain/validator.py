@@ -34,13 +34,17 @@ def rb(hash, time):
         public = node[2]
         amount_staked = 0.0
         for transaction in stake_trans:
-            if float(transaction["time"]) < time:
+            if isinstance(transaction, dict):
+                if float(transaction["time"]) < time:
 
-                if transaction["sender"] == public:
-                    amount_staked -= transaction["amount"]*0.99
+                    if transaction["sender"] == public:
+                        amount_staked -= transaction["amount"]*0.99
 
-                if transaction["reciever"] == public:
-                    amount_staked += transaction["amount"]*0.99
+                    if transaction["reciever"] == public:
+                        amount_staked += transaction["amount"]*0.99
+            elif isinstance(transaction, str):
+                if public in transaction and "LIAR" in transaction:
+                    amount_staked = 0
 
         amount_staked = math.floor(amount_staked)
         rb.append(amount_staked)

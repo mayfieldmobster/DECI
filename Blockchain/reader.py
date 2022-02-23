@@ -37,7 +37,7 @@ def read():
                     elif message[1] == "TRANS_INVALID":
                         if ip != message[0]:
                             print(message)
-                            blockchain.invalid_blockchain(int(message[2], int(message[3])))
+                            blockchain.invalid_blockchain(int(message[2], int(message[3]), message[0]))
 
                     elif message[1] == "ONLINE?":
                         print(message)
