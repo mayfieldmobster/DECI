@@ -96,8 +96,7 @@ def rand_act_node(num_nodes=1):
         i += 1
         if alive:
             nodes.append(node)
-        else:
-            i -= 1
+            i += 1
 
     if len(nodes) == 1:
         return nodes[0]
