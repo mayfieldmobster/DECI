@@ -6,7 +6,7 @@ import pickle
 
 
 def read():
-    time.sleep(10)
+    time.sleep(60)
     print("---TRANSACTION READER STARTED---")
     while True:
         Trans_lines = node.request_reader("TRANS")

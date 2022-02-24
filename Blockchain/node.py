@@ -261,8 +261,11 @@ def get_nodes():
     print("---GETTING NODES---")
     node = rand_act_node()
     send(node["ip"], "GET_NODES")
+    tries = 0
     while True:
-        time.sleep(1)
+        if tries == 10:
+            quit()
+        time.sleep(5)
         line = request_reader("NREQ")
         if line:
             line = line[0].split(" ")
@@ -272,7 +275,9 @@ def get_nodes():
                 with open("../info/Nodes.pickle", "wb") as file:
                     pickle.dump(nodes, file)
                 print("---NODES RECEIVED---")
+                return
         else:
+            tries += 1
             continue
 
 
@@ -280,7 +285,11 @@ def get_blockchain():  # send ask the website for Blockchain as most up to date
     print("---GETTING BLOCKCHAIN---")
     node = rand_act_node()
     send(node["ip"], "BLOCKCHAIN?")
+    tries = 0
     while True:
+        if tries == 10:
+            quit()
+        time.sleep(5)
         lines = request_reader("BREQ")
         if lines:
             for line in lines:
@@ -290,6 +299,8 @@ def get_blockchain():  # send ask the website for Blockchain as most up to date
                     blockchain.write_blockchain(chain)
                     print("---BLOCKCHAIN RECEIVED---")
                     return
+        else:
+            tries += 1
 
 
 def send_node(host):

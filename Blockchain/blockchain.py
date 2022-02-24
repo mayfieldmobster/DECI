@@ -312,9 +312,9 @@ def validate_blockchain(block_index, ip, time):
     write_blockchain(chain)
 
 
-def invalid_blockchain(block_index, transaction_index):
+def invalid_blockchain(block_index, transaction_index, ip):
     chain = read_blockchain()
-    chain.invalid_trans(block_index, transaction_index)
+    chain.invalid_trans(block_index, transaction_index, ip)
     write_blockchain(chain)
 
 
