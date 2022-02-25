@@ -115,16 +115,18 @@ def request_reader(type):
     yh_protocol = ["yh"]
     trans_protocol = ["TRANS"]
     breq_protocol = ["BREQ"]
+    online_protocol = ["ONLINE?"]
     node_lines = []
     nreq_lines = []
     yh_lines = []
     trans_lines = []
     breq_lines = []
+    online_lines = []
     if str(lines) != "[]":
         for line in lines:
             line = line.split(" ")
 
-            if line[0] == "":
+            if line[0] == "" or line[0] == "\n":
                 del line  # delete blank lines
 
             elif line[1] in nreq_protocol:
@@ -134,6 +136,9 @@ def request_reader(type):
                 yh_lines.append(" ".join(line))
 
             elif line[1] in trans_protocol:
+                trans_lines.append(" ".join(line))
+
+            elif line[1] in online_lines:
                 trans_lines.append(" ".join(line))
 
             elif line[1] in breq_protocol:
@@ -189,6 +194,22 @@ def request_reader(type):
                     for n_line in new_lines:
                         file.write(n_line)
             return nreq_lines
+
+        elif type == "ONLINE":
+            if len(online_lines) != 0:
+                new_lines = []
+                with open("recent_messages.txt", "r+") as file:
+                    file_lines = file.readlines()
+                for f_line in file_lines:
+                    f_line.split(" ")
+                    if not online_lines[0] in f_line:
+                        if not f_line.strip("\n") == "":
+                            new_lines.append(f_line)
+                open("recent_messages.txt", "w").close()
+                with open("recent_messages.txt", "a") as file:
+                    for n_line in new_lines:
+                        file.write(n_line)
+            return online_lines
 
         elif type == "TRANS":
             if len(trans_lines) != 0:
