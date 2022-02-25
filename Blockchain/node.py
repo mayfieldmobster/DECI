@@ -396,7 +396,6 @@ class UnrecognisedArg(NodeError):
 def message_handler(message):
     try:
         protocol = message[1]
-        print(protocol)
     except:
         raise UnrecognisedArg("No Protocol Found")
 
