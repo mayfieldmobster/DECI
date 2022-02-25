@@ -27,7 +27,7 @@ def receive():
 def send(host):
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client.connect((host, 1379))
-    message = " ".join(["TEST",input(":::"),input(":::")])
+    message = " ".join(["HELLO",input(":::"),input(":::")])
     client.send(message.encode("utf-8"))
 
 

@@ -10,8 +10,10 @@ def read():
     print("---READER STARTED---")
     ip = get('https://api.ipify.org').text
     while True:
+        time.sleep(1)
         NODE_Lines = node.request_reader("NODE")
         if NODE_Lines:
+            print(f"NODE LINES: {NODE_Lines}")
             for message in NODE_Lines:
                 no_error = False
                 message = message.split(" ")

@@ -15,7 +15,7 @@ update Blockchain and nodes
 """
 #open("recent_messages.txt", "w").close()#clear recent message file
 
-local_ip = "192.168.68.112"
+local_ip = socket.gethostbyname(socket.gethostname())
 
 os.system("pip3 install --upgrade ecdsa")
 

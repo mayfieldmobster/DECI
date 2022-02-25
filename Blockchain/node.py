@@ -20,6 +20,7 @@ def receive(local_ip):
     message is split into array the first value the type of message the second value is the message
     """
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server.bind((local_ip, 1379))
     server.listen()
     while True:
@@ -303,7 +304,7 @@ def get_blockchain():  # send ask the website for Blockchain as most up to date
 
 
 def send_node(host):
-    with open("../info/Nodes.pickle", "rb") as file:
+    with open("./info/Nodes.pickle", "rb") as file:
         Nodes = pickle.load(file)
     str_node = str(Nodes)
     str_node = str_node.replace(" ", "")
