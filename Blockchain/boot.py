@@ -5,6 +5,7 @@ import reader
 import trans_reader
 import validator
 import steak_trans
+import online_reader
 import concurrent.futures
 import socket
 
@@ -35,6 +36,7 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
     executor.submit(trans_reader.read)
     executor.submit(steak_trans.updator)
     executor.submit(validator.am_i_validator)
+    executor.submit(online_reader.read)
 
 
 
