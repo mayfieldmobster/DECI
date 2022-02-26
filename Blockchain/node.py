@@ -197,8 +197,6 @@ def request_reader(type):
             return nreq_lines
 
         elif type == "ONLINE":
-            print("test: ", online_lines, node_lines)
-            print()
             if len(online_lines) != 0:
                 new_lines = []
                 with open("recent_messages.txt", "r+") as file:
