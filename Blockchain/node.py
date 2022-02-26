@@ -97,7 +97,6 @@ def rand_act_node(num_nodes=1):
         if node["pub_key"] == key:
             continue
         alive = online(node["ip"])
-        i += 1
         if alive:
             nodes.append(node)
             i += 1
