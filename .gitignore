@@ -2,4 +2,6 @@
 venv/
 test.py/
 important_keys.txt
+*.txt
+*.pickle
 
