@@ -139,8 +139,8 @@ def request_reader(type):
             elif line[1] in trans_protocol:
                 trans_lines.append(" ".join(line))
 
-            elif line[1] in online_lines:
-                trans_lines.append(" ".join(line))
+            elif line[1] in online_protocol:
+                online_lines.append(" ".join(line))
 
             elif line[1] in breq_protocol:
                 trans_lines.append(" ".join(line))
@@ -197,6 +197,8 @@ def request_reader(type):
             return nreq_lines
 
         elif type == "ONLINE":
+            print("test: ", online_lines, node_lines)
+            print()
             if len(online_lines) != 0:
                 new_lines = []
                 with open("recent_messages.txt", "r+") as file:
