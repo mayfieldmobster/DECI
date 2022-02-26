@@ -44,6 +44,7 @@ def send(host, message, port=1379, send_all=False):
     try:
         client.connect((host, port))
         client.send(message.encode("utf-8"))
+        print(f"Message to {host} {message}")
         return
     except Exception as e:
         if not send_all:
