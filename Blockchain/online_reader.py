@@ -1,6 +1,7 @@
 import node
 
 def read():
+    print("---ONLINE READER STARTED---")
     while True:
         online_lines = node.request_reader("ONLINE")
         if online_lines:
@@ -12,5 +13,5 @@ def read():
                     node.send(message[0], f"ERROR {e}")
                     print(message[1], e)
                     continue
-                print("ONLINE")
+                print(f"yh sent to {message[0]}")
                 node.send(message[0], "yh")
