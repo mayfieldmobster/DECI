@@ -15,3 +15,6 @@ def read():
                     continue
                 print(f"yh sent to {message[0]}")
                 node.send(message[0], "yh")
+
+if __name__ == "__main__":
+    read()
