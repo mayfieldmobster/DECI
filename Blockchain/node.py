@@ -73,7 +73,7 @@ def online(address):
     except:
         return False
     time.sleep(5)
-    message = request_reader("YH")
+    message = request_reader("YH", ip=address)
     message = message[0].split(" ")
     if message[1] == "yh" and message[0] == address:
         return True
@@ -107,7 +107,7 @@ def rand_act_node(num_nodes=1):
         return nodes
 
 
-def request_reader(type):
+def request_reader(type, ip="192.168.68.1"):
     """
     reads the recent messages and returns the message of the requested type
     """
@@ -134,7 +134,7 @@ def request_reader(type):
             elif line[1] in nreq_protocol:
                 nreq_lines.append(" ".join(line))
 
-            elif line[1] in yh_protocol:
+            elif line[1] in yh_protocol and line[0] == ip:
                 yh_lines.append(" ".join(line))
 
             elif line[1] in trans_protocol:
