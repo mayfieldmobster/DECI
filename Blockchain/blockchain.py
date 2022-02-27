@@ -114,9 +114,9 @@ class Blockchain:
         hex_hashed = hashed.hexdigest()
         return hex_hashed
 
-    def update(self, prev_chain):
+    def update(self, new_chain):
+        self.chain = new_chain
         print("BLOCKCHAIN UPDATED SUCCESSFULLY")
-        self.chain = ast.literal_eval(str(prev_chain))
 
     #@jit(nopython=True)
     def wallet_value(self, wallet_address):
