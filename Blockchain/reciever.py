@@ -5,7 +5,7 @@ def rec(my_ip):
     print("---RECEIVER STARTED---")
     while True:
         message, address = node.receive(my_ip)
-        print(f"Message from {address} , {message}")
+        print(f"Message from {address} , {message}\n")
         with open("recent_messages.txt", "a") as file:
             file.write("\n" + address[0] + " " + " ".join(message))
 

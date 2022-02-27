@@ -12,7 +12,7 @@ def read():
     while True:
         NODE_Lines = node.request_reader("NODE")
         if NODE_Lines:
-            print(f"NODE LINES: {NODE_Lines}")
+            print(f"NODE LINES: {NODE_Lines}\n")
             for message in NODE_Lines:
                 message = message.split(" ")
                 try:
