@@ -117,7 +117,7 @@ def request_reader(type):
     yh_protocol = ["yh"]
     trans_protocol = ["TRANS"]
     breq_protocol = ["BREQ"]
-    online_protocol = ["ONLINE?"]
+    pre_protocol = ["ONLINE?", "GET_NODES", "BLOCKCHAIN?"]
     node_lines = []
     nreq_lines = []
     yh_lines = []
@@ -140,7 +140,7 @@ def request_reader(type):
             elif line[1] in trans_protocol:
                 trans_lines.append(" ".join(line))
 
-            elif line[1] in online_protocol:
+            elif line[1] in pre_protocol:
                 online_lines.append(" ".join(line))
 
             elif line[1] in breq_protocol:
