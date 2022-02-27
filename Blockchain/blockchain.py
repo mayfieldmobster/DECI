@@ -115,6 +115,7 @@ class Blockchain:
         return hex_hashed
 
     def update(self, prev_chain):
+        print("BLOCKCHAIN UPDATED SUCCESSFULLY")
         self.chain = ast.literal_eval(str(prev_chain))
 
     #@jit(nopython=True)
