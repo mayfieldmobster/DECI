@@ -31,24 +31,12 @@ def sign_trans(private_key, transaction):
     return signature
 
 
-def hash_block(block):
-    for val in block:
-        if isinstance(val, dict):
-            val = list(val.values())
-    block = list(itertools.chain.from_iterable(block))
-    print(block)
-    str_data = " ".join(block)
-    hashed = hashlib.sha256(str_data.encode())
-    hex_hashed = hashed.hexdigest()
-    return hex_hashed
-
-
 class Blockchain:
 
     def __init__(self):
-        self.chain = [[["0"], {"time": "0", "sender": "0",
-                               "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033",
-                               "amount": str(2**23), "sig": "0"}]]
+        self.chain = [[["0"], {"time": 0.0, "sender": "0", "reciever": "0", "amount": 2**23, "sig": "0"}, ["c484eb3cfd69ad6c289dcc1e1b671929cdb7b6a63f75a4d21e8d1e126ad8433d", 0.0], [0], [True, 1.0, "0"]],
+                      [["c484eb3cfd69ad6c289dcc1e1b671929cdb7b6a63f75a4d21e8d1e126ad8433d"], {"time": 901.0, "sender": "0", "receiver": "8668373f064764cf4e917756903e606874b0d94bb1e6ea1ab7e75033", "amount": 2**23, "sig": "0"}, ["89ecd70035817c54d5aaef888e3e9d9a8ddd2d4c96b20c73032d0a454dc066a2", 901.0], [0], [True, 902.0, "0"]]
+                      ]
 
     def __repr__(self):
         return str(self.chain)  # .replace("]", "]\n")
@@ -104,13 +92,8 @@ class Blockchain:
         return total
 
     def hash_block(self, block):
-        for val in block:
-            if isinstance(val, dict):
-                val = list(val.values())
-        block = list(itertools.chain.from_iterable(block))
-        print(block)
-        str_data = " ".join(block)
-        hashed = hashlib.sha256(str_data.encode())
+        string_block = str(self.chain[block]).replace(" ", "")
+        hashed = hashlib.sha256(string_block.encode())
         hex_hashed = hashed.hexdigest()
         return hex_hashed
 
@@ -323,11 +306,38 @@ def invalid_blockchain(block_index, transaction_index, ip):
 def key_tester():
     priv, hex_priv = priv_key_gen()
     pub, hex_pub = pub_key_gen(priv)
-    cur_time = time.time()
-    sig = sign_trans(priv, str(cur_time))
-    print(hex_priv, hex_pub, sig.hex(), cur_time)
+    cur_time = 2
+    sig1 = sign_trans(priv, str(cur_time))
+    sig2 = sign_trans(priv, str(cur_time))
+    print(sig1, sig2)
+    print(hex_priv, hex_pub, sig1.hex(), cur_time)
     public_key = VerifyingKey.from_string(bytes.fromhex(hex_pub), curve=SECP112r2)
-    assert public_key.verify(bytes.fromhex(sig.hex()), str(cur_time).encode())
+    try:
+        assert public_key.verify(bytes.fromhex(sig1.hex()), str(cur_time).encode())
+        assert public_key.verify(bytes.fromhex(sig2.hex()), str(cur_time).encode())
+        print("complete")
+    except:
+        print("LLLLL")
 
-CHAIN = Blockchain()
-write_blockchain(CHAIN)
+def test_transaction(priv_key, reciever, amount):
+    priv = SigningKey.from_string(bytes.fromhex(priv_key), curve=SECP112r2)
+    pub, hex_pub = pub_key_gen(priv)
+    trans = [str(1), str(hex_pub), reciever, str(amount)]
+    trans_str = " ".join(trans)
+    sig = priv.sign(trans_str.encode()).hex()
+    trans.append(sig)
+    return trans
+
+def tester():
+    while True:
+        time.sleep(1)
+
+    
+
+if __name__ == "__main__":
+    #trans = test_transaction("", "da886ae3ec4c355170586317fed0102854f2b9705f58772415577265", 100)
+    #print(trans)
+    key_tester()
+    CHAIN = Blockchain()
+    print("hash: ", CHAIN.hash_block(1))
+    write_blockchain(CHAIN)
