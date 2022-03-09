@@ -1,7 +1,9 @@
 import objsize#
 import ast
+import random
+import time
 
-var = None
+lis1 = 0
+lis2 = 0
 
-if not var:
-    print("yes")
+print(random.randint(0,1))
