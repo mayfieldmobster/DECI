@@ -74,9 +74,10 @@ def online(address):
         return False
     time.sleep(5)
     message = request_reader("YH", ip=address)
-    message = message[0].split(" ")
-    if message[1] == "yh":
-        return True
+    if message:
+        message = message[0].split(" ")
+        if message[1] == "yh":
+            return True
     else:
         return False
 

@@ -23,8 +23,8 @@ def read():
                     node.send_node(message[0])
 
                 elif message[1] == "BLOCKCHAIN?":
-                    chain = blockchain.read_blockchain()
                     print("BLOCKCHAIN?")
+                    chain = blockchain.read_blockchain()
                     node.send(message[0], "BREQ " + chain.send_blockchain())
 
 if __name__ == "__main__":

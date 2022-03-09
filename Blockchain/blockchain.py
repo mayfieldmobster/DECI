@@ -10,6 +10,7 @@ import copy
 #from numba import jit
 import pickle
 import time
+import random
 
 
 def priv_key_gen():
@@ -322,15 +323,32 @@ def key_tester():
 def test_transaction(priv_key, reciever, amount):
     priv = SigningKey.from_string(bytes.fromhex(priv_key), curve=SECP112r2)
     pub, hex_pub = pub_key_gen(priv)
-    trans = [str(1), str(hex_pub), reciever, str(amount)]
+    trans = [str(time.time()), str(hex_pub), reciever, str(amount)]
     trans_str = " ".join(trans)
     sig = priv.sign(trans_str.encode()).hex()
     trans.append(sig)
     return trans
 
-def tester():
+def tester(main_prv, main_pub):
     while True:
         time.sleep(1)
+        path1 = bool(random.randint(0,1))
+        if path1:
+            priv, hex_priv = priv_key_gen()
+            pub, hex_pub = pub_key_gen(priv)
+            amount = random.randint(100, 1000)
+            with open("./testing_keys.txt", "a") as file:
+                file.write(f"{hex_priv} {hex_pub} {amount}\n")
+            trans = test_transaction(main_prv, hex_pub, amount)
+            node.send_to_all(f"TRANS {trans[0]} {trans[1]} {trans[2]} {trans[3]} {trans[4]}")
+        else:
+            with open("./testing_keys.txt", "r") as file:
+                test_keys = file.read().split("\n")
+            wallet = random.choices(test_keys)
+            wallet = wallet.split(" ")
+            trans = test_transaction(wallet[0], main_pub, 25.0)
+            node.send_to_all(f"TRANS {trans[0]} {trans[1]} {trans[2]} {trans[3]} {trans[4]}")
+
 
     
 
