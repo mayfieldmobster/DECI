@@ -304,6 +304,9 @@ def get_nodes():
             tries += 1
             continue
 
+def read_blockchain():
+    with open("./info/Blockchain.pickle", "rb") as file:
+        return pickle.load(file)
 
 def get_blockchain():  # send ask the website for Blockchain as most up to date
     print("---GETTING BLOCKCHAIN---")
@@ -319,9 +322,9 @@ def get_blockchain():  # send ask the website for Blockchain as most up to date
             for line in lines:
                 line = line.split(" ")
                 if line[0] == node["ip"]:
-                    chain = ast.literal_eval(line[1])
-                    blockchain.read_blockchain()
-                    blockchain.update
+                    new_chain = ast.literal_eval(line[1])
+                    chain = read_blockchain()
+                    chain.update(new_chain)
                     print("---BLOCKCHAIN RECEIVED---")
                     return
         else:

@@ -12,7 +12,6 @@ import pickle
 import time
 import random
 
-
 def priv_key_gen():
     seed = os.urandom(SECP112r2.baselen)
     secexp = randrange_from_seed__trytryagain(seed, SECP112r2.order)
@@ -272,17 +271,15 @@ class Blockchain:
 
 
 def write_blockchain(blockchain):
-    with open("info/Blockchain.pickle", "wb") as file:
+    with open("./info/Blockchain.pickle", "wb") as file:
         pickle.dump(blockchain, file)
 
-
 def read_blockchain():
-    with open("info/Blockchain.pickle", "rb") as file:
+    with open("./info/Blockchain.pickle", "rb") as file:
         return pickle.load(file)
-
-
+    
 def read_nodes():
-    with open("info/Nodes.pickle", "rb") as file:
+    with open("./info/Nodes.pickle", "rb") as file:
         return pickle.load(file)
 
 
@@ -301,8 +298,6 @@ def invalid_blockchain(block_index, transaction_index, ip):
     chain = read_blockchain()
     chain.invalid_trans(block_index, transaction_index, ip)
     write_blockchain(chain)
-
-
 
 def key_tester():
     priv, hex_priv = priv_key_gen()
@@ -356,6 +351,7 @@ if __name__ == "__main__":
     #trans = test_transaction("", "da886ae3ec4c355170586317fed0102854f2b9705f58772415577265", 100)
     #print(trans)
     key_tester()
-    CHAIN = Blockchain()
-    print("hash: ", CHAIN.hash_block(1))
-    write_blockchain(CHAIN)
+    #CHAIN = Blockchain()
+    #print("hash: ", CHAIN.hash_block(1))
+    #write_blockchain(CHAIN)
+    print(read_blockchain().send_blockchain())
