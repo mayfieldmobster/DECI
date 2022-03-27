@@ -1,10 +1,7 @@
 import node
 import blockchain
-import pickle
 
-def read_blockchain():
-    with open("./info/Blockchain.pickle", "rb") as file:
-        return pickle.load(file)
+
 
 def read():
     print("---ONLINE READER STARTED---")
@@ -29,7 +26,7 @@ def read():
 
                 elif message[1] == "BLOCKCHAIN?":
                     print("BLOCKCHAIN?")
-                    chain = read_blockchain()
+                    chain = blockchain.read_blockchain()
                     node.send(message[0], "BREQ " + chain.send_blockchain())
 
 if __name__ == "__main__":

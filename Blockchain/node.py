@@ -68,6 +68,7 @@ def online(address):
     """
     asks if a node is online and if it is it returns yh
     """
+    print(address)
     try:
         send(address, "ONLINE?")
     except:
@@ -95,6 +96,7 @@ def rand_act_node(num_nodes=1):
             all_nodes = pickle.load(file)
         node_index = random.randint(0, len(all_nodes) - 1)
         node = all_nodes[node_index]
+        print(node)
         if node["pub_key"] == key:
             continue
         alive = online(node["ip"])
@@ -304,13 +306,11 @@ def get_nodes():
             tries += 1
             continue
 
-def read_blockchain():
-    with open("./info/Blockchain.pickle", "rb") as file:
-        return pickle.load(file)
 
 def get_blockchain():  # send ask the website for Blockchain as most up to date
     print("---GETTING BLOCKCHAIN---")
     node = rand_act_node()
+    print(node)
     send(node["ip"], "BLOCKCHAIN?")
     tries = 0
     while True:
@@ -323,7 +323,7 @@ def get_blockchain():  # send ask the website for Blockchain as most up to date
                 line = line.split(" ")
                 if line[0] == node["ip"]:
                     new_chain = ast.literal_eval(line[1])
-                    chain = read_blockchain()
+                    chain = blockchain.read_blockchain()
                     chain.update(new_chain)
                     print("---BLOCKCHAIN RECEIVED---")
                     return

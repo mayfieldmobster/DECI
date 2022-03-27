@@ -3,6 +3,7 @@ import time
 from ecdsa import VerifyingKey, SECP112r2
 import copy
 import pickle
+import blockchain
 
 
 def read():
@@ -24,12 +25,10 @@ def read():
                     sig_cor = public_key.verify(bytes.fromhex(trans["sig"]), trans_no_sig.encode())
                 except:
                     continue
-                with open("../info/Blockchain.pickle", "rb") as file:
-                    blockchain = pickle.load(file)
-                    blockchain = blockchain
-                if trans in blockchain[-1] or trans in blockchain[-2]:
+                chain = blockchain.read_blockchain()
+                if trans in chain[-1] or trans in chain[-2]:
                     continue
 
                 if float(trans["time"]) > (time.time() - 30.0):  # was announced in the last 30 seconds
                     if not float(trans["time"]) > time.time():  # not from the future
-                        blockchain.add_transaction(trans)
+                        chain.add_transaction(trans)
