@@ -147,7 +147,7 @@ def request_reader(type, ip="192.168.68.1"):
                 online_lines.append(" ".join(line))
 
             elif line[1] in breq_protocol:
-                trans_lines.append(" ".join(line))
+                breq_lines.append(" ".join(line))
 
             else:
                 node_lines.append(" ".join(line))
