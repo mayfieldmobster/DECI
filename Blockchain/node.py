@@ -322,7 +322,7 @@ def get_blockchain():  # send ask the website for Blockchain as most up to date
             for line in lines:
                 line = line.split(" ")
                 if line[0] == node["ip"]:
-                    new_chain = ast.literal_eval(line[1])
+                    new_chain = ast.literal_eval(line[2])
                     chain = blockchain.read_blockchain()
                     chain.update(new_chain)
                     print("---BLOCKCHAIN RECEIVED---")
