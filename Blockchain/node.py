@@ -373,6 +373,7 @@ def update_node(ip, update_time, pub_key, port, node_version, sig):
                 node["version"] = node_version
         with open("info/Nodes.pickle", "wb") as file:
             pickle.dump(nodes, file)
+            print("NODE UPDATED")
     except:
         return "update invalid"
 
@@ -588,6 +589,6 @@ def message_handler(message):
 
     elif protocol == "ERROR":
         pass
-    
+
     else:
         raise UnrecognisedCommand("protocol unrecognised")
