@@ -263,7 +263,7 @@ def announce(pub_key, port, version, node_type, priv_key):
     announcement_time = str(time.time())
     if not isinstance(priv_key, bytes):
         priv_key = SigningKey.from_string(bytes.fromhex(priv_key), curve=SECP112r2)
-    sig = priv_key.sign(announcement_time.encode("utf-8")).hex()
+    sig = str(priv_key.sign(announcement_time.encode("utf-8")).hex())
     send_to_all(f"HELLO {announcement_time} {pub_key} {str(port)} {version} {node_type} {sig.hex()}")
 
 
@@ -271,7 +271,7 @@ def update(pub_key, port, version, priv_key):
     update_time = str(time.time())
     if not isinstance(priv_key, bytes):
         priv_key = SigningKey.from_string(bytes.fromhex(priv_key), curve=SECP112r2)
-    sig = priv_key.sign(update_time.encode("utf-8")).hex()
+    sig = str(priv_key.sign(update_time.encode("utf-8")).hex())
     send_to_all(f"UPDATE {update_time} {pub_key} {str(port)} {version} {sig}")
 
 
@@ -279,7 +279,7 @@ def delete(pub_key, priv_key):
     update_time = str(time.time())
     if not isinstance(priv_key, bytes):
         priv_key = SigningKey.from_string(bytes.fromhex(priv_key), curve=SECP112r2)
-    sig = priv_key.sign(update_time.encode("utf-8")).hex()
+    sig = str(priv_key.sign(update_time.encode("utf-8")).hex())
     send_to_all(f"DELETE {update_time} {pub_key} {sig}")
 
 
