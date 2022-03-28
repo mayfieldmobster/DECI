@@ -586,5 +586,8 @@ def message_handler(message):
         except:
             raise ValueTypeError("amount not given as float")
 
+    elif protocol == "ERROR":
+        pass
+    
     else:
         raise UnrecognisedCommand("protocol unrecognised")
