@@ -2,6 +2,6 @@
 venv/
 test.py/
 important_keys.txt
-*.txt
-*.pickle
-*.pyc
+./*/*.txt
+./*/*.pickle
+./*/*.pyc
