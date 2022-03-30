@@ -7,7 +7,8 @@ def rec(my_ip):
         message, address = node.receive(my_ip)
         print(f"Message from {address} , {message}\n")
         with open("recent_messages.txt", "a") as file:
-            file.write("\n" + address[0] + " " + " ".join(message))
+            file.write(f"{address[0]} {' '.join(message)}\n")
+
 
 
 if __name__ == "__main__":

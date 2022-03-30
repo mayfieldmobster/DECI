@@ -19,23 +19,23 @@ def run():
     opt = model.opt(size = hvd.size())
 
     checkpoint_dir = './checkpoints'
-    checkpoint = tf.train.Checkpoint(model=model, optimizer=opt)
+    checkpoint = tf.train.Checkpoint(model=complete_model, optimizer=complete_model)
 
 
     @tf.function
     def training_step(images, labels, first_batch):
         with tf.GradientTape() as tape:
-            probs = model(images, training=True)
+            probs = complete_model(images, training=True)
             loss_value = loss(labels, probs)
 
         # Horovod: add Horovod Distributed GradientTape.
         tape = hvd.DistributedGradientTape(tape)
 
-        grads = tape.gradient(loss_value, model.trainable_variables)
-        opt.apply_gradients(zip(grads, model.trainable_variables))
+        grads = tape.gradient(loss_value, complete_model.trainable_variables)
+        opt.apply_gradients(zip(grads, complete_model.trainable_variables))
 
         if first_batch:
-            hvd.broadcast_variables(model.variables, root_rank=0)
+            hvd.broadcast_variables(complete_model.variables, root_rank=0)
             hvd.broadcast_variables(opt.variables(), root_rank=0)
 
         return loss_value

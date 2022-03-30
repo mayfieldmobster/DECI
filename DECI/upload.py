@@ -3,7 +3,7 @@ import socket
 import random
 import time
 import numpy as np
-
+import copy
 import requests
 import json
 import zipfile
@@ -18,9 +18,7 @@ def send(host, port, message):
         return "node offline"
 
 
-def upload(filename, depen_zip, AM_I: bool = False, port="1379", sharding_type: str= "OFF", batch_size: int = 64,
-           epochs: int = 1, shuffle: bool = True,class_weight: float = None, sample_weight=None, initial_epoch: int = 0,
-           steps_per_epoch: int = None, max_queue_size: int = 10, ):  # am i a worker
+def upload(filename, depen_zip, AM_I: bool = False, port="1379"):  # am i a worker
     script_identity = str(random.random())
     with open(filename, "r") as file:
         script = file.readlines()
@@ -37,11 +35,9 @@ def upload(filename, depen_zip, AM_I: bool = False, port="1379", sharding_type: 
             framework = "pytorch"
             break
 
-    nodes = ["127.0.0.1:1379"]  # requests.get() # get request for random node
+    nodes = ["127.0.0.1:1379"]  # requests.get() # get request from website
     my_ip = requests.get('https://api.ipify.org').text
-    node_config = []
-    for node in nodes:
-        node_config.append(node)
+    node_config = copy.copy(nodes)
     print(node_config)
 
     if AM_I:
@@ -49,7 +45,7 @@ def upload(filename, depen_zip, AM_I: bool = False, port="1379", sharding_type: 
         node_config.insert(0, my_ip + ":" + port)
         for node in nodes:
             node = node.split(":")
-            send(node[0], int(node[1]), f"AI {str(worker_index)} {script_identity} {str(node_config).replace(' ' , '')} {str(batch_size)} {sharding_type} {str(epochs)} {str(shuffle)} {str(class_weight)} {str(sample_weight.tolist()).replace(' ', '')} {str(initial_epoch)} {str(steps_per_epoch)} {str(max_queue_size)} {script}")
+            send(node[0], int(node[1]), f"AI {str(worker_index)} {script_identity} {str(node_config).replace(' ' , '')} {script}")
 
             send(node[0], int(node[1]), f"DEP {script_identity} {zip_file.hex()}")
             worker_index += 1
@@ -64,7 +60,6 @@ def upload(filename, depen_zip, AM_I: bool = False, port="1379", sharding_type: 
             os.environ['TF_CONFIG'] = json.dumps(tf_config)
 
 
-
         elif framework == "pytorch":
             os.environ['MASTER_ADDR'] = my_ip
             os.environ['MASTER_PORT'] = port
@@ -73,7 +68,7 @@ def upload(filename, depen_zip, AM_I: bool = False, port="1379", sharding_type: 
         worker_index = 0
         for node in nodes:
             node = node.split(":")
-            send(node[0], int(node[1]), f"AI {str(worker_index)} {script_identity} {str(node_config).replace(' ' , '')} {str(batch_size)} {sharding_type} {str(epochs)} {str(shuffle)} {str(class_weight)} {str(sample_weight.tolist()).replace(' ', '')} {str(initial_epoch)} {str(steps_per_epoch)} {str(max_queue_size)} {script}")
+            send(node[0], int(node[1]), f"AI {str(worker_index)} {script_identity} {str(node_config).replace(' ' , '')} {script}")
 
 
             time.sleep(0.5)

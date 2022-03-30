@@ -4,9 +4,7 @@ import model
 import keras
 
 
-def run(batch_size, epochs, sharding_type="OFF",
-        shuffle=True, class_weight=None, sample_weight=None,
-        initial_epoch=0, steps_per_epoch=None, max_queue_size=10, compression=None):
+def run():
 
     # Horovod: initialize Horovod.
     hvd.init()
@@ -40,8 +38,26 @@ def run(batch_size, epochs, sharding_type="OFF",
     if hvd.rank() == 0:
         callbacks.append(keras.callbacks.ModelCheckpoint('./checkpoint-{epoch}.h5'))
 
-    complete_model.fit(data, epochs=epochs, verbose=0,
-                       shuffle=shuffle, class_weight=class_weight,
-                       sample_weight=sample_weight, initial_epoch=initial_epoch,
-                       steps_per_epoch=steps_per_epoch,max_queue_size=max_queue_size,
-                      )# custom training loop
+    if not model.EPOCHS:
+        model.EPOCHS = 64
+    if not model.BATCH_SIZE:
+        model.BATCH_SIZE = None
+    if not model.SHUFFLE:
+        model.SHUFFLE = True
+    if not model.CLASS_WEIGHT:
+        model.CLASS_WEIGHT = None
+    if not model.SAMPLE_WEIGHT:
+        model.SAMPLE_WEIGHT = None
+    if not model.INITIAL_EPOCH:
+        model.INITIAL_EPOCH = 0
+    if not model.STEP_PER_EPOCH:
+        model.STEP_PER_EPOCH = None
+    if not model.MAX_QUEUE_SIZE:
+        model.MAX_QUEUE_SIZE = 10
+
+    complete_model.fit(data, epochs=model.EPOCHS, verbose=0, batch_size=model.BATCH_SIZE,
+                       shuffle=model.SHUFFLE, class_weight=model.CLASS_WEIGHT,
+                       sample_weight=model.SAMPLE_WEIGHT, initial_epoch=model.INITIAL_EPOCH,
+                       steps_per_epoch=model.STEP_PER_EPOCH, max_queue_size=model.MAX_QUEUE_SIZE,
+                       callbacks=callbacks
+                       )

@@ -2,10 +2,15 @@ import ast
 import node
 import os
 import json
-import TF_run
+import TF_horovod
 import Torch_run
+import TF_kung_fu
+import keras_kung_fu
+import TF_horovod
+import keras_horovod
 import re
 import numpy as np
+
 
 
 class DECIError(Exception):
@@ -167,7 +172,7 @@ def please_no_hack():
                     else:
                         raise LibraryError("Invalid Import make sure to use only supported packages")
 
-    return virus, framework
+    return virus, framework, None
 
 
 def tf_config(nodes, index):
@@ -197,54 +202,9 @@ def AI_REQ(message):
     nodes = ast.literal_eval(message[0])
     del message[0]  # wipe info so just left with script
 
-    if message[0] == "None":
-        batch_size = None
-        del message[0]
-    else:
-        batch_size = int(message[0])
-        del message[0]
 
-    sharding_type = message[0]
-    del message[0]
 
-    epochs = int(message[0])
-    del message[0]
 
-    if message[0] == "True":
-        shuffle = True
-        del message[0]
-    else:
-        shuffle = False
-        del message[0]
-
-    if message[0] == "None":
-        class_weight = None
-        del message[0]
-    else:
-        class_weight = float(message[0])
-        del message[0]
-
-    if message[0] == "None":
-        sample_weight = None
-        del message[0]
-    else:
-        sample_weight = np.array(ast.literal_eval(message[0]))
-
-    initial_epoch = int(message[0])
-    del message[0]
-
-    if message[0] == "None":
-        steps_per_epoch = None
-        del message[0]
-    else:
-        steps_per_epoch = int(message[0])
-        del message[0]
-
-    max_queue_size = int(message[0])
-    del message[0]
-
-    if epochs > 2000:
-        return
 
     write_script(message)
     dependencies = node.request_reader("DEP")
@@ -266,17 +226,20 @@ def AI_REQ(message):
         if isinstance(e, LibraryError):
             node.send(ip, f"Error {str(e)}")
     if not virus:
-
+        import model
         if framework == "tensorflow":
-            tf_config(nodes, worker_index)
-            print(os.environ['TF_CONFIG'])
-            TF_run.run(batch_size=batch_size, epochs=epochs,
-                       shuffle=shuffle, class_weight=class_weight,
-                       sample_weight=sample_weight, initial_epoch=initial_epoch,
-                       steps_per_epoch=steps_per_epoch, max_queue_size=max_queue_size, )
+            if model.METHOD == "HOROVOD":
+                TF_horovod.run()
+            elif model.METHOD == "KUNGFU":
+                TF_kung_fu.run()
+
+        if framework == "keras":
+            if model.METHOD == "HOROVOD":
+                keras_horovod.run()
+            elif model.METHOD ==  "KUNGFU":
+                keras_kung_fu.run()
+
 
         if framework == "torch":
-            master_node = nodes[0].split(":")
-            os.environ['MASTER_ADDR'] = master_node[0]
-            os.environ['MASTER_PORT'] = master_node[1]
             Torch_run.run()
+

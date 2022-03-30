@@ -352,13 +352,14 @@ def tester(main_prv, main_pub):
             node.send_to_all(f"TRANS {trans[0]} {trans[1]} {trans[2]} {trans[3]} {trans[4]}")
 
 
-    
+
 
 if __name__ == "__main__":
     #trans = test_transaction("", "da886ae3ec4c355170586317fed0102854f2b9705f58772415577265", 100)
     #print(trans)
-    key_tester()
-    CHAIN = Blockchain()
-    print("hash: ", CHAIN.hash_block(1))
-    write_blockchain(CHAIN)
-    print(read_blockchain().send_blockchain())
+    #key_tester()
+    #CHAIN = Blockchain()
+    #print("hash: ", CHAIN.hash_block(1))
+    #write_blockchain(CHAIN)
+    #print(read_blockchain().send_blockchain())
+    pass
