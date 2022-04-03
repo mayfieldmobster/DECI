@@ -34,7 +34,6 @@ def test():
         model.add(resnet50(keras.Input(shape=(32, 32, 3))))
         # print(model.summary())
         model.add(keras.layers.Flatten())
-        model.add(keras.layers.Dense(64, activation='relu'))
         model.add(keras.layers.Dense(10, activation='softmax'))
 
         model.compile(optimizer=keras.optimizers.Adam(lr=0.0001),
