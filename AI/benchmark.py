@@ -5,7 +5,7 @@ import time
 
 
 def test():
-
+    #add BENCHMARK protocol
     class TimeHistory(keras.callbacks.Callback):
         def on_train_begin(self, logs={}):
             self.times = []
@@ -43,3 +43,5 @@ def test():
     time_callback = TimeHistory()
     model.fit(x_train, y_train, batch_size=64, epochs=50, verbose=1, callbacks=[time_callback])
     return (sum(time_callback.times)/len(time_callback.times))
+
+print(test())

@@ -14,10 +14,11 @@ local_ip = "127.0.0.1"#socket.gethostbyname(socket.gethostname())
 os.system("pip3 install --upgrade tensorflow")
 os.system("pip3 install --upgrade ecdsa")
 
+
 """
 try:
     os.remove("install.py")
-    os.remove("install.exe")
+    os.remove("instal   l.exe")
 except:
     pass#wont work after first time ill come up with better way later
 """
