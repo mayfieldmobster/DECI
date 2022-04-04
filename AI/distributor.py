@@ -67,6 +67,6 @@ def dist(message):
     dep = dep.split(" ")
 
     for job_node in job_nodes:
-        node.send(job_node["ip"], f"AI {message[2]} {str(job_nodes).replace(' ','')} {message[3]}")
+        node.send(job_node["ip"], f"AI {message[2]} {message[0]} {str(job_nodes).replace(' ','')} {message[3]}")
         node.send(job_node["ip"], f"DEP {dep[2]} {dep[3]}")
 

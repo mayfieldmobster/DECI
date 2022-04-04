@@ -188,11 +188,14 @@ def AI_REQ(message):
     """
     ip = message[0]
 
+
     script_identity = message[2]
 
-    nodes = ast.literal_eval(message[3])
+    origin_ip = message[3]
 
-    write_script(message[4])
+    nodes = ast.literal_eval(message[4])
+
+    write_script(message[5])
     dependencies = node.request_reader("DEP", script_identity=message[2])
     print("d: ", dependencies)
     dependencies = dependencies[0].split(" ")
@@ -224,7 +227,6 @@ def AI_REQ(message):
                 keras_horovod.run()
             elif model.METHOD ==  "KUNGFU":
                 keras_kung_fu.run()
-
 
         if framework == "torch":
             Torch_run.run()
