@@ -71,13 +71,12 @@ def rand_act_node(num_nodes = 1):
         return nodes
 
 
-def request_reader(type):
+def request_reader(type, script_identity = 0.0):
     with open("recent_messages.txt", "r") as file:
         lines = file.read().splitlines()
     NREQ_protocol = ["NREQ"]#node request
     DEP_protocol = ["DEP"]
     yh_protocol = ["yh"]
-    AI_Lines = []
     NODE_Lines = []
     NREQ_Lines = []
     DEP_Lines = []
@@ -92,7 +91,7 @@ def request_reader(type):
             elif line[1] in NREQ_protocol:
                 NREQ_Lines.append(" ".join(line))
 
-            elif line[1] in DEP_protocol:
+            elif line[1] in DEP_protocol and line[2] == script_identity:
                 DEP_Lines.append(" ".join(line))
                 
             elif line[1] in yh_protocol:

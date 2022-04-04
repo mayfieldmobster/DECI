@@ -31,14 +31,11 @@ class ScriptError(DECIError):
     pass
 
 
-def write_script(string):
-    open("../model.py", "w").close()
-    script = " ".join(string)
-    script = ast.literal_eval(script)
-    with open("../model.py", "w") as file:
-        for line in script:
-            file.write(line)
-    return script
+def write_script(script):
+    open("./model.py", "w").close()
+    with open("./model.py", "w") as file:
+        file.read(script.replace("`", " "))
+
 
 
 def write_dependencies(string):
@@ -190,24 +187,13 @@ def AI_REQ(message):
     values in message are deleted to leave only the lines in the script
     """
     ip = message[0]
-    del message[0]  # delete IP
-    del message[0]  # delete protocol
 
-    worker_index = int(message[0])
-    del message[0]
+    script_identity = message[2]
 
-    script_identity = message[0]
-    del message[0]
+    nodes = ast.literal_eval(message[3])
 
-    nodes = ast.literal_eval(message[0])
-    del message[0]  # wipe info so just left with script
-
-
-
-
-
-    write_script(message)
-    dependencies = node.request_reader("DEP")
+    write_script(message[4])
+    dependencies = node.request_reader("DEP", script_identity=message[2])
     print("d: ", dependencies)
     dependencies = dependencies[0].split(" ")
     dep_identity = dependencies[2]

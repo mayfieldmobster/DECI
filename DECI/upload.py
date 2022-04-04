@@ -21,7 +21,7 @@ def send(host, port, message):
 def upload(filename, depen_zip, AM_I: bool = False, port="1379"):  # am i a worker
     script_identity = str(random.random())
     with open(filename, "r") as file:
-        script = file.readlines()
+        script = file.read().replace(" ", "`")
 
     with open(depen_zip, "rb") as file:
         zip_file = file.read()
@@ -37,43 +37,23 @@ def upload(filename, depen_zip, AM_I: bool = False, port="1379"):  # am i a work
 
     nodes = ["127.0.0.1:1379"]  # requests.get() # get request from website
     my_ip = requests.get('https://api.ipify.org').text
-    node_config = copy.copy(nodes)
-    print(node_config)
+
 
     if AM_I:
-        worker_index = 1
-        node_config.insert(0, my_ip + ":" + port)
         for node in nodes:
             node = node.split(":")
-            send(node[0], int(node[1]), f"AI {str(worker_index)} {script_identity} {str(node_config).replace(' ' , '')} {script}")
+            send(node[0], int(node[1]), f"DIST {script_identity} {script}")
 
             send(node[0], int(node[1]), f"DEP {script_identity} {zip_file.hex()}")
-            worker_index += 1
-
-        if framework == "tensorflow":
-            tf_config = {
-                "cluster": {
-                    "worker": node_config
-                },
-                "task": {"type": "worker", "index": 0}
-            }
-            os.environ['TF_CONFIG'] = json.dumps(tf_config)
 
 
-        elif framework == "pytorch":
-            os.environ['MASTER_ADDR'] = my_ip
-            os.environ['MASTER_PORT'] = port
 
     if not AM_I:
-        worker_index = 0
         for node in nodes:
             node = node.split(":")
-            send(node[0], int(node[1]), f"AI {str(worker_index)} {script_identity} {str(node_config).replace(' ' , '')} {script}")
-
-
+            send(node[0], int(node[1]), f"DIST {script_identity} {script}")
             time.sleep(0.5)
             send(node[0], int(node[1]), f"DEP {script_identity} {zip_file.hex()}")
-            worker_index += 1
 
 
 if __name__ == "__main__":

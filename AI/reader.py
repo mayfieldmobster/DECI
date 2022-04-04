@@ -1,7 +1,8 @@
-from blockchain_node import node
+import node
 import time
 from requests import get#
 import AI
+import distributor
 
 def read():
     time.sleep(5)
@@ -26,6 +27,9 @@ def read():
 
             elif message[1] == "AI":
                 AI.AI_REQ(message)
+
+            elif message[1] == "DIST":
+                distributor.dist(message)
 
             else:
                 pass
