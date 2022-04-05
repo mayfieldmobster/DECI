@@ -51,7 +51,7 @@ def smart_node_picker(available_nodes, script):
 def dist(message):
     #total_size = data_size*epochs
     with open("./info/Nodes.pickle", "rb") as file:
-        nodes = pickle.load(file) #node atributes: time_init, IP, pub_key, num_gpus, benchmark_epoch_per_second
+        nodes = pickle.load(file) #node atributes: time_init, IP,port, pub_key,version, num_gpus, benchmark_epoch_per_second
     node.send_to_all("ONLINE?")
     time.sleep(5)
     online_lines = node.request_reader("YH")
