@@ -1,4 +1,5 @@
 import node
+import distributor
 
 
 def rec(my_ip):
@@ -8,6 +9,9 @@ def rec(my_ip):
         print(f"Message from {address} , {message}\n")
         with open("recent_messages.txt", "a") as file:
             file.write(f"{address[0]} {' '.join(message)}\n")
+        with open("relay_messages.txt", "a") as file:
+            file.write(f"{address[0]} {' '.join(message)}\n")
+        
 
 
 

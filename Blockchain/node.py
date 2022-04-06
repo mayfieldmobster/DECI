@@ -2,6 +2,7 @@
 node
 """
 
+import imp
 import socket
 import random
 import pickle
@@ -10,6 +11,7 @@ import ast
 import blockchain
 import time
 from ecdsa import SigningKey, VerifyingKey, SECP112r2
+import asyncio
 
 __version__ = "1.0"
 
@@ -62,6 +64,33 @@ def send(host, message, port=1379, send_all=False):
                 except Exception as e:
                     return "node offline"
 
+async def async_send(host, message, port=1379, send_all=False):
+    """
+    sends a message to the given host
+    tries the default port and if it doesn't work search for actual port
+    this process is skipped if send to all for speed
+    """
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        client.connect((host, port))
+        client.send(message.encode("utf-8"))
+        print(f"Message to {host} {message}\n")
+        return
+    except Exception as e:
+        if not send_all:
+            if isinstance(e, ConnectionRefusedError):
+                try:
+                    with open("info/Nodes.pickle", "rb") as file:
+                        nodes = pickle.load(file)
+                    for node in nodes:
+                        if node[1] == host:
+                            if not int(node["port"]) == 1379:
+                                client.connect((host, int(node["port"])))
+                                client.send(message.encode("utf-8"))
+                                print(f"Message to {host} {message}\n")
+                                return
+                except Exception as e:
+                    return "node offline"
 
 # check if nodes online
 def online(address):
@@ -82,6 +111,18 @@ def online(address):
     else:
         return False
 
+def send_to_dist(message):
+    """
+    sends to all nodes
+    """
+    with open("./info/Nodes.pickle", "rb") as file:
+        all_nodes = pickle.load(file)
+    dist_nodes = []
+    for d_node in all_nodes:
+        if d_node["type"] == "dist":
+            dist_nodes.append(d_node)
+    d_node = random.choice(dist_nodes)
+    send(d_node["ip"], message)
 
 def rand_act_node(num_nodes=1):
     """
@@ -247,16 +288,15 @@ def request_reader(type, ip="192.168.68.1"):
             return breq_lines
 
 
-def send_to_all(message):
+async def send_to_all(message):
     """
     sends to all nodes
     """
     with open("./info/Nodes.pickle", "rb") as file:
         all_nodes = pickle.load(file)
-    for node in all_nodes:
-        print(message)
-        print(node["ip"], node["port"])
-        send(node["ip"], message, port=node["port"], send_all=True)
+    for f in asyncio.as_completed([async_send(node["ip"], message, port=node["port"], send_all=True) for node in all_nodes]):
+        result = await f
+        
 
 
 def announce(pub_key, port, version, node_type, priv_key):
@@ -264,7 +304,7 @@ def announce(pub_key, port, version, node_type, priv_key):
     if not isinstance(priv_key, bytes):
         priv_key = SigningKey.from_string(bytes.fromhex(priv_key), curve=SECP112r2)
     sig = str(priv_key.sign(announcement_time.encode()).hex())
-    send_to_all(f"HELLO {announcement_time} {pub_key} {str(port)} {version} {node_type} {sig.hex()}")
+    asyncio.run(send_to_all(f"HELLO {announcement_time} {pub_key} {str(port)} {version} {node_type} {sig.hex()}"))
 
 
 def update(pub_key, port, version, priv_key):
@@ -272,7 +312,7 @@ def update(pub_key, port, version, priv_key):
     if not isinstance(priv_key, bytes):
         priv_key = SigningKey.from_string(bytes.fromhex(priv_key), curve=SECP112r2)
     sig = str(priv_key.sign(update_time.encode()).hex())
-    send_to_all(f"UPDATE {update_time} {pub_key} {str(port)} {version} {sig}")
+    asyncio.run(send_to_all(f"UPDATE {update_time} {pub_key} {str(port)} {version} {sig}"))
 
 
 def delete(pub_key, priv_key):
@@ -280,7 +320,7 @@ def delete(pub_key, priv_key):
     if not isinstance(priv_key, bytes):
         priv_key = SigningKey.from_string(bytes.fromhex(priv_key), curve=SECP112r2)
     sig = str(priv_key.sign(update_time.encode()).hex())
-    send_to_all(f"DELETE {update_time} {pub_key} {sig}")
+    asyncio.run(send_to_all(f"DELETE {update_time} {pub_key} {sig}"))
 
 
 def get_nodes():
@@ -394,7 +434,7 @@ def delete_node(deletion_time, ip, pub_key, sig):
 
 
 def version():
-    send_to_all(f"VERSION {__version__}")
+    asyncio.run(send_to_all(f"VERSION {__version__}"))
 
 
 def version_update(ip, ver):
