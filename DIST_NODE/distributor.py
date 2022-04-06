@@ -27,9 +27,3 @@ def relay():
                     except:
                         break#node offline
 
-"""
-functions that need to be run:
-ONLINE?
-NREQ
-ALL NODE UPDATE COMMANDS
-"""

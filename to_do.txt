@@ -1,0 +1,21 @@
+1. AI reward system
+
+2. False validation punishment
+
+3. light node        #track wallet value rather than blockchain
+
+4. Better error handling
+
+5. Website
+
+6. ICO marketing strategy
+
+7. improve whitepaper
+
+8. AI docs
+
+9. Exchange listings
+
+10. ledger support
+
+11. FULL TEST
