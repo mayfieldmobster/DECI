@@ -61,3 +61,6 @@ def run():
                        steps_per_epoch=model.STEP_PER_EPOCH, max_queue_size=model.MAX_QUEUE_SIZE,
                        callbacks=callbacks
                        )
+    complete_model.save("./model.h5")
+
+run()

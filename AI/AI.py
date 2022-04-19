@@ -190,9 +190,7 @@ def AI_REQ(message):
 
 
     script_identity = message[2]
-
     origin_ip = message[3]
-
     nodes = ast.literal_eval(message[4])
 
     write_script(message[5])
@@ -214,20 +212,26 @@ def AI_REQ(message):
     except Exception as e:
         if isinstance(e, LibraryError):
             node.send(ip, f"Error {str(e)}")
+        return
     if not virus:
         import model
+        node_str = ""
+        for AI_node in nodes:
+            node_str.append(f"{AI_node['ip']}:{AI_node['num_gpus']},")
+        total_gpus = sum(x["num_gpus"] for x in nodes)
+        
         if framework == "tensorflow":
             if model.METHOD == "HOROVOD":
-                TF_horovod.run()
+                os.system(f"horovodrun -np {total_gpus} -H {node_str} python3 TF_horovod.py")
             elif model.METHOD == "KUNGFU":
-                TF_kung_fu.run()
+                os.system(f"kungfu-run -np {total_gpus} -H {node_str} python TF_horovod.py")
 
         if framework == "keras":
             if model.METHOD == "HOROVOD":
-                keras_horovod.run()
+                os.system(f"horovodrun -np {total_gpus} -H {node_str} python3 keras_horovod.py")
             elif model.METHOD ==  "KUNGFU":
-                keras_kung_fu.run()
+                os.system(f"kungfu-run -np {total_gpus} -H {node_str} python TF_horovod.py")
 
         if framework == "torch":
-            Torch_run.run()
+            os.system(f"horovodrun -np {total_gpus} -H {node_str} python3 Torch_run.py")
 

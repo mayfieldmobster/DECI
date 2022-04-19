@@ -50,3 +50,6 @@ def run():
 
     if hvd.rank() == 0:
         checkpoint.save(checkpoint_dir)
+
+    complete_model.save("./model.h5")
+run()

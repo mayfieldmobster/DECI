@@ -34,3 +34,7 @@ def run():
             return loss_value
     for batch, (image, labels) in enumerate(data.take(10000)):
         loss_value = training_step(images, labels, batch == 0)
+
+    complete_model.save("./model.h5")
+
+run()

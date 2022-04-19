@@ -30,3 +30,5 @@ def run():
             loss = loss(output, target)
             loss.backward()
             opt.step()
+
+    torch.save(complete_model, "./model.pt")
