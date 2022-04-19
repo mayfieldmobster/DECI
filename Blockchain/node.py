@@ -61,7 +61,7 @@ def send(host, message, port=1379, send_all=False):
                                 client.send(message.encode("utf-8"))
                                 print(f"Message to {host} {message}\n")
                                 return
-                except Exception as e:
+                except ConnectionRefusedError as e:
                     return "node offline"
 
 async def async_send(host, message, port=1379, send_all=False):
@@ -98,10 +98,13 @@ def online(address):
     asks if a node is online and if it is it returns yh
     """
     print(address)
+    socket.setdefaulttimeout(1.0)
     try:
         send(address, "ONLINE?")
     except:
+        socket.setdefaulttimeout(3.0)
         return False
+    socket.setdefaulttimeout(3.0)
     time.sleep(5)
     message = request_reader("YH", ip=address)
     if message:
@@ -133,7 +136,7 @@ def rand_act_node(num_nodes=1):
     nodes = []
     i = 0
     while i != num_nodes:  # turn into for loop
-        with open("info/Nodes.pickle", "rb") as file:
+        with open("./info/Nodes.pickle", "rb") as file:
             all_nodes = pickle.load(file)
         node_index = random.randint(0, len(all_nodes) - 1)
         node = all_nodes[node_index]
