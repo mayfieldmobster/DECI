@@ -42,7 +42,7 @@ def upload(filename, depen_zip, AM_I: bool = False, port="1379"):  # am i a work
     if AM_I:
         for node in nodes:
             node = node.split(":")
-            send(node[0], int(node[1]), f"DIST {script_identity} {script}")
+            send(node[0], int(node[1]), f"AI_DIST {script_identity} {script}")
 
             send(node[0], int(node[1]), f"DEP {script_identity} {zip_file.hex()}")
 
@@ -51,7 +51,7 @@ def upload(filename, depen_zip, AM_I: bool = False, port="1379"):  # am i a work
     if not AM_I:
         for node in nodes:
             node = node.split(":")
-            send(node[0], int(node[1]), f"DIST {script_identity} {script}")
+            send(node[0], int(node[1]), f"AI_DIST {script_identity} {script}")
             time.sleep(0.5)
             send(node[0], int(node[1]), f"DEP {script_identity} {zip_file.hex()}")
 

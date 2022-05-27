@@ -10,10 +10,12 @@ def read():
     print("---READER STARTED---")
     ip = get('https://api.ipify.org').text
     while True:
-        NODE_Lines = node.request_reader("NODE")
-        if NODE_Lines:
-            print(f"NODE LINES: {NODE_Lines}\n")
-            for message in NODE_Lines:
+        node.dist_request_reader("LEFT_OVER")  # clear strange dist messages
+        node_lines = node.request_reader("NODE")
+        dist_blockchain_lines = node.dist_request_reader("BLOCKCHAIN")
+        if node_lines:
+            print(f"NODE LINES: {node_lines}\n")
+            for message in node_lines:
                 message = message.split(" ")
                 try:
                     node.message_handler(message)
@@ -26,14 +28,6 @@ def read():
                     print("HELLO")
                     node.new_node(float(message[2]), message[0], message[3], int(message[4]), float(message[5]), message[6], message[7])
 
-                elif message[1] == "VALID":  # update block to true
-                    print("VALID")
-                    blockchain.validate_blockchain(int(message[2]), message[0], float(message[3]))
-
-                elif message[1] == "TRANS_INVALID":
-                    print("TRANS_INVALID")
-                    blockchain.invalid_blockchain(int(message[2]), int(message[3]), message[0])
-
                 elif message[1] == "UPDATE":
                     print("UPDATE")
                     node.update_node(message[0], float(message[2]), message[3], int(message[4]), float(message[5]), message[6])
@@ -44,6 +38,25 @@ def read():
 
                 else:
                     pass
+
+        if dist_blockchain_lines:
+            for message in dist_blockchain_lines:
+                message = message.split(" ")
+                try:
+                    node.message_handler(message)
+                except Exception as e:
+                    node.send(message[0], f"ERROR {e}")
+                    print(message[1], e)
+                    continue
+
+                if message[1] == "VALID":  # update block to true
+                    print("VALID")
+                    blockchain.validate_blockchain(int(message[2]), message[0], float(message[3]))
+
+                elif message[1] == "TRANS_INVALID":
+                    print("TRANS_INVALID")
+                    blockchain.invalid_blockchain(int(message[2]), int(message[3]), message[0])
+
 
 
 

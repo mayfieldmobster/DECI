@@ -3,6 +3,7 @@ import node
 import pickle
 import time
 import random
+import requests
 
 def smart_node_picker(available_nodes, script):
     job_nodes = []
@@ -13,6 +14,8 @@ def smart_node_picker(available_nodes, script):
         framework = "keras"
     elif "keras" not in script and "tensorflow" in script:
         framework = "tensorflow"
+    else:
+        raise
     import model
     epochs = model.EPOCHS
     if framework == "torch":
@@ -34,6 +37,10 @@ def smart_node_picker(available_nodes, script):
             num_parameters += variable_parameters
     else:
         return
+    if num_parameters < 50000000:
+        return
+    if epochs < 25:
+        return
     total_params = num_parameters*epochs
     scale_time_for_model = total_params/23719498 #num parameters in benchmark
     average_time = sum(float(x["benchmark"]) for x in available_nodes)/len(available_nodes)
@@ -47,11 +54,22 @@ def smart_node_picker(available_nodes, script):
     open("model.py","w").close()
     return job_nodes
 
+class AI_upload_error(Exception):
+    pass
+
+class Param_wrong_size(AI_upload_error):
+    pass
+
+class Import_error(AI_upload_error):
+    pass
+
+def error_handler():
+    pass
 
 def dist(message):
     #total_size = data_size*epochs
     with open("./info/Nodes.pickle", "rb") as file:
-        nodes = pickle.load(file) #node atributes: time_init, IP,port, pub_key,version, num_gpus, benchmark_epoch_per_second
+        nodes = pickle.load(file) #node attributes: time_init, IP,port, pub_key,version, num_gpus, benchmark_epoch_per_second
     node.send_to_all("ONLINE?")
     time.sleep(5)
     online_lines = node.request_reader("YH")
@@ -69,4 +87,10 @@ def dist(message):
     for job_node in job_nodes:
         node.send(job_node["ip"], f"AI {message[2]} {message[0]} {str(job_nodes).replace(' ','')} {message[3]}")
         node.send(job_node["ip"], f"DEP {dep[2]} {dep[3]}")
+
+    dist_node = requests.get()
+    
+    node.send(dist_node["ip"],f"DIST AI_JOB_ANNOUNCE {time.time()} {str(job_nodes)} {message[2]}")
+
+
 

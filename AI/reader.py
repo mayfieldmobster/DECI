@@ -34,7 +34,7 @@ def read():
             elif message[1] == "AI":
                 AI.AI_REQ(message)
 
-            elif message[1] == "DIST":
+            elif message[1] == "AI_DIST":
                 distributor.dist(message)
 
             else:

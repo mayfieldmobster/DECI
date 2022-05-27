@@ -153,6 +153,91 @@ def rand_act_node(num_nodes=1):
     else:
         return nodes
 
+def dist_request_reader(type):
+    with open("./info/Nodes.pickle", "rb") as file:
+        nodes = pickle.load(file)
+    with open("dist_messages.txt", "r") as file:
+        lines = file.read().splitlines()
+    dist_nodes = [node_ for node_ in nodes if node_["node_type"] == "dist"]
+
+    trans_protocols = ["TRANS",  "STAKE", "UNSTAKE", "AI_JOB_ANNOUNCE"]
+    blockchain_protocols = ["VALID", "TRANS_INVALID"]
+
+    trans_lines = []
+    blockchain_lines = []
+    left_over_lines = []
+
+    for line in lines:
+        message = line.split(" ")
+        dist_node = False
+        for node_ in dist_nodes:
+            if node_["ip"] == line[0]:
+                dist_node = True
+                break
+
+        if dist_node:
+            line.pop(0)
+            line.pop(0)
+
+            if line[0] == "" or line[0] == "\n":
+                lines.remove(" ".join(line))
+
+            elif line[1] in trans_protocols:
+                trans_lines.append(" ".join(line))
+
+            elif line[1] in blockchain_protocols:
+                blockchain_lines.append(" ".join(line))
+
+            else:
+                left_over_lines.append(" ".join(line))
+
+        if type == "BLOCKCHAIN":
+            if len(blockchain_lines) != 0:
+                new_lines = []
+                with open("recent_messages.txt", "r") as file:
+                    file_lines = file.readlines()
+                for f_line in file_lines:
+                    f_line.split(" ")
+                    if not blockchain_lines[0] in f_line:
+                        if not f_line.strip("\n") == "":
+                            new_lines.append(f_line)
+                open("recent_messages.txt", "w").close()
+                with open("recent_messages.txt", "a") as file:
+                    for n_line in new_lines:
+                        file.write(n_line)
+            return blockchain_lines
+
+        if type == "TRANS":
+            if len(trans_lines) != 0:
+                new_lines = []
+                with open("recent_messages.txt", "r") as file:
+                    file_lines = file.readlines()
+                for f_line in file_lines:
+                    f_line.split(" ")
+                    if not trans_lines[0] in f_line:
+                        if not f_line.strip("\n") == "":
+                            new_lines.append(f_line)
+                open("recent_messages.txt", "w").close()
+                with open("recent_messages.txt", "a") as file:
+                    for n_line in new_lines:
+                        file.write(n_line)
+            return trans_lines
+
+        if type == "LEFT_OVER":
+            if len(left_over_lines) != 0:
+                new_lines = []
+                with open("recent_messages.txt", "r") as file:
+                    file_lines = file.readlines()
+                for f_line in file_lines:
+                    f_line.split(" ")
+                    if not left_over_lines[0] in f_line:
+                        if not f_line.strip("\n") == "":
+                            new_lines.append(f_line)
+                open("recent_messages.txt", "w").close()
+                with open("recent_messages.txt", "a") as file:
+                    for n_line in new_lines:
+                        file.write(n_line)
+
 
 def request_reader(type, ip="192.168.68.1"):
     """
@@ -162,13 +247,12 @@ def request_reader(type, ip="192.168.68.1"):
         lines = file.read().splitlines()
     nreq_protocol = ["NREQ"]  # node request
     yh_protocol = ["yh"]
-    trans_protocol = ["TRANS"]
     breq_protocol = ["BREQ"]
     pre_protocol = ["ONLINE?", "GET_NODES", "BLOCKCHAIN?"]
+
     node_lines = []
     nreq_lines = []
     yh_lines = []
-    trans_lines = []
     breq_lines = []
     online_lines = []
     if str(lines) != "[]":
@@ -176,16 +260,13 @@ def request_reader(type, ip="192.168.68.1"):
             line = line.split(" ")
 
             if line[0] == "" or line[0] == "\n":
-                del line  # delete blank lines
+                lines.remove(" ".join(line))
 
             elif line[1] in nreq_protocol:
                 nreq_lines.append(" ".join(line))
 
             elif line[1] in yh_protocol and line[0] == ip:
                 yh_lines.append(" ".join(line))
-
-            elif line[1] in trans_protocol:
-                trans_lines.append(" ".join(line))
 
             elif line[1] in pre_protocol:
                 online_lines.append(" ".join(line))
@@ -196,6 +277,7 @@ def request_reader(type, ip="192.168.68.1"):
             else:
                 node_lines.append(" ".join(line))
 
+        #TODO make a fucntion to clear to stop copy paste of the file clear
         if type == "YH":
             if len(yh_lines) != 0:
                 new_lines = []
@@ -260,20 +342,6 @@ def request_reader(type, ip="192.168.68.1"):
                         file.write(n_line)
             return online_lines
 
-        elif type == "TRANS":
-            if len(trans_lines) != 0:
-                new_lines = []
-                with open("recent_messages.txt", "r") as file:
-                    file_lines = file.readlines()
-                for f_line in file_lines:
-                    if not trans_lines[0] in f_line:  # update to check multiple lines to lazy to do rn
-                        if not f_line.strip("\n") == "":
-                            new_lines.append(f_line)
-                open("recent_messages.txt", "w").close()
-                with open("recent_messages.txt", "a") as file:
-                    for n_line in new_lines:
-                        file.write(n_line)
-            return trans_lines
 
         elif type == "BREQ":
             if len(breq_lines) != 0:
@@ -348,6 +416,20 @@ def get_nodes():
         else:
             tries += 1
             continue
+
+def stake(priv_key, amount):
+    priv_key = SigningKey.from_string(bytes.fromhex(priv_key), curve=SECP112r2)
+    pub_key = priv_key.verifying_key
+    stake_time = time.time()
+    sig = priv_key.sign(("STAKE "+str(stake_time)).encode())
+    send_to_dist(f"STAKE {stake_time} {pub_key} {amount} {sig}")
+
+def unstake(priv_key, amount):
+    priv_key = SigningKey.from_string(bytes.fromhex(priv_key), curve=SECP112r2)
+    pub_key = priv_key.verifying_key
+    stake_time = time.time()
+    sig = priv_key.sign(("UNSTAKE "+str(stake_time)).encode())
+    send_to_dist(f"UNSTAKE {stake_time} {pub_key} {amount} {sig}")
 
 
 def get_blockchain():  # send ask the website for Blockchain as most up to date
@@ -464,14 +546,14 @@ class ValueTypeError(NodeError):
 class UnrecognisedArg(NodeError):
     pass
 
-
+#  TODO add AI_JOB protocols
 def message_handler(message):
     try:
         protocol = message[1]
-    except:
+    except IndexError:
         raise UnrecognisedArg("No Protocol Found")
 
-    node_types = ["Lite", "Blockchain", "AI"]
+    node_types = ["Lite", "Blockchain", "AI", "dist"]
 
     if protocol == "GET_NODES":
         # host, GET_NODES

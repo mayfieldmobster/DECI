@@ -131,7 +131,9 @@ def please_no_hack():
                  "time",
                  "PIL",
                  "pandas",
-                 "scipy"]
+                 "scipy",
+                 #  "jax"
+                 ]
 
     with open("../model.py", "r") as file:
         lines = file.readlines()
@@ -224,13 +226,13 @@ def AI_REQ(message):
             if model.METHOD == "HOROVOD":
                 os.system(f"horovodrun -np {total_gpus} -H {node_str} python3 TF_horovod.py")
             elif model.METHOD == "KUNGFU":
-                os.system(f"kungfu-run -np {total_gpus} -H {node_str} python TF_horovod.py")
+                os.system(f"kungfu-run -np {total_gpus} -H {node_str} python TF_kung_fu.py")
 
         if framework == "keras":
             if model.METHOD == "HOROVOD":
                 os.system(f"horovodrun -np {total_gpus} -H {node_str} python3 keras_horovod.py")
             elif model.METHOD ==  "KUNGFU":
-                os.system(f"kungfu-run -np {total_gpus} -H {node_str} python TF_horovod.py")
+                os.system(f"kungfu-run -np {total_gpus} -H {node_str} python keras_kung_fu.py")
 
         if framework == "torch":
             os.system(f"horovodrun -np {total_gpus} -H {node_str} python3 Torch_run.py")

@@ -31,20 +31,24 @@ def rb(hash, time):
 
     rb = []#random biased
     for node in nodes:
-        public = node[2]
+        public = node["pub_key"]
+        ip = node["ip"]
         amount_staked = 0.0
-        for transaction in stake_trans:
-            if isinstance(transaction, dict):
-                if float(transaction["time"]) < time:
+        for stake_trans in stake_trans:
+            if isinstance(stake_trans, dict):
+                if float(stake_trans["time"]) < time:
 
-                    if transaction["sender"] == public:
-                        amount_staked -= transaction["amount"]*0.99
+                    if stake_trans["pub_key"] == public:
+                        if "stake_amount" in stake_trans:
+                            amount_staked += stake_trans["stake_amount"]
+                        if "unstake_amount" in stake_trans:
+                            amount_staked -= stake_trans["unstake_amount"]
 
-                    if transaction["reciever"] == public:
-                        amount_staked += transaction["amount"]*0.99
-            elif isinstance(transaction, str):
-                if public in transaction and "LIAR" in transaction:
-                    amount_staked = 0
+
+            elif isinstance(stake_trans, str):
+                if (public in stake_trans or ip in stake_trans) and "LIAR" in stake_trans:
+                    amount_staked = 0.0
+                    break
 
         amount_staked = math.floor(amount_staked)
         rb.append(amount_staked)

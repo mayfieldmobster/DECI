@@ -20,10 +20,6 @@ def relay():
                     prot_in = True
             if prot_in:
                 continue
-            for node in nodes:
-                if node["type"] != "dist":
-                    try:
-                        node.send(node["ip"],"DIST " + message)
-                    except:
-                        break#node offline
+            node.send_to_all_no_dist("DIST " + message)
+            logging.info(message)
 

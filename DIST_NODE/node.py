@@ -2,13 +2,11 @@
 node
 """
 
-import imp
 import socket
 import random
 import pickle
 import time
 import ast
-import blockchain
 import time
 from ecdsa import SigningKey, VerifyingKey, SECP112r2
 import asyncio
@@ -285,7 +283,16 @@ async def send_to_all(message):
     """
     with open("./info/Nodes.pickle", "rb") as file:
         all_nodes = pickle.load(file)
-    for f in asyncio.as_completed([async_send(node["ip"], message, port=node["port"], send_all=True) for node in all_nodes]):
+    for f in asyncio.as_completed([async_send(node_["ip"], message, port=node_["port"], send_all=True) for node_ in all_nodes]):
+        result = await f
+
+async def send_to_all_no_dist(message):
+    """
+    sends to all nodes
+    """
+    with open("./info/Nodes.pickle", "rb") as file:
+        all_nodes = pickle.load(file)
+    for f in asyncio.as_completed([async_send(node_["ip"], message, port=node_["port"], send_all=True) for node_ in all_nodes if node_["type"] != "dist"]):
         result = await f
 
 
@@ -337,28 +344,7 @@ def get_nodes():
             continue
 
 
-def get_blockchain():  # send ask the website for Blockchain as most up to date
-    print("---GETTING BLOCKCHAIN---")
-    node = rand_act_node()
-    print(node)
-    send(node["ip"], "BLOCKCHAIN?")
-    tries = 0
-    while True:
-        if tries == 10:
-            quit()
-        time.sleep(5)
-        lines = request_reader("BREQ")
-        if lines:
-            for line in lines:
-                line = line.split(" ")
-                if line[0] == node["ip"]:
-                    new_chain = ast.literal_eval(line[2])
-                    chain = blockchain.read_blockchain()
-                    chain.update(new_chain)
-                    print("---BLOCKCHAIN RECEIVED---")
-                    return
-        else:
-            tries += 1
+
 
 
 def send_node(host):
@@ -455,7 +441,7 @@ def message_handler(message):
     except:
         raise UnrecognisedArg("No Protocol Found")
 
-    node_types = ["Lite", "Blockchain", "dist"]
+    node_types = ["Lite", "Blockchain", "dist", "AI"]
 
     if protocol == "GET_NODES":
         # host, GET_NODES
