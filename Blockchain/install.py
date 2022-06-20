@@ -9,7 +9,7 @@ install dependencies
 create folders
 request nodes and Blockchain with
 ask for wallet to use and how much to stake
-annonounce self and time of creation
+announce self and time of creation
 """
 
 os.system("pip3 install ecdsa objsize")
@@ -19,7 +19,7 @@ accept = input("To Accept type 'ACCEPT'  : ")
 if accept != "ACCEPT":
     exit()
 
-print("Your Private key is need to verify that your public key belongs to you make sure you are using the official version of deci")
+print("Your Private key is needed to verify that your public key belongs to you make sure you are using the official version of decint")
 priv_key = input("Private Key: ")
 print("This is the the key that will be rewarded")
 pub_key = input("Public Key: ")

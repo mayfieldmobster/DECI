@@ -17,4 +17,4 @@ def rec(my_ip):
 
 
 if __name__ == "__main__":
-    rec("192.168.68.112")
+    rec(input("IP:"))

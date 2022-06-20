@@ -29,5 +29,6 @@ def read():
                     chain = blockchain.read_blockchain()
                     node.send(message[0], "BREQ " + chain.send_blockchain())
 
+
 if __name__ == "__main__":
     read()

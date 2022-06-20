@@ -3,7 +3,7 @@ import node
 import os
 import json
 import TF_horovod
-import Torch_run
+import torch_horovod
 import TF_kung_fu
 import keras_kung_fu
 import TF_horovod
