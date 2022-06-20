@@ -138,10 +138,11 @@ def rand_act_node(num_nodes=1):
     while i != num_nodes:  # turn into for loop
         with open("./info/Nodes.pickle", "rb") as file:
             all_nodes = pickle.load(file)
+        me = socket.gethostbyname(socket.gethostname())
         node_index = random.randint(0, len(all_nodes) - 1)
         node = all_nodes[node_index]
-        print(node)
-        if node["pub_key"] == key:
+        #print(node)
+        if node["pub_key"] == key or node["ip"] == me:
             continue
         alive = online(node["ip"])
         if alive:
