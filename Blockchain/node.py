@@ -404,17 +404,18 @@ def get_nodes():
         if tries == 10:
             quit()
         time.sleep(5)
-        line = request_reader("NREQ")
-        if line:
-            line = line[0].split(" ")
-            nodes = line[2]
-            nodes = ast.literal_eval(nodes)
-            if line[0] == node["ip"]:
-                with open("../info/Nodes.pickle", "wb") as file:
-                    pickle.dump(nodes, file)
-                print("---NODES RECEIVED---")
-                print("NODES UPDATED SUCCESSFULLY")
-                return
+        lines = request_reader("NREQ")
+        if lines:
+            for line in line:
+                line = line[0].split(" ")
+                nodes = line[2]
+                nodes = ast.literal_eval(nodes)
+                if line[0] == node["ip"]:
+                    with open("./info/Nodes.pickle", "wb") as file:
+                        pickle.dump(nodes, file)
+                    print("---NODES RECEIVED---")
+                    print("NODES UPDATED SUCCESSFULLY")
+                    return
         else:
             tries += 1
             continue
