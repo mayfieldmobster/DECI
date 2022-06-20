@@ -18,15 +18,15 @@ def read():
                     print(message[1], e)
                     continue
                 if message[1] == "ONLINE?":
-                    print(f"yh sent to {message[0]}")
+                    #print(f"yh sent to {message[0]}")
                     node.send(message[0], "yh")
 
                 elif message[1] == "GET_NODES":
-                    print("GET_NODES")
+                    #print("GET_NODES")
                     node.send_node(message[0])
 
                 elif message[1] == "BLOCKCHAIN?":
-                    print("BLOCKCHAIN?")
+                    #print("BLOCKCHAIN?")
                     chain = blockchain.read_blockchain()
                     node.send(message[0], "BREQ " + chain.send_blockchain())
 

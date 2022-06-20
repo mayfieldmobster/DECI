@@ -5,7 +5,7 @@ def rec(my_ip):
     print("---RECEIVER STARTED---")
     while True:
         message, address = node.receive(my_ip)
-        print(f"Message from {address} , {message}\n")
+        #print(f"Message from {address} , {message}\n")
         if "DIST" in message:
             with open("dist_messages.txt", "a") as file:
                 file.write(f"{address[0]} {message}\n")
