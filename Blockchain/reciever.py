@@ -17,4 +17,4 @@ def rec(my_ip):
 
 
 if __name__ == "__main__":
-    rec(input("IP:"))
+    rec(input("IP: "))
