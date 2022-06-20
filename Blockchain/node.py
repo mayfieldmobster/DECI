@@ -98,13 +98,13 @@ def online(address):
     asks if a node is online and if it is it returns yh
     """
     print(address)
-    socket.setdefaulttimeout(1.0)
+    #socket.setdefaulttimeout(1.0)
     try:
         send(address, "ONLINE?")
     except:
-        socket.setdefaulttimeout(3.0)
+        #socket.setdefaulttimeout(3.0)
         return False
-    socket.setdefaulttimeout(3.0)
+    #socket.setdefaulttimeout(3.0)
     time.sleep(5)
     message = request_reader("YH", ip=address)
     if message:
