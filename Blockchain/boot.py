@@ -4,7 +4,6 @@ import reciever
 import reader
 import trans_reader
 import validator
-import steak_trans
 import pre_reader
 import concurrent.futures
 import socket
@@ -33,7 +32,6 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
     executor.submit(node.get_nodes)#update nodes
     executor.submit(reader.read)
     executor.submit(trans_reader.read)
-    executor.submit(steak_trans.updator)
     executor.submit(validator.am_i_validator)
     executor.submit(pre_reader.read)
 
