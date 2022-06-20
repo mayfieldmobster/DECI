@@ -59,7 +59,7 @@ def send(host, message, port=1379, send_all=False):
                             if not int(node["port"]) == 1379:
                                 client.connect((host, int(node["port"])))
                                 client.send(message.encode("utf-8"))
-                                print(f"Message to {host} {message}\n")
+                                #print(f"Message to {host} {message}\n")
                                 return
                 except ConnectionRefusedError as e:
                     return "node offline"
