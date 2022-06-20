@@ -413,6 +413,7 @@ def get_nodes():
                 with open("../info/Nodes.pickle", "wb") as file:
                     pickle.dump(nodes, file)
                 print("---NODES RECEIVED---")
+                print("NODES UPDATED SUCCESSFULLY")
                 return
         else:
             tries += 1
