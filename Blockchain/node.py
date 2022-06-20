@@ -28,7 +28,7 @@ def receive(local_ip):
     while True:
         try:
             client, address = server.accept()
-            message = client.recv(2048).decode("utf-8").split(" ")
+            message = client.recv(2048).decode("utf-8")#.split(" ")
             server.close()
             return message, address
         except Exception as e:
