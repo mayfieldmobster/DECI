@@ -379,12 +379,14 @@ def announce(pub_key, port, version, node_type, priv_key):
     asyncio.run(send_to_all(f"HELLO {announcement_time} {pub_key} {str(port)} {version} {node_type} {sig.hex()}"))
 
 
-def update(pub_key, port, version, priv_key):
+def update(old_key, port, version, priv_key, new_key=None):
+    if not new_key:
+        new_key = old_key
     update_time = str(time.time())
     if not isinstance(priv_key, bytes):
         priv_key = SigningKey.from_string(bytes.fromhex(priv_key), curve=SECP112r2)
     sig = str(priv_key.sign(update_time.encode()).hex())
-    asyncio.run(send_to_all(f"UPDATE {update_time} {pub_key} {str(port)} {version} {sig}"))
+    asyncio.run(send_to_all(f"UPDATE {update_time} {old_key} {new_key} {str(port)} {version} {sig}"))
 
 
 def delete(pub_key, priv_key):
@@ -491,15 +493,15 @@ def new_node(initiation_time, ip, pub_key, port, node_version, node_type, sig):
         return "node invalid"
 
 
-def update_node(ip, update_time, pub_key, port, node_version, sig):
+def update_node(ip, update_time, old_key, new_key, port, node_version, sig):
     with open("info/Nodes.pickle", "rb") as file:
         nodes = pickle.load(file)
-    public_key = VerifyingKey.from_string(bytes.fromhex(pub_key), curve=SECP112r2)
+    public_key = VerifyingKey.from_string(bytes.fromhex(old_key), curve=SECP112r2)
     try:
         assert public_key.verify(bytes.fromhex(sig), str(update_time).encode())
         for node in nodes:
             if node["ip"] == ip:
-                node["pub_key"] = pub_key
+                node["pub_key"] = new_key
                 node["port"] = port
                 node["version"] = node_version
         with open("info/Nodes.pickle", "wb") as file:

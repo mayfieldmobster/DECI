@@ -30,7 +30,7 @@ def read():
 
                 elif message[1] == "UPDATE":
                     print("UPDATE")
-                    node.update_node(message[0], float(message[2]), message[3], int(message[4]), float(message[5]), message[6])
+                    node.update_node(message[0], float(message[2]), message[3], message[4], int(message[5]), float(message[6]), message[7])
 
                 elif message[1] == "DELETE":
                     print("DELETE")

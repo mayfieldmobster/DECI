@@ -27,9 +27,8 @@ except:
 """
 
 with concurrent.futures.ThreadPoolExecutor() as executor:
-    executor.submit(reciever.rec, local_ip)#start recieving
-    executor.submit(node.get_blockchain)#update Blockchain
-    executor.submit(node.get_nodes)#update nodes
+    executor.submit(reciever.rec, local_ip)  # start recieving ✅
+    executor.submit(node.updator())  # update Blockchain & Nodes ✅
     executor.submit(reader.read)
     executor.submit(trans_reader.read)
     executor.submit(validator.am_i_validator)
