@@ -395,32 +395,6 @@ def delete(pub_key, priv_key):
     asyncio.run(send_to_all(f"DELETE {update_time} {pub_key} {sig}"))
 
 
-def get_nodes():
-    time.sleep(5)
-    print("---GETTING NODES---")
-    node = rand_act_node()
-    send(node["ip"], "GET_NODES")
-    tries = 0
-    while True:
-        if tries == 10:
-            quit()
-        time.sleep(5)
-        lines = request_reader("NREQ")
-        if lines:
-            for line in line:
-                print(f"NODE LINE: {line}")
-                line = line[0].split(" ")
-                nodes = line[2]
-                nodes = ast.literal_eval(nodes)
-                if line[0] == node["ip"]:
-                    with open("./info/Nodes.pickle", "wb") as file:
-                        pickle.dump(nodes, file)
-                    print("---NODES RECEIVED---")
-                    print("NODES UPDATED SUCCESSFULLY")
-                    return
-        else:
-            tries += 1
-            continue
 
 def stake(priv_key, amount):
     priv_key = SigningKey.from_string(bytes.fromhex(priv_key), curve=SECP112r2)
