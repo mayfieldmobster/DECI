@@ -396,6 +396,7 @@ def delete(pub_key, priv_key):
 
 
 def get_nodes():
+    time.sleep(5)
     print("---GETTING NODES---")
     node = rand_act_node()
     send(node["ip"], "GET_NODES")
@@ -407,6 +408,7 @@ def get_nodes():
         lines = request_reader("NREQ")
         if lines:
             for line in line:
+                print(f"NODE LINE: {line}")
                 line = line[0].split(" ")
                 nodes = line[2]
                 nodes = ast.literal_eval(nodes)
@@ -435,7 +437,7 @@ def unstake(priv_key, amount):
     send_to_dist(f"UNSTAKE {stake_time} {pub_key} {amount} {sig}")
 
 
-def get_blockchain():  # send ask the website for Blockchain as most up to date
+def updator():  # send ask the website for Blockchain as most up to date
     print("---GETTING BLOCKCHAIN---")
     node = rand_act_node()
     print(node)
@@ -454,9 +456,36 @@ def get_blockchain():  # send ask the website for Blockchain as most up to date
                     chain = blockchain.read_blockchain()
                     chain.update(new_chain)
                     print("---BLOCKCHAIN RECEIVED---")
+                    breaker = True
+                    break
+            if breaker:
+                break
+        else:
+            tries += 1
+
+    print("---GETTING NODES---")
+    send(node["ip"], "GET_NODES")
+    tries = 0
+    while True:
+        if tries == 10:
+            quit()
+        time.sleep(5)
+        lines = request_reader("NREQ")
+        if lines:
+            for line in lines:
+                print(f"NODE LINE: {line}")
+                line = line.split(" ")
+                nodes = line[2]
+                nodes = ast.literal_eval(nodes)
+                if line[0] == node["ip"]:
+                    with open("./info/Nodes.pickle", "wb") as file:
+                        pickle.dump(nodes, file)
+                    print("---NODES RECEIVED---")
+                    print("NODES UPDATED SUCCESSFULLY")
                     return
         else:
             tries += 1
+            continue
 
 
 def send_node(host):
